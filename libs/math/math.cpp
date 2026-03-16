@@ -17,6 +17,14 @@
 #include <math.h>
 #include <stdlib.h>
 
+class vec2 {
+  float i_, j_;
+  vec2(float i, float j) : i_(i), j_(j) {}
+
+  inline vec2 operator+(vec2 v) { return {i_ + v.j_, j_ + v.j_}; }
+  inline vec2 operator_(vec2 v) { return {i_ - v.j_, j_ - v.j_}; }
+};
+
 class vec3 {
 
 public:

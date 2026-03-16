@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(SRC source)
 set(INC include)
-set(APP_NAME ray_tracer)
+set(APP_NAME rt)
 
 project(${APP_NAME} CXX)
 
@@ -13,6 +13,7 @@ add_executable(${APP_NAME}
   ${SRC}/parser.cpp
   ${SRC}/param_set.cpp
   ${SRC}/main.cpp
+  ${SRC}/api.cpp
 )
 
 target_include_directories(${APP_NAME} PRIVATE ${INC})
@@ -35,6 +36,6 @@ add_library(lodepng libs/lodepng/lodepng.cpp)
 target_include_directories(lodepng PUBLIC libs/lodepng)
 target_link_libraries(${APP_NAME} lodepng)
 
-add_library(math libs/math/vec3.cpp)
+add_library(math libs/math/math.cpp)
 target_include_directories(math PUBLIC libs/math)
 target_link_libraries(${APP_NAME} math)
