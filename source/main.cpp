@@ -1,4 +1,3 @@
-#include "api.hpp"
 #include "parser.hpp"
 
 #include <cstdlib>
@@ -24,7 +23,7 @@ int main(int argc, char **argv) {
   if (argc == 1 || (std::string)argv[1] == "--help")
     help();
 
-  Parser p("");
-  Api::render();
+  Parser p("scenes/scene01.xml");
+  p.parse();
   return EXIT_SUCCESS;
 }

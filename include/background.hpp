@@ -5,6 +5,12 @@
 
 struct RGBColor {
   unsigned char R, G, B, A = 255;
+  RGBColor(std::array<int, 3> arr)
+      : R{(unsigned char)arr[0]}, G{(unsigned char)arr[1]},
+        B{(unsigned char)arr[2]} {}
+  RGBColor(unsigned char R, unsigned char G, unsigned char B)
+      : R{R}, G{G}, B{B} {}
+  RGBColor() = default;
 };
 
 class BackGroundColor {

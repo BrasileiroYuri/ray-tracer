@@ -25,6 +25,7 @@ target_compile_options(${APP_NAME} PRIVATE
  -Wextra
  -Werror
  -Wconversion
+ -g
  -march=native
 )
 

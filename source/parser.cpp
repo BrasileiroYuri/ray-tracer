@@ -3,25 +3,8 @@
 #include <cstddef>
 #include <cstdlib>
 #include <iostream>
+#include <iterator>
 #include <string>
-
-template <typename T>
-void Parser::convert(const std::string &name, const std::string &value,
-                     ParamSet *ps) {
-
-  auto ptr = dynamic_cast<T>(value);
-
-  if (!ptr) {
-    std::cout << "bad_cast\n";
-    exit(1);
-  }
-
-  ps->add(name, value);
-}
-
-template <typename T, std::size_t size>
-void Parser::convert(const std::string &name, const std::string &value,
-                     ParamSet *ps) {}
 
 void Parser::parse() const {
   tinyxml2::XMLDocument doc;
@@ -44,11 +27,15 @@ void Parser::parse() const {
                          // função) vamos pro próximo.
       continue;
 
-    ParamSet *ps = new ParamSet();
+    ParamSet ps;
 
-    for (auto it1 = it->FirstAttribute(); it1; it1 = it1->Next())
-      conversor_.at(it1->Name())(it1->Name(), it1->Value(), ps);
+    for (auto it1 = it->FirstAttribute(); it1; it1 = it1->Next()) {
+      if (conversor_.find(it1->Name()) == conversor_.end())
+        continue;
 
-    elements_.at(it->Name())(*ps);
+      conversor_.at(it1->Name())(it1->Name(), it1->Value(), &ps);
+    }
+
+    elements_.at(it->Name())(ps);
   }
 }
