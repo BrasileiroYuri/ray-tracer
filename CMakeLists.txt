@@ -11,9 +11,8 @@ add_executable(${APP_NAME}
   ${SRC}/background.cpp
   ${SRC}/film.cpp
   ${SRC}/parser.cpp
-  ${SRC}/param_set.cpp
   ${SRC}/main.cpp
-  ${SRC}/api.cpp
+  ${SRC}/app.cpp
 )
 
 target_include_directories(${APP_NAME} PRIVATE ${INC})
@@ -26,7 +25,6 @@ target_compile_options(${APP_NAME} PRIVATE
  -Werror
  -Wconversion
  -g
- -march=native
 )
 
 add_library(tinyxml2 libs/tinyxml2/tinyxml2.cpp)
@@ -37,6 +35,6 @@ add_library(lodepng libs/lodepng/lodepng.cpp)
 target_include_directories(lodepng PUBLIC libs/lodepng)
 target_link_libraries(${APP_NAME} lodepng)
 
-add_library(math libs/math/math.cpp)
-target_include_directories(math PUBLIC libs/math)
+add_library(math INTERFACE)
+target_include_directories(math INTERFACE libs/math)
 target_link_libraries(${APP_NAME} math)

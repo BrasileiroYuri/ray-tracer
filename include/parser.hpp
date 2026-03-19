@@ -1,7 +1,7 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
-#include "api.hpp"
+#include "app.hpp"
 #include "param_set.hpp"
 
 #include <array>
@@ -18,7 +18,7 @@ public:
 
 private:
   std::unordered_map<std::string, std::function<void(ParamSet)>> elements_{
-      {"film", Api::film}, {"background", Api::backGround}};
+      {"film", App::film}, {"background", App::backGround}};
 
   template <typename T>
   static void convert(const std::string &name, const std::string &value,
@@ -26,20 +26,21 @@ private:
 
     std::istringstream ss{value};
     T val{};
+
     ss >> val;
 
     ps->add(name, val);
   }
 
-  template <typename T, std::size_t size>
+  template <typename T, typename K, std::size_t size>
   static void convert(const std::string &name, const std::string &value,
                       ParamSet *ps) {
 
     std::istringstream ss{value};
-    std::array<int, size> arr;
-    ss >> arr[0];
-    ss >> arr[1];
-    ss >> arr[2];
+    std::array<K, size> arr;
+
+    for (unsigned long i = 0; i < size; i++)
+      ss >> arr[i];
 
     T val{arr};
     ps->add(name, val);
@@ -55,11 +56,11 @@ private:
           {"filename", convert<std::string>},
           {"img_type", convert<std::string>},
           {"mapping", convert<std::string>},
-          {"bl", convert<RGBColor, 3>},
-          {"br", convert<RGBColor, 3>},
-          {"tl", convert<RGBColor, 3>},
-          {"tr", convert<RGBColor, 3>},
-          {"color", convert<RGBColor, 3>},
+          {"bl", convert<RGBColor, int, 3>},
+          {"br", convert<RGBColor, int, 3>},
+          {"tl", convert<RGBColor, int, 3>},
+          {"tr", convert<RGBColor, int, 3>},
+          {"color", convert<RGBColor, int, 3>},
       };
 
   std::string filename_;

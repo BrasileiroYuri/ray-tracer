@@ -11,10 +11,11 @@ public:
       : width_(width), height_(height), data_(width * height * 4) {}
 
   void add(std::size_t, std::size_t, RGBColor);
+  const std::vector<unsigned char> &data() const { return data_; }
   std::size_t width() const;
   std::size_t height() const;
 
-  void write_image() const;
+  Film() {}
 
 private:
   std::size_t width_;

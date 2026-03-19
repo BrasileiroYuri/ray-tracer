@@ -2,7 +2,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <math.cpp>
+#include <math.hpp>
 #include <string>
 
 void help() {
@@ -19,11 +19,13 @@ void help() {
   std::cout << message << "\n";
 }
 
-int main(int argc, char **argv) {
-  if (argc == 1 || (std::string)argv[1] == "--help")
-    help();
+/*void options(int argc, char **argv) {
+  App::RunningOptions op;
+}*/
 
-  Parser p("scenes/scene01.xml");
+int main() {
+  Parser p("scenes/scene02.xml");
   p.parse();
+  App::render();
   return EXIT_SUCCESS;
 }
