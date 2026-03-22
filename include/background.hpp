@@ -15,25 +15,16 @@ struct RGBColor {
 
 class BackGroundColor {
 public:
-  BackGroundColor(const std::array<RGBColor, 4> &colors) : corners_{colors} {}
+  // Removi a referência do construtor também para garantir a cópia
+  BackGroundColor(const std::array<RGBColor, 4> colors) : corners_{colors} {}
   RGBColor sample(float, float) const;
 
 private:
-  /*
-   * The corners:
-   *   C(1)---(2)D
-   *   |         |
-   *   |         |
-   *   A(0)---(3)B
-   */
-  const std::array<RGBColor, 4> &corners_;
+  // Mudei de 'const std::array<RGBColor, 4> &' para apenas 'std::array<RGBColor, 4>'
+  std::array<RGBColor, 4> corners_; 
+  
   RGBColor lerp(const RGBColor &, const RGBColor &, float) const;
-  enum corners_e {
-    bl = 0, //!< Bottom left
-    tl,     //!< Top left
-    tr,     //!< Top right
-    br      //!< Bottom right
-  };
+  enum corners_e { bl = 0, tl, tr, br };
 };
 
 #endif // !BACKGROUND_HPP
