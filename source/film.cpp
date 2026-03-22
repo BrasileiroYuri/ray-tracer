@@ -1,10 +1,11 @@
 #include "film.hpp"
 
+// i - column, j - row
 void Film::add(std::size_t i, std::size_t j, RGBColor r) {
-  if (i >= height_ || j >= width_)
+  if (j >= height_ || i >= width_)
     return;
 
-  auto base = i * width_ * 4 + j * 4;
+  auto base = j * width_ * 4 + i * 4;
 
   data_[base + 0] = r.R;
   data_[base + 1] = r.G;

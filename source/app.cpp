@@ -69,7 +69,7 @@ void App::render() {
     for (std::size_t j = 0; j < w; j++) {
       RGBColor color = background_.sample(float(j) / float(w - 1),
                                           1.f - (float(i) / (float)(h - 1)));
-      film_.add(i, j, color);
+      film_.add(j, i, color);
     }
   }
 
