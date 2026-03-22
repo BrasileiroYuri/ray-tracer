@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <iostream>
 #include <string>
+#include <vector>
 
 std::string App::filename_ = "";
 bool App::ppm_ = true;
@@ -42,9 +43,12 @@ void App::film(const ParamSet &ps) {
 
 void App::write_image() {
   std::cout << (ppm_ ? "1\n" : "0\n");
-
   if (!ppm_) {
-    lodepng::save_file(film_.data(), filename_);
+    std::vector<unsigned char> png;
+    lodepng::encode(png, film_.data().data(), (unsigned)film_.width(),
+                    (unsigned)film_.height(), LCT_RGBA, 8);
+
+    lodepng::save_file(png, filename_);
     return;
   }
 
@@ -59,10 +63,13 @@ void App::write_image() {
 }
 
 void App::render() {
-  RGBColor r = {144, 234, 97};
-  for (std::size_t i = 0; i < film_.height(); i++) {
-    for (std::size_t j = 0; j < film_.width(); j++) {
-      film_.add(i, j, r);
+
+  std::size_t h = film_.height(), w = film_.width();
+  for (std::size_t i = 0; i < h; i++) {
+    for (std::size_t j = 0; j < w; j++) {
+      RGBColor color = background_.sample(float(j) / float(w - 1),
+                                          1.f - (float(i) / (float)(h - 1)));
+      film_.add(i, j, color);
     }
   }
 

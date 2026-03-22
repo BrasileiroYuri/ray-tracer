@@ -1,5 +1,4 @@
 /*
-
 LodePNG version 20260119
 
 Copyright (c) 2005-2026 Lode Vandevenne
@@ -37,7 +36,6 @@ C.
 #include <stdio.h>  /* file handling */
 #endif              /* LODEPNG_COMPILE_DISK */
 
-#include <cstdint>
 #ifdef LODEPNG_COMPILE_ALLOCATORS
 #include <stdlib.h> /* allocations */
 #endif              /* LODEPNG_COMPILE_ALLOCATORS */
@@ -412,8 +410,6 @@ unsigned lodepng_save_file(const unsigned char *buffer, size_t buffersize,
   FILE *file = fopen(filename, "wb");
   if (!file)
     return 79;
-
-  fprintf(file, "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A");
   fwrite(buffer, 1, buffersize, file);
   fclose(file);
   return 0;

@@ -23,8 +23,13 @@ void help() {
   App::RunningOptions op;
 }*/
 
-int main() {
-  Parser p("scenes/scene02.xml");
+int main(int argc, char **argv) {
+  if (argc != 2) {
+    std::cout << "Usage " << argv[0] << " <scene.xml>\n";
+    return EXIT_SUCCESS;
+  }
+
+  Parser p(argv[1]);
   p.parse();
   App::render();
   return EXIT_SUCCESS;
