@@ -1,40 +1,35 @@
 cmake_minimum_required(VERSION 3.20)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(SRC source)
-set(INC include)
-set(APP_NAME rt)
-
+set(APP_NAME rt3)
 project(${APP_NAME} CXX)
 
-add_executable(${APP_NAME}
-  ${SRC}/background.cpp
-  ${SRC}/film.cpp
-  ${SRC}/parser.cpp
-  ${SRC}/main.cpp
-  ${SRC}/app.cpp
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include_directories(
+    include
+    libs/lodepng
+    libs/tinyxml2
+    libs/math
 )
 
-target_include_directories(${APP_NAME} PRIVATE ${INC})
-
-target_compile_options(${APP_NAME} PRIVATE
- -Wpedantic
- -Wshadow
- -Wall
- -Wextra
- -Werror
- -Wconversion
- -g
+set(SOURCES
+    source/main.cpp
+    source/api.cpp
+    source/film.cpp
+    source/background.cpp
+    source/parser.cpp
+    source/param_set.cpp
+    source/app.cpp
+    libs/lodepng/lodepng.cpp
+    libs/tinyxml2/tinyxml2.cpp
 )
 
-add_library(tinyxml2 libs/tinyxml2/tinyxml2.cpp)
-target_include_directories(tinyxml2 PUBLIC libs/tinyxml2)
-target_link_libraries(${APP_NAME} tinyxml2)
 
-add_library(lodepng libs/lodepng/lodepng.cpp)
-target_include_directories(lodepng PUBLIC libs/lodepng)
-target_link_libraries(${APP_NAME} lodepng)
+add_executable(${APP_NAME} ${SOURCES})
 
-add_library(math INTERFACE)
-target_include_directories(math INTERFACE libs/math)
-target_link_libraries(${APP_NAME} math)
+
+if(NOT MSVC)
+    target_compile_options(${APP_NAME} PRIVATE -Wall -Wextra)
+endif()
