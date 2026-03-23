@@ -2,12 +2,16 @@
 #include "background.hpp"
 #include "film.hpp"
 #include "lodepng.h"
-#include <array>
-#include <cstddef>
-#include <cstdio>
+#include <algorithm>
 #include <iostream>
-#include <string>
-#include <vector>
+
+// Acessando as opções do main.cpp
+namespace Global {
+    extern std::string outfile;
+    extern bool quick;
+    extern int crop[4];
+    extern bool has_crop;
+}
 
 std::string App::filename_ = "";
 bool App::ppm_ = true;
@@ -15,63 +19,62 @@ Film App::film_ = Film();
 BackGroundColor App::background_ = BackGroundColor();
 
 void App::backGround(const ParamSet &ps) {
-  std::array<RGBColor, 4> arr;
-  if (ps.retrieve<std::string>("type") == "colors") {
-    arr[0] = ps.retrieve<RGBColor>("bl");
-    arr[1] = ps.retrieve<RGBColor>("tl");
-    arr[2] = ps.retrieve<RGBColor>("tr");
-    arr[3] = ps.retrieve<RGBColor>("br");
-  } else {
-    RGBColor color = ps.retrieve<RGBColor>("color");
-    std::fill(arr.begin(), arr.end(), color);
-  }
-
-  BackGroundColor b(arr);
-  background_ = b;
+    std::array<RGBColor, 4> arr;
+    if (ps.retrieve<std::string>("type") == "colors") {
+        arr[0] = ps.retrieve<RGBColor>("bl");
+        arr[1] = ps.retrieve<RGBColor>("tl");
+        arr[2] = ps.retrieve<RGBColor>("tr");
+        arr[3] = ps.retrieve<RGBColor>("br");
+    } else {
+        RGBColor color = ps.retrieve<RGBColor>("color");
+        std::fill(arr.begin(), arr.end(), color);
+    }
+    background_ = BackGroundColor(arr);
 }
 
 void App::film(const ParamSet &ps) {
+    std::string xml_file = ps.retrieve<std::string>("filename");
+    int x = ps.retrieve<int>("x_res");
+    int y = ps.retrieve<int>("y_res");
 
-  filename_ = ps.retrieve<std::string>("filename");
-  int x = ps.retrieve<int>("x_res");
-  int y = ps.retrieve<int>("y_res");
-  ppm_ = ps.retrieve<std::string>("img_type") == "ppm" ? true : false;
-  Film f((std::size_t)x, (std::size_t)y);
+    // Prioridade CLI > XML
+    filename_ = Global::outfile.empty() ? xml_file : Global::outfile;
+    if (Global::quick) { x /= 4; y /= 4; }
 
-  film_ = f;
-}
-
-void App::write_image() {
-  std::cout << (ppm_ ? "1\n" : "0\n");
-  if (!ppm_) {
-    std::vector<unsigned char> png;
-    lodepng::encode(png, film_.data().data(), (unsigned)film_.width(),
-                    (unsigned)film_.height(), LCT_RGBA, 8);
-
-    lodepng::save_file(png, filename_);
-    return;
-  }
-
-  FILE *f = fopen(filename_.c_str(), "w");
-  fprintf(f, "P3\n%d %d\n255\n", (int)film_.width(), (int)film_.height());
-
-  std::size_t max = film_.width() * film_.height() * 4;
-
-  for (std::size_t i = 0; i < max; i += 4)
-    fprintf(f, "%d %d %d\n", (int)film_.data()[i], (int)film_.data()[i + 1],
-            (int)film_.data()[i + 2]);
+    ppm_ = ps.retrieve<std::string>("img_type") == "ppm";
+    film_ = Film((std::size_t)x, (std::size_t)y);
 }
 
 void App::render() {
-
-  std::size_t h = film_.height(), w = film_.width();
-  for (std::size_t i = 0; i < h; i++) {
-    for (std::size_t j = 0; j < w; j++) {
-      RGBColor color = background_.sample(float(j) / float(w - 1),
-                                          1.f - (float(i) / (float)(h - 1)));
-      film_.add(j, i, color);
+    std::size_t h = film_.height(), w = film_.width();
+    
+    // Configuração do Crop Window
+    int x0 = 0, x1 = w, y0 = 0, y1 = h;
+    if (Global::has_crop) {
+        x0 = std::max(0, Global::crop[0]);
+        x1 = std::min((int)w, Global::crop[1]);
+        y0 = std::max(0, Global::crop[2]);
+        y1 = std::min((int)h, Global::crop[3]);
     }
-  }
 
-  write_image();
+    for (int i = y0; i < y1; i++) {
+        for (int j = x0; j < x1; j++) {
+            float u = float(j) / float(w - 1);
+            float v = 1.f - (float(i) / (float)(h - 1));
+            film_.add(j, i, background_.sample(u, v));
+        }
+    }
+    write_image();
+}
+
+void App::write_image() {
+    if (!ppm_) {
+        lodepng::encode(filename_, film_.data(), (unsigned)film_.width(), (unsigned)film_.height());
+    } else {
+        FILE *f = fopen(filename_.c_str(), "w");
+        fprintf(f, "P3\n%d %d\n255\n", (int)film_.width(), (int)film_.height());
+        for (size_t i = 0; i < film_.data().size(); i += 4)
+            fprintf(f, "%d %d %d\n", film_.data()[i], film_.data()[i+1], film_.data()[i+2]);
+        fclose(f);
+    }
 }
