@@ -48,7 +48,7 @@ void App::film(const ParamSet &ps) {
 void App::render() {
     std::size_t h = film_.height(), w = film_.width();
     
-    // Configuração do Crop Window
+    // Configuração do cropwindow
     int x0 = 0, x1 = w, y0 = 0, y1 = h;
     if (Global::has_crop) {
         x0 = std::max(0, Global::crop[0]);
