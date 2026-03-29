@@ -16,11 +16,9 @@ include_directories(
 
 set(SOURCES
     source/main.cpp
-    source/api.cpp
     source/film.cpp
     source/background.cpp
     source/parser.cpp
-    source/param_set.cpp
     source/app.cpp
     libs/lodepng/lodepng.cpp
     libs/tinyxml2/tinyxml2.cpp
@@ -31,5 +29,13 @@ add_executable(${APP_NAME} ${SOURCES})
 
 
 if(NOT MSVC)
-    target_compile_options(${APP_NAME} PRIVATE -Wall -Wextra)
+  target_compile_options(${APP_NAME} PRIVATE
+  -Wall
+  -Wextra
+  -Wshadow
+  -Werror
+  -Wpedantic
+  -g
+  -O2
+  )
 endif()
