@@ -4,6 +4,7 @@
 #include "background.hpp"
 #include "camera.hpp"
 #include "param_set.hpp"
+#include <memory>
 #include <string>
 
 struct ScreenWindow {
@@ -24,7 +25,7 @@ public:
 private:
   static void calculateScreenWindow();
   static void write_image();
-  static Camera camera_;
+  static std::unique_ptr<Camera> camera_;
   static BackGroundColor background_;
   static std::string filename_;
   static bool ppm_;

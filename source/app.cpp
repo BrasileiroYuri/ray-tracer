@@ -9,6 +9,8 @@
 #include "perspective_camera.hpp"
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
+#include <memory>
 #include <string>
 
 // Acessando as opções do main.cpp
@@ -20,8 +22,8 @@ extern bool has_crop;
 } // namespace Global
 
 std::string App::filename_ = "";
-Camera App::camera_ = Camera();
 bool App::ppm_ = true;
+
 BackGroundColor App::background_ = BackGroundColor();
 
 struct CameraConfig {
@@ -33,6 +35,7 @@ float aspec = 0.f;
 bool has_aspect = false;
 CameraConfig config_;
 ScreenWindow screen_window_ = ScreenWindow();
+std::unique_ptr<Camera> App::camera_ = nullptr;
 
 void App::backGround(const ParamSet &ps) {
   std::array<RGBColor, 4> arr;
@@ -61,16 +64,16 @@ void App::film(const ParamSet &ps) {
   }
 
   ppm_ = ps.retrieve<std::string>("img_type") == "ppm";
-  camera_.film_ = Film((std::size_t)x, (std::size_t)y);
+  camera_->film_ = Film((std::size_t)x, (std::size_t)y);
 }
 
 void App::camera(const ParamSet &ps) {
 
   auto type = ps.retrieve<std::string>("type");
   if (type == "perspective")
-    camera_ = Perspective();
+    *camera_ = Perspective();
   else
-    camera_ = Orthographic();
+    *camera_ = Orthographic();
 
   fovy = ps.retrieve<int>("fovy");
   aspec = ps.retrieve<float>("frame_aspect_ratio");
@@ -87,7 +90,7 @@ void App::lookat(const ParamSet &ps) {
 
 void App::calculateScreenWindow() {
   float aspectratio =
-      aspec ? aspec : (float)camera_.film_.width() / camera_.film_.height();
+      aspec ? aspec : (float)camera_->film_.width() / camera_->film_.height();
 
   if (fovy) {
     int h = std::tan(fovy / 2);
@@ -101,10 +104,10 @@ void App::calculateScreenWindow() {
   // só com aspec
 }
 void App::render() {
-  std::size_t h = camera_.film_.height(), w = camera_.film_.width();
-  camera_.getFrame(config_.look_from, config_.look_at, config_.up);
-  camera_.window(screen_window_.l_, screen_window_.r_, screen_window_.b_,
-                 screen_window_.t_);
+  std::size_t h = camera_->film_.height(), w = camera_->film_.width();
+  camera_->getFrame(config_.look_from, config_.look_at, config_.up);
+  camera_->window(screen_window_.l_, screen_window_.r_, screen_window_.b_,
+                  screen_window_.t_);
 
   if (!(fovy + aspec)) // Se diferente de 0, algum dos dois foi dado.
     calculateScreenWindow();
@@ -126,7 +129,7 @@ void App::render() {
        * screen_window_.b_) (j + 0.5) / camera_.film_.height();*/
       float u = float(j) / float(w - 1);
       float v = 1.f - (float(i) / (float)(h - 1));
-      camera_.film_.add(j, i, background_.sample(u, v));
+      camera_->film_.add(j, i, background_.sample(u, v));
     }
   }
 
@@ -135,16 +138,16 @@ void App::render() {
 
 void App::write_image() {
   if (!ppm_) {
-    lodepng::encode(filename_, camera_.film_.data(),
-                    (unsigned)camera_.film_.width(),
-                    (unsigned)camera_.film_.height());
+    lodepng::encode(filename_, camera_->film_.data(),
+                    (unsigned)camera_->film_.width(),
+                    (unsigned)camera_->film_.height());
   } else {
     FILE *f = fopen(filename_.c_str(), "w");
-    fprintf(f, "P3\n%d %d\n255\n", (int)camera_.film_.width(),
-            (int)camera_.film_.height());
-    for (size_t i = 0; i < camera_.film_.data().size(); i += 4)
-      fprintf(f, "%d %d %d\n", camera_.film_.data()[i],
-              camera_.film_.data()[i + 1], camera_.film_.data()[i + 2]);
+    fprintf(f, "P3\n%d %d\n255\n", (int)camera_->film_.width(),
+            (int)camera_->film_.height());
+    for (size_t i = 0; i < camera_->film_.data().size(); i += 4)
+      fprintf(f, "%d %d %d\n", camera_->film_.data()[i],
+              camera_->film_.data()[i + 1], camera_->film_.data()[i + 2]);
     fclose(f);
   }
 }

@@ -1,7 +1,6 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include "app.hpp"
 #include "film.hpp"
 #include "math.hpp"
 #include "ray.hpp"
@@ -9,6 +8,7 @@
 class Camera {
 public:
   Camera() {}
+  virtual ~Camera() = default;
 
   void getFrame(point3 look_from, point3 look_at, vec3 up) {
     vec3 gaze = look_at - look_from;
@@ -19,11 +19,7 @@ public:
     origin_ = look_from;
   }
 
-  virtual Ray generateRay(int x, int y) {
-
-    Ray r;
-    return r;
-  }
+  virtual Ray generateRay(int x, int y) = 0;
 
   Film film_;
 
