@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(APP_NAME rt3)
 project(${APP_NAME} CXX)
 
@@ -20,6 +20,7 @@ set(SOURCES
     source/background.cpp
     source/parser.cpp
     source/app.cpp
+    libs/math/math.cpp
     libs/lodepng/lodepng.cpp
     libs/tinyxml2/tinyxml2.cpp
 )
@@ -33,7 +34,6 @@ if(NOT MSVC)
   -Wall
   -Wextra
   -Wshadow
-  -Werror
   -Wpedantic
   -g
   -O2

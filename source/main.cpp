@@ -1,9 +1,7 @@
-#include "app.hpp"
 #include "parser.hpp"
 #include <cstdlib>
 #include <iostream>
 #include <string>
-#include <vector>
 
 // Namespace para comunicar as opções com os outros arquivos (.cpp)
 namespace Global {

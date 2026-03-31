@@ -18,7 +18,10 @@ public:
 
 private:
   std::unordered_map<std::string, std::function<void(ParamSet)>> elements_{
-      {"film", App::film}, {"background", App::backGround}};
+      {"film", App::film},
+      {"background", App::backGround},
+      {"camera", App::camera},
+      {"lookat", App::lookat}};
 
   template <typename T>
   static void convert(const std::string &name, const std::string &value,
@@ -50,9 +53,11 @@ private:
       std::string,
       std::function<void(const std::string &, const std::string &, ParamSet *)>>
       conversor_{
+          {"frame_aspectratio", convert<float>},
+          {"w_res", convert<int>},
+          {"h_res", convert<int>},
+          {"fovy", convert<int>},
           {"type", convert<std::string>},
-          {"x_res", convert<int>},
-          {"y_res", convert<int>},
           {"filename", convert<std::string>},
           {"img_type", convert<std::string>},
           {"mapping", convert<std::string>},
@@ -61,6 +66,10 @@ private:
           {"tl", convert<RGBColor, int, 3>},
           {"tr", convert<RGBColor, int, 3>},
           {"color", convert<RGBColor, int, 3>},
+          {"look_from", convert<point3, float, 3>},
+          {"look_at", convert<point3, float, 3>},
+          {"up", convert<vec3, float, 3>},
+          {"screen_window", convert<ScreenWindow, float, 4>},
       };
 
   std::string filename_;

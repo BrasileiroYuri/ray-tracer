@@ -6,6 +6,10 @@
 
 class ParamSet {
 public:
+  bool has_elem(const std::string &key) const {
+    return map_.find(key) != map_.end();
+  }
+
   template <typename T>
   T retrieve(const std::string &key, const T &def_value = T{}) const {
 
