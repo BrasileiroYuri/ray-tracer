@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <iostream>
 #include <memory>
 #include <string>
 
@@ -71,10 +72,9 @@ void App::camera(const ParamSet &ps) {
 
   auto type = ps.retrieve<std::string>("type");
   if (type == "perspective")
-    *camera_ = Perspective();
+    camera_ = std::make_unique<Perspective>();
   else
-    *camera_ = Orthographic();
-
+    camera_ = std::make_unique<Orthographic>();
   fovy = ps.retrieve<int>("fovy");
   aspec = ps.retrieve<float>("frame_aspect_ratio");
 
@@ -127,6 +127,10 @@ void App::render() {
     for (int j = x0; j < x1; j++) {
       /*    float v1 = screen_window_.b_ + (screen_window_.t_ -
        * screen_window_.b_) (j + 0.5) / camera_.film_.height();*/
+      std::cout << "i: " << i << " - j: " << j << " ";
+      Ray r = camera_->generateRay(j, i);
+      std::cout << r.str() << "\n";
+
       float u = float(j) / float(w - 1);
       float v = 1.f - (float(i) / (float)(h - 1));
       camera_->film_.add(j, i, background_.sample(u, v));
