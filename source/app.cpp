@@ -22,7 +22,7 @@ extern std::string outfile;
 extern bool quick;
 extern int crop[4];
 extern bool has_crop;
-} // namespace Global
+} 
 
 std::string App::filename_ = "";
 bool App::ppm_ = true;
@@ -118,7 +118,7 @@ void App::calculateScreenWindow() {
       aspec ? aspec : (float)camera_->film_.width() / camera_->film_.height();
 
   if (fovy) {
-    float h = std::tan((fovy * M_PI / 180.0f) / 2.0f); // Correção: graus para radianos
+    float h = std::tan((fovy * M_PI / 180.0f) / 2.0f); // graus para radianos
     screen_window_.l_ = -aspectratio * h;
     screen_window_.r_ = aspectratio * h;
     screen_window_.b_ = -h;

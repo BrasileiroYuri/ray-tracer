@@ -8,7 +8,6 @@
 
 class Ray {
 public:
-  // Construtor padrão com intervalos resetados
   Ray() : min_t_{0.001f}, max_t_{std::numeric_limits<float>::infinity()} {}
 
   // Construtor com origem, direção e suporte opcional a limites de t
@@ -17,7 +16,6 @@ public:
       float t_max = std::numeric_limits<float>::infinity())
       : origin_{origin}, direction_{direction}, min_t_{t_min}, max_t_{t_max} {}
 
-  // Getters para os membros privados
   point3 origin() const { return origin_; }
   vec3 direction() const { return direction_; }
   float t_min() const { return min_t_; }

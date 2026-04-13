@@ -1,6 +1,6 @@
 #include "parser.hpp"
 #include "app.hpp"
-#include "sphere.hpp" // Inclua o header da nova primitiva
+#include "sphere.hpp" 
 #include "tinyxml2.h"
 #include <iostream>
 #include <vector>
@@ -75,7 +75,7 @@ void Parser::parse() const {
                 attr_name == "tr" || attr_name == "br") {
                 ps.add(attr_name, parse_color_format(attr_val));
             } 
-            // 2. Novo: Processamento de pontos 3D para geometria
+            // 2. Processamento de pontos 3D para geometria
             else if (attr_name == "center" || attr_name == "look_from" || attr_name == "look_at" || attr_name == "up") {
                 std::stringstream ss(attr_val);
                 float x, y, z;
