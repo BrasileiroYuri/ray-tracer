@@ -6,6 +6,7 @@
 #include "param_set.hpp"
 #include <memory>
 #include <string>
+#include "primitive.hpp"
 
 struct ScreenWindow {
   ScreenWindow() {}
@@ -21,6 +22,9 @@ public:
   static void film(const ParamSet &);
   static void lookat(const ParamSet &);
   static void camera(const ParamSet &);
+  static void addSphere(ParamSet ps);
+  static void addObject(ParamSet ps);
+  static void addIntegrator(ParamSet ps);
 
 private:
   static void calculateScreenWindow();
@@ -29,6 +33,7 @@ private:
   static BackGroundColor background_;
   static std::string filename_;
   static bool ppm_;
+  static std::vector<std::unique_ptr<Primitive>> primitives_;
 };
 
 #endif // !API_HPP

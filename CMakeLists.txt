@@ -19,6 +19,7 @@ set(SOURCES
     source/film.cpp
     source/background.cpp
     source/parser.cpp
+    source/sphere.cpp
     source/app.cpp
     libs/math/math.cpp
     libs/lodepng/lodepng.cpp

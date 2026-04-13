@@ -7,12 +7,14 @@
 #include "orthographic_camera.hpp"
 #include "param_set.hpp"
 #include "perspective_camera.hpp"
+#include "sphere.hpp" 
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <iostream>
 #include <memory>
 #include <string>
+#include <limits> //Para usar o infinito (std::numeric_limits)
 
 // Acessando as opções do main.cpp
 namespace Global {
@@ -38,6 +40,9 @@ CameraConfig config_;
 ScreenWindow screen_window_ = ScreenWindow();
 std::unique_ptr<Camera> App::camera_ = nullptr;
 
+// Inicialização da lista estática de objetos da cena
+std::vector<std::unique_ptr<Primitive>> App::primitives_;
+
 void App::backGround(const ParamSet &ps) {
   std::array<RGBColor, 4> arr;
   if (ps.retrieve<std::string>("type") == "colors") {
@@ -57,7 +62,6 @@ void App::film(const ParamSet &ps) {
   int x = ps.retrieve<int>("w_res");
   int y = ps.retrieve<int>("h_res");
 
-  // Prioridade CLI > XML
   filename_ = Global::outfile.empty() ? xml_file : Global::outfile;
   if (Global::quick) {
     x /= 4;
@@ -69,12 +73,12 @@ void App::film(const ParamSet &ps) {
 }
 
 void App::camera(const ParamSet &ps) {
-
   auto type = ps.retrieve<std::string>("type");
   if (type == "perspective")
     camera_ = std::make_unique<Perspective>();
   else
     camera_ = std::make_unique<Orthographic>();
+  
   fovy = ps.retrieve<int>("fovy");
   aspec = ps.retrieve<float>("frame_aspect_ratio");
 
@@ -88,31 +92,51 @@ void App::lookat(const ParamSet &ps) {
   config_.up = ps.retrieve<point3>("up", {0, 0, 0});
 }
 
+void App::addIntegrator(ParamSet ps) {
+    // Apenas recupera o tipo para validar a leitura
+    std::string type = ps.retrieve<std::string>("type");
+}
+
+void App::addObject(ParamSet ps) {
+    std::string type = ps.retrieve<std::string>("type");
+    if (type == "sphere") {
+        addSphere(ps);
+    }
+}
+
+// Implementação do método que cria a esfera a partir do XML
+void App::addSphere(ParamSet ps) {
+  point3 center = ps.retrieve<point3>("center", {0, 0, 0});
+  float radius = ps.retrieve<float>("radius", 1.0f);
+  
+  // Guarda a esfera na lista de primitivas da cena
+  primitives_.push_back(std::make_unique<Sphere>(center, radius));
+}
+
 void App::calculateScreenWindow() {
   float aspectratio =
       aspec ? aspec : (float)camera_->film_.width() / camera_->film_.height();
 
   if (fovy) {
-    int h = std::tan(fovy / 2);
+    float h = std::tan((fovy * M_PI / 180.0f) / 2.0f); // Correção: graus para radianos
     screen_window_.l_ = -aspectratio * h;
     screen_window_.r_ = aspectratio * h;
     screen_window_.b_ = -h;
-    screen_window_.l_ = h;
-    return;
+    screen_window_.t_ = h;
   }
-
-  // só com aspec
 }
+
 void App::render() {
   std::size_t h = camera_->film_.height(), w = camera_->film_.width();
   camera_->getFrame(config_.look_from, config_.look_at, config_.up);
   camera_->window(screen_window_.l_, screen_window_.r_, screen_window_.b_,
                   screen_window_.t_);
 
-  if (!(fovy + aspec)) // Se diferente de 0, algum dos dois foi dado.
+  // Sempre calcula se houver valores definidos
+if (fovy > 0 || aspec > 0) {
     calculateScreenWindow();
+}
 
-  // Configuração do cropwindow
   int x0 = 0, x1 = w, y0 = 0, y1 = h;
   if (Global::has_crop) {
     x0 = std::max(0, Global::crop[0]);
@@ -122,18 +146,33 @@ void App::render() {
   }
 
   for (int i = y0; i < y1; i++) {
-    /*float u1 = screen_window_.l_ + (screen_window_.r_ - screen_window_.l_) *
-                                       (i + 0.5) / camera_.film_.width();*/
     for (int j = x0; j < x1; j++) {
-      /*    float v1 = screen_window_.b_ + (screen_window_.t_ -
-       * screen_window_.b_) (j + 0.5) / camera_.film_.height();*/
-      std::cout << "i: " << i << " - j: " << j << " ";
+      // Gera o raio com limites t_min e t_max
       Ray r = camera_->generateRay(j, i);
-      std::cout << r.str() << "\n";
+      
+      bool hit_anything = false;
+      float t_hit = 0;
 
-      float u = float(j) / float(w - 1);
-      float v = 1.f - (float(i) / (float)(h - 1));
-      camera_->film_.add(j, i, background_.sample(u, v));
+      // Loop de Interseção: Testa contra todos os objetos
+      for (const auto& primitive : primitives_) {
+        float t_current;
+        if (primitive->intersect(r, t_current)) {
+          // Se atingiu, encurtamos o raio para buscar apenas o que estiver à frente
+          r.set_t_max(t_current);
+          hit_anything = true;
+        }
+      }
+
+      // 3. Coloração final
+      if (hit_anything) {
+        // Pinta de uma cor sólida para testar a visibilidade
+        camera_->film_.add(j, i, RGBColor(255, 0, 0)); 
+      } else {
+        // Se falhou todos os testes, usa o fundo
+        float u = float(j) / float(w - 1);
+        float v = 1.f - (float(i) / (float)(h - 1));
+        camera_->film_.add(j, i, background_.sample(u, v));
+      }
     }
   }
 
@@ -147,6 +186,7 @@ void App::write_image() {
                     (unsigned)camera_->film_.height());
   } else {
     FILE *f = fopen(filename_.c_str(), "w");
+    if(!f) return;
     fprintf(f, "P3\n%d %d\n255\n", (int)camera_->film_.width(),
             (int)camera_->film_.height());
     for (size_t i = 0; i < camera_->film_.data().size(); i += 4)
