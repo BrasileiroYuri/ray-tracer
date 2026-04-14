@@ -54,7 +54,7 @@ Nesta etapa, utilizamos o **Flat Integrator**, que atribui a cor intrínseca do 
     ```
 3.  **Execução:**
     ```bash
-    ./rt_proj scenes/minha_cena.xml
+    ./rt3 <--options> scenes/minha_cena.xml
     ```
 
 ---
