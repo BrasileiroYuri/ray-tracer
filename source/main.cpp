@@ -9,7 +9,7 @@ std::string outfile = "";
 bool quick = false;
 int crop[4] = {0, 0, 0, 0};
 bool has_crop = false;
-} // namespace Global
+} 
 
 void help() {
   std::string message = R"(

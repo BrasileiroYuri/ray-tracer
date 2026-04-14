@@ -14,7 +14,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <limits> //Para usar o infinito (std::numeric_limits)
+#include <limits> 
 
 // Acessando as opções do main.cpp
 namespace Global {
@@ -127,15 +127,19 @@ void App::calculateScreenWindow() {
 }
 
 void App::render() {
+  
+  std::cout << "Quantidade de objetos na cena: " << primitives_.size() << std::endl;
+  
   std::size_t h = camera_->film_.height(), w = camera_->film_.width();
   camera_->getFrame(config_.look_from, config_.look_at, config_.up);
-  camera_->window(screen_window_.l_, screen_window_.r_, screen_window_.b_,
-                  screen_window_.t_);
-
+  
   // Sempre calcula se houver valores definidos
 if (fovy > 0 || aspec > 0) {
     calculateScreenWindow();
 }
+
+camera_->window(screen_window_.l_, screen_window_.r_, screen_window_.b_,
+                  screen_window_.t_);
 
   int x0 = 0, x1 = w, y0 = 0, y1 = h;
   if (Global::has_crop) {
@@ -163,7 +167,7 @@ if (fovy > 0 || aspec > 0) {
         }
       }
 
-      // 3. Coloração final
+      // Coloração final
       if (hit_anything) {
         // Pinta de uma cor sólida para testar a visibilidade
         camera_->film_.add(j, i, RGBColor(255, 0, 0)); 

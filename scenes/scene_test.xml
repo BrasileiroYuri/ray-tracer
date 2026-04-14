@@ -7,8 +7,8 @@
     <world_begin/>
         <background type="colors" bl="153 204 255" tl="18 10 143" tr="18 10 143" br="153 204 255" />
         
-        <sphere center="0 0 -15" radius="2.0" />
-        <sphere center="-3 1 -2" radius="1.0" />
-        <sphere center="3 -1 -5" radius="1.5" />
+        <sphere center="0 0 -15" radius="0.4" />
+        <sphere center="-3 1 -2" radius="0.4" />
+        <sphere center="3 -1 -5" radius="0.4" />
     <world_end/>
 </RT3>
