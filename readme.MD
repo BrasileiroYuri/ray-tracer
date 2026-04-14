@@ -22,7 +22,7 @@ O projeto utiliza CMake para o gerenciamento do build.
    ```bash
 
    cmake -S . -B build
-   
+
    ```
 2. **Compilar:**
     ```bash
@@ -30,7 +30,7 @@ O projeto utiliza CMake para o gerenciamento do build.
    cmake --build build 
 
     ```
-3.**Executar:**
+3. **Executar:**
     ```bash
 
    ./build/rt3 <--options> scenes/arquivo.xml   
