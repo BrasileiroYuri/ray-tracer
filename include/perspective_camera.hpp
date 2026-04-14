@@ -9,11 +9,11 @@ public:
         float width = (float)film_.width();
         float height = (float)film_.height();
 
-        float u_coord = getL() + (getR() - getL()) * (x + 0.5f) / width;
-        float v_coord = getB() + (getT() - getB()) * (y + 0.5f) / height;
+        float y_inverted = (height - 1.0f) - static_cast<float>(y); // Inverte o eixo y, agora tá certo
 
-        // Direção: (u*U + v*V + 1*W) 
-        // somamos o W pois ele já é o sentido do olhar.
+        float u_coord = getL() + (getR() - getL()) * (x + 0.5f) / width;
+        float v_coord = getB() + (getT() - getB()) * (y_inverted + 0.5f) / height;
+
         vec3 direction = normalize(getU() * u_coord + getV() * v_coord + getW());
 
         return Ray(getOrigin(), direction);

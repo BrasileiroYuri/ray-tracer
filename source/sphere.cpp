@@ -2,25 +2,27 @@
 #include <cmath>
 
 bool Sphere::intersect(const Ray& r, float& t_hit) const {
-    vec3 oc = r.origin() - center_;
-    float a = dot(r.direction(), r.direction());
-    float b = 2.0f * dot(oc, r.direction());
-    float c = dot(oc, oc) - radius_ * radius_;
-    float discriminant = b * b - 4 * a * c;
 
-    if (discriminant < 0) return false;
+    vec3 d_hat = normalize(r.direction());
+    vec3 oc = r.origin() - center_; 
 
-    // Encontrar a raiz mais próxima dentro do intervalo do raio
-    float sqrtd = std::sqrt(discriminant);
-    float root = (-b - sqrtd) / (2.0f * a);
+    float parallel_len = dot(oc, d_hat);
+
+    vec3 oc_perp = oc - parallel_len * d_hat;
+
+    float delta = (radius_ * radius_) - dot(oc_perp, oc_perp);
+    if (delta < 0) return false;
+    float sqrt_delta = std::sqrt(delta);
     
-    // Verifica se a raiz está no intervalo [t_min, t_max] do raio
-    if (root < r.t_min() || root > r.t_max()) {
-        root = (-b + sqrtd) / (2.0f * a);
-        if (root < r.t_min() || root > r.t_max())
+    float t = -parallel_len - sqrt_delta;
+
+    if (t < r.t_min() || t > r.t_max()) {
+        t = -parallel_len + sqrt_delta;
+        if (t < r.t_min() || t > r.t_max()) {
             return false;
+        }
     }
 
-    t_hit = root;
+    t_hit = t;
     return true;
 }
