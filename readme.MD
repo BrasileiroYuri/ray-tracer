@@ -20,15 +20,21 @@ O projeto utiliza CMake para o gerenciamento do build.
 
 1. **Configurar o build:**
    ```bash
+
    cmake -S . -B build
+   
    ```
 2. **Compilar:**
     ```bash
-   cmake --build build   
+
+   cmake --build build 
+
     ```
 3.**Executar:**
     ```bash
+
    ./build/rt3 <--options> scenes/arquivo.xml   
+   
     ```
 
 ## Autores
