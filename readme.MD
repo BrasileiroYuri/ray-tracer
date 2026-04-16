@@ -37,7 +37,7 @@ O projeto utiliza CMake para o gerenciamento do build.
    
     ```
 
-## 🌟 Crédito Extra: Esferas Parciais
+## Crédito Extra: Esferas Parciais
 
 Implementamos o suporte a **Esferas Parciais**, permitindo que a geometria da esfera seja truncada tanto verticalmente quanto lateralmente através de parametrização por coordenadas esféricas.
 
