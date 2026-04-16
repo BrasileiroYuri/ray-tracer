@@ -6,7 +6,7 @@ Este projeto consiste em um motor de renderização via Ray Tracing desenvolvido
 * **Sistema de Coordenadas:** Adoção da Regra da Mão Esquerda (Left-Hand Rule) para alinhamento intuitivo com o eixo Z positivo do XML.
 * **Estabilidade Numérica:** Reformulação do cálculo do discriminante da esfera para suportar interseções em grandes distâncias, eliminando erros de precisão de ponto flutuante (cancelamento catastrófico).
 * **Integração XML:** Implementação de suporte para as tags `<integrator>` e `<object type="sphere">`.
-* **Correção de Projeção:** Implementação do cálculo de Aspect Ratio na `ScreenWindow` para evitar o achatamento de objetos e inversão do eixo vertical (Y) na geração de raios para correta orientação da cena.
+* **Correção de Projeção:** Inversão do eixo vertical (Y) na geração de raios para correta orientação da cena.
 
 ## Componentes Fundamentais
 * **App:** Gerencia o ciclo de vida da renderização, o parsing do XML e o loop principal de pixels.
