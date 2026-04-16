@@ -58,6 +58,20 @@ Para utilizar as esferas parciais, basta adicionar os novos atributos opcionais 
 
 ```
 
+## Planos na cena
+
+* **Ponto de Origem ($P$):** Define o vértice inicial onde o plano começa no mundo 3D.
+* **Vetores de Aresta ($U$ e $V$):** Definem a largura, a altura e a inclinação do plano. A normal da superfície é calculada automaticamente através do produto vetorial $N = U \times V$.
+* **Lógica de Interseção:** O algoritmo resolve a equação do plano e utiliza **coordenadas baricêntricas** para validar se o raio atingiu o espaço interno do paralelogramo.
+
+
+## Triângulos na cena
+
+* **Definição por Vértices:** Cada triângulo é instanciado através de três pontos distintos ($V_0, V_1, V_2$).
+* **Eficiência Matemática:** Utilizámos o algoritmo de **Möller-Trumbore**, que permite calcular a interseção raio-triângulo de forma rápida.
+
+
 ## Autores
 * Marcos Antônio Fontes Leite
 * Yuri Maximiliano Brasileiro
+
