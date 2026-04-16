@@ -1,22 +1,22 @@
 <RT3>
-    <lookat look_from="0 2 -10" look_at="0 2 0" up="0 1 0" />
+    <lookat look_from="0 0 -10" look_at="0 0 0" up="0 1 0" />
     
-    <camera type="orthographic" screen_window="-6 6 -4.5 4.5" />
+    <camera type="orthographic" fovy="0" screen_window="-11 11 -9 9" />
     
     <film type="image" w_res="800" h_res="600" filename="galeria_geometria_ortho.png" img_type="png" />
 
     <world_begin/>
         <background type="colors" bl="153 204 255" tl="18 10 143" tr="18 10 143" br="153 204 255" />
         
-        <object type="plane" />
+        <object type="plane" p="5 0 10" u="2 0 0" v="0 2 0" />
 
-        <object type="sphere" radius="1.0" center="-4 1 0" z_min="-1.0" z_max="1.0" phi_max="180" />
+        <object type="sphere" radius="1.0" center="-7 1 0" z_min="-1.0" z_max="1.0" phi_max="180" />
 
-        <object type="sphere" radius="0.5" center="-1.5 1 1000" z_min="0.0" z_max="1.0" phi_max="360" />
+        <object type="sphere" radius="0.5" center="-3 1 1000" z_min="0.0" z_max="1.0" phi_max="360" />
 
-        <object type="triangle" v0="1 -1 0" v1="3 -1 0" v2="2 1.5 0" />
+        <object type="triangle" v0="-2 -1 0" v1="0 -1 0" v2="-1 1.5 0" />
 
-        <object type="sphere" radius="0.8" center="4.5 0.5 0" />
+        <object type="sphere" radius="0.8" center="2 0.5 0" />
 
     <world_end/>
 </RT3>

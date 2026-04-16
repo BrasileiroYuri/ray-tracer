@@ -141,6 +141,7 @@ void App::addPlane(ParamSet ps) {
     vec3 v = ps.retrieve<vec3>("v", {0, 1, 0});
 
     primitives_.push_back(std::make_unique<Plane>(p, u, v));
+    std::cout << "Plane add in scene" << std::endl;
 }
 
 // implementação do método que cria o triângulo a partir do XML
@@ -175,9 +176,9 @@ void App::render() {
   camera_->getFrame(config_.look_from, config_.look_at, config_.up);
   
   // Sempre calcula se houver valores definidos
-if (fovy > 0 || aspec > 0) {
-    calculateScreenWindow();
-}
+if (fovy > 0 && !screen_window_.l_ && !screen_window_.r_) { 
+      calculateScreenWindow();
+  }
 
 camera_->window(screen_window_.l_, screen_window_.r_, screen_window_.b_,
                   screen_window_.t_);
