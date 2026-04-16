@@ -37,6 +37,26 @@ O projeto utiliza CMake para o gerenciamento do build.
    
     ```
 
+## 🌟 Crédito Extra: Esferas Parciais
+
+Implementamos o suporte a **Esferas Parciais**, permitindo que a geometria da esfera seja truncada tanto verticalmente quanto lateralmente através de parametrização por coordenadas esféricas.
+
+### Funcionalidades Implementadas
+
+* **Corte Vertical (Eixo Z):** Através dos parâmetros `z_min` e `z_max`, a esfera pode ser cortada em planos horizontais, permitindo a criação de hemisférios e calotas esféricas.
+* **Corte Lateral (Azimute $\phi$):** Implementação do parâmetro `phi_max`, que limita a varredura da esfera no plano horizontal ($0$ a $360^\circ$), possibilitando a renderização de fatias ou "gomos".
+* **Interseção Robusta:** O algoritmo de interseção foi ajustado para testar ambas as raízes da equação quadrática ($t_1$ e $t_2$). Isso garante que, se a face frontal for removida pelo corte, o raio atinja a parede interna da esfera, mantendo a integridade visual da forma.
+* **Parser XML Dinâmico:** O sistema de leitura foi expandido para reconhecer e processar automaticamente os novos atributos diretamente do arquivo de cena.
+
+### Exemplo de Configuração XML
+
+Para utilizar as esferas parciais, basta adicionar os novos atributos opcionais na tag de objeto:
+
+```xml
+<object type="sphere" radius="1.0" center="0 0 5" 
+        z_min="-1.0" z_max="1.0" phi_max="90" />
+
+
 ## Autores
 * Marcos Antônio Fontes Leite
 * Yuri Maximiliano Brasileiro

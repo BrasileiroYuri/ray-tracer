@@ -17,7 +17,7 @@ public:
   void parse() const;
 
 private:
-  // Mapa de elementos XML para funções de processamento
+  
   std::unordered_map<std::string, std::function<void(ParamSet)>> elements_{
       {"film", App::film},
       {"background", App::backGround},
@@ -48,13 +48,15 @@ private:
     ps->add(name, val);
   }
 
-  // Mapa de atributos para funções de conversão de tipo
   std::unordered_map<
       std::string,
       std::function<void(const std::string &, const std::string &, ParamSet *)>>
       conversor_{
           {"frame_aspectratio", convert<float>},
           {"radius", convert<float>}, 
+          {"z_min", convert<float>},     
+          {"z_max", convert<float>},     
+          {"phi_max", convert<float>},   
           {"w_res", convert<int>},
           {"h_res", convert<int>},
           {"fovy", convert<int>},

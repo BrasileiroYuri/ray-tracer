@@ -106,11 +106,20 @@ void App::addObject(ParamSet ps) {
 
 // Implementação do método que cria a esfera a partir do XML
 void App::addSphere(ParamSet ps) {
-  point3 center = ps.retrieve<point3>("center", {0, 0, 0});
-  float radius = ps.retrieve<float>("radius", 1.0f);
-  
-  // Guarda a esfera na lista de primitivas da cena
-  primitives_.push_back(std::make_unique<Sphere>(center, radius));
+    point3 center = ps.retrieve<point3>("center", {0, 0, 0});
+    float radius = ps.retrieve<float>("radius", 1.0f);
+
+    float z_min = -radius;
+    float z_max = radius;
+    float phi_max = 360.0f;
+
+    if (ps.has_elem("z_min")) z_min = ps.retrieve<float>("z_min");
+    if (ps.has_elem("z_max")) z_max = ps.retrieve<float>("z_max");
+    if (ps.has_elem("phi_max")) phi_max = ps.retrieve<float>("phi_max");
+
+    std::cout << "Sphere XML -> z_min: " << z_min << " z_max: " << z_max << " phi: " << phi_max << std::endl;
+
+    primitives_.push_back(std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max)); 
 }
 
 void App::calculateScreenWindow() {
@@ -167,7 +176,6 @@ camera_->window(screen_window_.l_, screen_window_.r_, screen_window_.b_,
         }
       }
 
-      // Coloração final
       if (hit_anything) {
         // Pinta de uma cor sólida para testar a visibilidade
         camera_->film_.add(j, i, RGBColor(255, 0, 0)); 
