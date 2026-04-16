@@ -1,0 +1,23 @@
+<RT3>
+    <lookat look_from="0 3 -8" look_at="0 0 5" up="0 1 0" />
+    <camera type="perspective" fovy="45" />
+    
+    <film type="image" w_res="800" h_res="600" filename="galeria_perspectiva.png" img_type="png" />
+
+    <world_begin/>
+        <background type="colors" bl="153 204 255" tl="18 10 143" tr="18 10 143" br="153 204 255" />
+        
+        <object type="plane" />
+
+        <object type="sphere" radius="1.0" center="-3 1 4" 
+                z_min="-1.0" z_max="1.0" phi_max="180" />
+
+        <object type="sphere" radius="1.0" center="0 1 7" 
+                z_min="0.0" z_max="1.0" phi_max="360" />
+
+        <object type="triangle" v0="2 0 4" v1="4 0 4" v2="3 2 4" />
+
+        <object type="sphere" radius="0.8" center="4 0.8 10" />
+
+    <world_end/>
+</RT3>

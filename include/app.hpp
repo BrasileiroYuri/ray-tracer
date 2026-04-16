@@ -25,6 +25,8 @@ public:
   static void addSphere(ParamSet ps);
   static void addObject(ParamSet ps);
   static void addIntegrator(ParamSet ps);
+  static void addPlane(ParamSet ps);
+  static void addTriangle(ParamSet ps);
 
 private:
   static void calculateScreenWindow();

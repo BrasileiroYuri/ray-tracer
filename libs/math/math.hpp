@@ -21,13 +21,16 @@ typedef struct vec3 {
     inline vec3 operator+(const vec3 &v) const { return {i_ + v.i_, j_ + v.j_, k_ + v.k_}; }
     inline vec3 operator-(const vec3 &v) const { return {i_ - v.i_, j_ - v.j_, k_ - v.k_}; }
     inline vec3 operator*(float a) const { return {i_ * a, j_ * a, k_ * a}; }
-    
     inline void operator*=(float a) { i_ *= a; j_ *= a; k_ *= a; }
+    
 
 } point3, vec3;
 
 // Operadores globais para permitir float * vec3 (Necessário para o Ray)
 inline vec3 operator*(float a, const vec3 &v) { return v * a; }
+inline vec3 operator/(vec3 v, float t) {
+    return vec3(v.i_ / t, v.j_ / t, v.k_ / t);
+}
 
 // Funções Geométricas
 float dot(const vec3 &v1, const vec3 &v2); 

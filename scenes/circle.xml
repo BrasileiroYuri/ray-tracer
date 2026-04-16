@@ -1,0 +1,10 @@
+<RT3>
+    <lookat look_from="0 1 -10" look_at="0 1 0" up="0 1 0" />
+    <camera type="orthographic" screen_window="-15 15 -11.25 11.25" />
+    <film type="image" w_res="800" h_res="600" filename="debug_final.png" img_type="png" />
+    <world_begin/>
+        <background type="colors" bl="200 220 255" tl="50 80 150" tr="50 80 150" br="200 220 255" />
+        
+        <object type="sphere" radius="1.0" center="0 1 0" />
+    <world_end/>
+</RT3>

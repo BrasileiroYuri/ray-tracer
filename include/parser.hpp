@@ -17,13 +17,15 @@ public:
   void parse() const;
 
 private:
-  
+  // Mapa de elementos XML para funções de processamento
   std::unordered_map<std::string, std::function<void(ParamSet)>> elements_{
       {"film", App::film},
       {"background", App::backGround},
       {"camera", App::camera},
       {"lookat", App::lookat},
       {"sphere", App::addSphere},
+      {"plane", App::addPlane},       
+      {"triangle", App::addTriangle}, 
       {"object", App::addObject},
       {"integrator", App::addIntegrator} 
   };
@@ -72,6 +74,12 @@ private:
           {"look_from", convert<point3, float, 3>},
           {"look_at", convert<point3, float, 3>},
           {"center", convert<point3, float, 3>}, 
+          {"p",  convert<point3, float, 3>},
+          {"u",  convert<vec3, float, 3>},
+          {"v",  convert<vec3, float, 3>},
+          {"v0", convert<point3, float, 3>},
+          {"v1", convert<point3, float, 3>},
+          {"v2", convert<point3, float, 3>},
           {"up", convert<vec3, float, 3>},
           {"screen_window", convert<ScreenWindow, float, 4>},
       };

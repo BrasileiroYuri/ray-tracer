@@ -7,7 +7,9 @@
 #include "orthographic_camera.hpp"
 #include "param_set.hpp"
 #include "perspective_camera.hpp"
-#include "sphere.hpp" 
+#include "sphere.hpp"
+#include "plane.hpp"
+#include "triangle.hpp" 
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
@@ -96,11 +98,21 @@ void App::addIntegrator(ParamSet ps) {
     // Apenas recupera o tipo para validar a leitura
     std::string type = ps.retrieve<std::string>("type");
 }
-
+/*
+O integrator acima ainda não tem implementação, mas é necessário para validar a leitura do XML 
+e evitar erros de elemento desconhecido. Fica pra você fazer no projeto 4 ;)
+*/ 
 void App::addObject(ParamSet ps) {
     std::string type = ps.retrieve<std::string>("type");
+    
     if (type == "sphere") {
         addSphere(ps);
+    } 
+    else if (type == "plane") {
+        addPlane(ps);
+    } 
+    else if (type == "triangle") {
+        addTriangle(ps);
     }
 }
 
@@ -120,6 +132,26 @@ void App::addSphere(ParamSet ps) {
     std::cout << "Sphere XML -> z_min: " << z_min << " z_max: " << z_max << " phi: " << phi_max << std::endl;
 
     primitives_.push_back(std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max)); 
+}
+
+// implementação do método que cria o plano a partir do XML
+void App::addPlane(ParamSet ps) {
+    point3 p = ps.retrieve<point3>("p", {0, 0, 0});
+    vec3 u = ps.retrieve<vec3>("u", {1, 0, 0});
+    vec3 v = ps.retrieve<vec3>("v", {0, 1, 0});
+
+    primitives_.push_back(std::make_unique<Plane>(p, u, v));
+}
+
+// implementação do método que cria o triângulo a partir do XML
+void App::addTriangle(ParamSet ps) {
+   
+    point3 v0 = ps.retrieve<point3>("v0", {-1, 0, 0});
+    point3 v1 = ps.retrieve<point3>("v1", {1, 0, 0});
+    point3 v2 = ps.retrieve<point3>("v2", {0, 1, 0});
+
+    primitives_.push_back(std::make_unique<Triangle>(v0, v1, v2));
+    std::cout << "Triangle add in scene" << std::endl;
 }
 
 void App::calculateScreenWindow() {

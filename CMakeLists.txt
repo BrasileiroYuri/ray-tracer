@@ -20,6 +20,8 @@ set(SOURCES
     source/background.cpp
     source/parser.cpp
     source/sphere.cpp
+    source/plane.cpp
+    source/triangle.cpp
     source/app.cpp
     libs/math/math.cpp
     libs/lodepng/lodepng.cpp
