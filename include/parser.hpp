@@ -17,16 +17,14 @@ public:
   void parse() const;
 
 private:
-  
   std::unordered_map<std::string, std::function<void(ParamSet)>> elements_{
       {"film", App::film},
       {"background", App::backGround},
       {"camera", App::camera},
       {"lookat", App::lookat},
-      {"sphere", App::addSphere},
-      {"object", App::addObject},
-      {"integrator", App::addIntegrator} 
-  };
+      {"sphere", App::sphere},
+      {"object", App::object},
+      {"integrator", App::integrator}};
 
   template <typename T>
   static void convert(const std::string &name, const std::string &value,
@@ -53,10 +51,10 @@ private:
       std::function<void(const std::string &, const std::string &, ParamSet *)>>
       conversor_{
           {"frame_aspectratio", convert<float>},
-          {"radius", convert<float>}, 
-          {"z_min", convert<float>},     
-          {"z_max", convert<float>},     
-          {"phi_max", convert<float>},   
+          {"radius", convert<float>},
+          {"z_min", convert<float>},
+          {"z_max", convert<float>},
+          {"phi_max", convert<float>},
           {"w_res", convert<int>},
           {"h_res", convert<int>},
           {"fovy", convert<int>},
@@ -68,10 +66,10 @@ private:
           {"br", convert<RGBColor, int, 3>},
           {"tl", convert<RGBColor, int, 3>},
           {"tr", convert<RGBColor, int, 3>},
-          {"color", convert<RGBColor, int, 3>},
+          {"single_color", convert<RGBColor, int, 3>},
           {"look_from", convert<point3, float, 3>},
           {"look_at", convert<point3, float, 3>},
-          {"center", convert<point3, float, 3>}, 
+          {"center", convert<point3, float, 3>},
           {"up", convert<vec3, float, 3>},
           {"screen_window", convert<ScreenWindow, float, 4>},
       };

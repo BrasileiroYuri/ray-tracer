@@ -7,14 +7,13 @@
 #include "orthographic_camera.hpp"
 #include "param_set.hpp"
 #include "perspective_camera.hpp"
-#include "sphere.hpp" 
+#include "sphere.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
 #include <iostream>
 #include <memory>
 #include <string>
-#include <limits> 
 
 // Acessando as opções do main.cpp
 namespace Global {
@@ -22,7 +21,7 @@ extern std::string outfile;
 extern bool quick;
 extern int crop[4];
 extern bool has_crop;
-} 
+} // namespace Global
 
 std::string App::filename_ = "";
 bool App::ppm_ = true;
@@ -78,7 +77,7 @@ void App::camera(const ParamSet &ps) {
     camera_ = std::make_unique<Perspective>();
   else
     camera_ = std::make_unique<Orthographic>();
-  
+
   fovy = ps.retrieve<int>("fovy");
   aspec = ps.retrieve<float>("frame_aspect_ratio");
 
@@ -92,34 +91,41 @@ void App::lookat(const ParamSet &ps) {
   config_.up = ps.retrieve<point3>("up", {0, 0, 0});
 }
 
-void App::addIntegrator(ParamSet ps) {
-    // Apenas recupera o tipo para validar a leitura
-    std::string type = ps.retrieve<std::string>("type");
+void App::integrator(const ParamSet &ps) {
+  // Apenas recupera o tipo para validar a leitura
+  std::string type = ps.retrieve<std::string>("type");
 }
 
-void App::addObject(ParamSet ps) {
-    std::string type = ps.retrieve<std::string>("type");
-    if (type == "sphere") {
-        addSphere(ps);
-    }
+void App::object(const ParamSet &ps) {
+  std::string type = ps.retrieve<std::string>("type");
+  if (type == "sphere") {
+    sphere(ps);
+  }
 }
 
 // Implementação do método que cria a esfera a partir do XML
-void App::addSphere(ParamSet ps) {
-    point3 center = ps.retrieve<point3>("center", {0, 0, 0});
-    float radius = ps.retrieve<float>("radius", 1.0f);
+void App::sphere(const ParamSet &ps) {
+  point3 center = ps.retrieve<point3>("center", {0, 0, 0});
+  float radius = ps.retrieve<float>("radius", 1.0f);
 
-    float z_min = -radius;
-    float z_max = radius;
-    float phi_max = 360.0f;
+  float z_min = -radius;
+  float z_max = radius;
+  float phi_max = 360.0f;
 
-    if (ps.has_elem("z_min")) z_min = ps.retrieve<float>("z_min");
-    if (ps.has_elem("z_max")) z_max = ps.retrieve<float>("z_max");
-    if (ps.has_elem("phi_max")) phi_max = ps.retrieve<float>("phi_max");
+  if (ps.has_elem("z_min"))
+    z_min = ps.retrieve<float>("z_min");
+  if (ps.has_elem("z_max"))
+    z_max = ps.retrieve<float>("z_max");
+  if (ps.has_elem("phi_max"))
+    phi_max = ps.retrieve<float>("phi_max");
 
-    std::cout << "Sphere XML -> z_min: " << z_min << " z_max: " << z_max << " phi: " << phi_max << std::endl;
+#ifdef DEBUG
+  std::cout << "Sphere XML -> z_min: " << z_min << " z_max: " << z_max
+            << " phi: " << phi_max << std::endl;
+#endif // DEBUG
 
-    primitives_.push_back(std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max)); 
+  primitives_.push_back(
+      std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max));
 }
 
 void App::calculateScreenWindow() {
@@ -136,18 +142,21 @@ void App::calculateScreenWindow() {
 }
 
 void App::render() {
-  
-  std::cout << "Quantidade de objetos na cena: " << primitives_.size() << std::endl;
-  
+
+#ifdef DEBUG
+  std::cout << "Quantidade de objetos na cena: " << primitives_.size()
+            << std::endl;
+#endif // DEBUG
+
   std::size_t h = camera_->film_.height(), w = camera_->film_.width();
   camera_->getFrame(config_.look_from, config_.look_at, config_.up);
-  
-  // Sempre calcula se houver valores definidos
-if (fovy > 0 || aspec > 0) {
-    calculateScreenWindow();
-}
 
-camera_->window(screen_window_.l_, screen_window_.r_, screen_window_.b_,
+  // Sempre calcula se houver valores definidos
+  if (fovy > 0 || aspec > 0) {
+    calculateScreenWindow();
+  }
+
+  camera_->window(screen_window_.l_, screen_window_.r_, screen_window_.b_,
                   screen_window_.t_);
 
   int x0 = 0, x1 = w, y0 = 0, y1 = h;
@@ -162,15 +171,15 @@ camera_->window(screen_window_.l_, screen_window_.r_, screen_window_.b_,
     for (int j = x0; j < x1; j++) {
       // Gera o raio com limites t_min e t_max
       Ray r = camera_->generateRay(j, i);
-      
+
       bool hit_anything = false;
-      float t_hit = 0;
 
       // Loop de Interseção: Testa contra todos os objetos
-      for (const auto& primitive : primitives_) {
+      for (const auto &primitive : primitives_) {
         float t_current;
         if (primitive->intersect(r, t_current)) {
-          // Se atingiu, encurtamos o raio para buscar apenas o que estiver à frente
+          // Se atingiu, encurtamos o raio para buscar apenas o que estiver à
+          // frente
           r.set_t_max(t_current);
           hit_anything = true;
         }
@@ -178,7 +187,7 @@ camera_->window(screen_window_.l_, screen_window_.r_, screen_window_.b_,
 
       if (hit_anything) {
         // Pinta de uma cor sólida para testar a visibilidade
-        camera_->film_.add(j, i, RGBColor(255, 0, 0)); 
+        camera_->film_.add(j, i, RGBColor(255, 0, 0));
       } else {
         // Se falhou todos os testes, usa o fundo
         float u = float(j) / float(w - 1);
@@ -198,7 +207,8 @@ void App::write_image() {
                     (unsigned)camera_->film_.height());
   } else {
     FILE *f = fopen(filename_.c_str(), "w");
-    if(!f) return;
+    if (!f)
+      return;
     fprintf(f, "P3\n%d %d\n255\n", (int)camera_->film_.width(),
             (int)camera_->film_.height());
     for (size_t i = 0; i < camera_->film_.data().size(); i += 4)

@@ -4,9 +4,9 @@
 #include "background.hpp"
 #include "camera.hpp"
 #include "param_set.hpp"
+#include "primitive.hpp"
 #include <memory>
 #include <string>
-#include "primitive.hpp"
 
 struct ScreenWindow {
   ScreenWindow() {}
@@ -22,9 +22,9 @@ public:
   static void film(const ParamSet &);
   static void lookat(const ParamSet &);
   static void camera(const ParamSet &);
-  static void addSphere(ParamSet ps);
-  static void addObject(ParamSet ps);
-  static void addIntegrator(ParamSet ps);
+  static void sphere(const ParamSet &ps);
+  static void object(const ParamSet &ps);
+  static void integrator(const ParamSet &ps);
 
 private:
   static void calculateScreenWindow();
