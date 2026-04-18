@@ -42,7 +42,7 @@ std::unique_ptr<Camera> App::camera_ = nullptr;
 // Inicialização da lista estática de objetos da cena
 std::vector<std::unique_ptr<Primitive>> App::primitives_;
 
-void App::backGround(const ParamSet &ps) {
+void App::backGround(ParamSet &ps) {
   std::array<RGBColor, 4> arr;
   if (ps.retrieve<std::string>("type") == "colors") {
     arr[0] = ps.retrieve<RGBColor>("bl");
@@ -54,9 +54,10 @@ void App::backGround(const ParamSet &ps) {
     std::fill(arr.begin(), arr.end(), color);
   }
   background_ = BackGroundColor(arr);
+  ps.remove();
 }
 
-void App::film(const ParamSet &ps) {
+void App::film(ParamSet &ps) {
   std::string xml_file = ps.retrieve<std::string>("filename");
   int x = ps.retrieve<int>("w_res");
   int y = ps.retrieve<int>("h_res");
@@ -69,9 +70,11 @@ void App::film(const ParamSet &ps) {
 
   ppm_ = ps.retrieve<std::string>("img_type") == "ppm";
   camera_->film_ = Film((std::size_t)x, (std::size_t)y);
+
+  ps.remove();
 }
 
-void App::camera(const ParamSet &ps) {
+void App::camera(ParamSet &ps) {
   auto type = ps.retrieve<std::string>("type");
   if (type == "perspective")
     camera_ = std::make_unique<Perspective>();
@@ -83,28 +86,33 @@ void App::camera(const ParamSet &ps) {
 
   if (ps.has_elem("screen_window"))
     screen_window_ = ps.retrieve<ScreenWindow>("screen_window");
+
+  ps.remove();
 }
 
-void App::lookat(const ParamSet &ps) {
+void App::lookat(ParamSet &ps) {
   config_.look_from = ps.retrieve<point3>("look_from", {0, 0, 0});
   config_.look_at = ps.retrieve<point3>("look_at", {0, 0, 0});
   config_.up = ps.retrieve<point3>("up", {0, 0, 0});
+  ps.remove();
 }
 
-void App::integrator(const ParamSet &ps) {
+void App::integrator(ParamSet &ps) {
   // Apenas recupera o tipo para validar a leitura
   std::string type = ps.retrieve<std::string>("type");
+  ps.remove();
 }
 
-void App::object(const ParamSet &ps) {
+void App::object(ParamSet &ps) {
   std::string type = ps.retrieve<std::string>("type");
   if (type == "sphere") {
     sphere(ps);
   }
+  ps.remove();
 }
 
 // Implementação do método que cria a esfera a partir do XML
-void App::sphere(const ParamSet &ps) {
+void App::sphere(ParamSet &ps) {
   point3 center = ps.retrieve<point3>("center", {0, 0, 0});
   float radius = ps.retrieve<float>("radius", 1.0f);
 
@@ -126,6 +134,7 @@ void App::sphere(const ParamSet &ps) {
 
   primitives_.push_back(
       std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max));
+  ps.remove();
 }
 
 void App::calculateScreenWindow() {
@@ -172,6 +181,9 @@ void App::render() {
       // Gera o raio com limites t_min e t_max
       Ray r = camera_->generateRay(j, i);
 
+#ifdef DEBUG
+      std::cout << "\nFirst ray: " << r.str();
+#endif
       bool hit_anything = false;
 
       // Loop de Interseção: Testa contra todos os objetos
@@ -185,6 +197,9 @@ void App::render() {
         }
       }
 
+#ifdef DEBUG
+      std::cout << "\nLast ray: " << r.str();
+#endif
       if (hit_anything) {
         // Pinta de uma cor sólida para testar a visibilidade
         camera_->film_.add(j, i, RGBColor(255, 0, 0));

@@ -17,7 +17,7 @@ public:
   void parse() const;
 
 private:
-  std::unordered_map<std::string, std::function<void(ParamSet)>> elements_{
+  std::unordered_map<std::string, std::function<void(ParamSet &)>> elements_{
       {"film", App::film},
       {"background", App::backGround},
       {"camera", App::camera},

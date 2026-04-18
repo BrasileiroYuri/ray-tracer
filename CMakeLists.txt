@@ -36,7 +36,7 @@ if(NOT MSVC)
   -Wextra
   -Wshadow
   -Wpedantic
-  -DDEBUG
+#  -DDEBUG
   -g
   -O2
   )

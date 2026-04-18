@@ -12,17 +12,28 @@ public:
 
   template <typename T>
   T retrieve(const std::string &key, const T &def_value = T{}) const {
-
-    if (map_.find(key) == map_.end())
+    auto it = map_.find(key);
+    if (it == map_.end())
       return def_value;
 
-    auto val = dynamic_cast<ValueType<T> *>(map_.at(key));
+    auto val = dynamic_cast<ValueType<T> *>(it->second);
+    if (!val)
+      return def_value;
+
     return val->value_;
   }
 
   template <typename T> void add(const std::string &key, const T &value) {
-    ValueType<T> *vt = new ValueType<T>(value);
-    map_[key] = vt;
+    if (map_.count(key)) {
+      delete map_[key];
+    }
+    map_[key] = new ValueType<T>(value);
+  }
+  void remove() {
+    for (auto &e : map_) {
+      delete e.second;
+    }
+    map_.clear();
   }
 
 private:

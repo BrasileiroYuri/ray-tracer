@@ -18,13 +18,13 @@ struct ScreenWindow {
 class App {
 public:
   static void render();
-  static void backGround(const ParamSet &);
-  static void film(const ParamSet &);
-  static void lookat(const ParamSet &);
-  static void camera(const ParamSet &);
-  static void sphere(const ParamSet &ps);
-  static void object(const ParamSet &ps);
-  static void integrator(const ParamSet &ps);
+  static void backGround(ParamSet &);
+  static void film(ParamSet &);
+  static void lookat(ParamSet &);
+  static void camera(ParamSet &);
+  static void sphere(ParamSet &);
+  static void object(ParamSet &);
+  static void integrator(ParamSet &);
 
 private:
   static void calculateScreenWindow();
