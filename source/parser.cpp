@@ -93,5 +93,6 @@ void Parser::parse() const {
 
     // Executa a função associada à tag (ex: criar esfera, configurar câmera)
     elements_.at(name)(ps);
+    ps.remove();
   }
 }
