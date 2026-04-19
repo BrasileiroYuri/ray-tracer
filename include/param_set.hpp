@@ -1,6 +1,7 @@
 #ifndef PARAM_SET_HPP
 #define PARAM_SET_HPP
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -13,27 +14,16 @@ public:
   template <typename T>
   T retrieve(const std::string &key, const T &def_value = T{}) const {
     auto it = map_.find(key);
+
     if (it == map_.end())
       return def_value;
 
-    auto val = dynamic_cast<ValueType<T> *>(it->second);
-    if (!val)
-      return def_value;
-
-    return val->value_;
+    auto *typed = static_cast<ValueType<T> *>(it->second.get());
+    return typed->value_;
   }
 
   template <typename T> void add(const std::string &key, const T &value) {
-    if (map_.count(key)) {
-      delete map_[key];
-    }
-    map_[key] = new ValueType<T>(value);
-  }
-  void remove() {
-    for (auto &e : map_) {
-      delete e.second;
-    }
-    map_.clear();
+    map_[key] = std::make_unique<ValueType<T>>(value);
   }
 
 private:
@@ -46,7 +36,7 @@ private:
     ValueType(const T &value) : value_(value) {};
   };
 
-  std::unordered_map<std::string, GenericType *> map_;
+  std::unordered_map<std::string, std::unique_ptr<GenericType>> map_;
 };
 
 #endif // !PARAM_SET_HPP

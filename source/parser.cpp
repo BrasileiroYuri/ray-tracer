@@ -62,7 +62,7 @@ void Parser::parse() const {
     // Verifica se a tag (ex: camera, sphere, background) existe no dicionário
     if (elements_.find(name) == elements_.end()) {
 #ifdef DEBUG
-      std::cerr << "Element '" << name << "\' invalid.\n";
+      std::cerr << "Element \'" << name << "\' invalid.\n";
 #endif
       continue;
     }
@@ -80,7 +80,7 @@ void Parser::parse() const {
 
       if (conversor_.find(attr_name) == conversor_.end()) {
 #ifdef DEBUG
-        std::cerr << "Atribute: '" << attr_name << "Invalid.\n";
+        std::cerr << "Atribute: '" << attr_name << "' invalid.\n";
 #endif
         continue;
       }
@@ -90,6 +90,5 @@ void Parser::parse() const {
 
     // Executa a função associada à tag (ex: criar esfera, configurar câmera)
     elements_.at(name)(ps);
-    ps.remove();
   }
 }
