@@ -61,7 +61,9 @@ void Parser::parse() const {
 
     // Verifica se a tag (ex: camera, sphere, background) existe no dicionário
     if (elements_.find(name) == elements_.end()) {
+#ifdef DEBUG
       std::cerr << "Element '" << name << "\' invalid.\n";
+#endif
       continue;
     }
 
@@ -75,20 +77,15 @@ void Parser::parse() const {
           attr_name == "tr" || attr_name == "br") {
         ps.add(attr_name, parse_color_format(attr_val));
       }
-      // 2. Processamento de pontos 3D para geometria
-      else if (attr_name == "center" || attr_name == "look_from" ||
-               attr_name == "look_at" || attr_name == "up") {
-        std::stringstream ss(attr_val);
-        float x, y, z;
-        if (ss >> x >> y >> z) {
-          ps.add(attr_name,
-                 point3(x, y, z)); // Adiciona como point3 ao ParamSet
-        }
+
+      if (conversor_.find(attr_name) == conversor_.end()) {
+#ifdef DEBUG
+        std::cerr << "Atribute: '" << attr_name << "Invalid.\n";
+#endif
+        continue;
       }
-      // 3. Outros conversores registrados (int, float, string)
-      else if (conversor_.find(attr_name) != conversor_.end()) {
-        conversor_.at(attr_name)(attr_name, attr_val, &ps);
-      }
+
+      conversor_.at(attr_name)(attr_name, attr_val, &ps);
     }
 
     // Executa a função associada à tag (ex: criar esfera, configurar câmera)
