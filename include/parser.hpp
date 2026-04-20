@@ -24,6 +24,9 @@ private:
       {"lookat", App::lookat},
       {"sphere", App::sphere},
       {"object", App::object},
+      {"make_named_material", App::make_named_material},
+      {"named_material", App::named_material},
+      {"material", App::material},
       {"integrator", App::integrator}};
 
   template <typename T>

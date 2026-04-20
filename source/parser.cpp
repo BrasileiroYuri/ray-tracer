@@ -1,6 +1,5 @@
 #include "parser.hpp"
 #include "app.hpp"
-#include "sphere.hpp"
 #include "tinyxml2.h"
 #include <iostream>
 #include <sstream>
@@ -56,7 +55,7 @@ void Parser::parse() const {
     // Dispara a renderização ao final do arquivo
     if (name == "world_end") {
       App::render();
-      break;
+      continue;
     }
 
     // Verifica se a tag (ex: camera, sphere, background) existe no dicionário
@@ -71,6 +70,8 @@ void Parser::parse() const {
     for (auto attr = it->FirstAttribute(); attr; attr = attr->Next()) {
       std::string attr_name = attr->Name();
       std::string attr_val = attr->Value();
+
+      //@TODO: Refazer, não escala.
 
       // 1. Processamento de Cores
       if (attr_name == "color" || attr_name == "bl" || attr_name == "tl" ||

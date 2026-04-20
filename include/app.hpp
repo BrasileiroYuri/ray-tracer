@@ -3,6 +3,7 @@
 
 #include "background.hpp"
 #include "camera.hpp"
+#include "integrator.hpp"
 #include "param_set.hpp"
 #include "primitive.hpp"
 #include <memory>
@@ -18,19 +19,24 @@ struct ScreenWindow {
 class App {
 public:
   static void render();
-  static void backGround(ParamSet &);
-  static void film(ParamSet &);
-  static void lookat(ParamSet &);
-  static void camera(ParamSet &);
-  static void sphere(ParamSet &);
-  static void object(ParamSet &);
-  static void integrator(ParamSet &);
+  static void backGround(const ParamSet &);
+  static void film(const ParamSet &);
+  static void lookat(const ParamSet &);
+  static void camera(const ParamSet &);
+  static void sphere(const ParamSet &);
+  static void object(const ParamSet &);
+  static void integrator(const ParamSet &);
+  static void make_named_material(const ParamSet &);
+  static void material(const ParamSet &);
+  static void named_material(const ParamSet &);
 
 private:
+  static std::unique_ptr<Integrator> integrator_;
+  static Scene Scene_;
   static void calculateScreenWindow();
   static void write_image();
-  static std::unique_ptr<Camera> camera_;
-  static BackGroundColor background_;
+  static std::unique_ptr<Camera> camera_; // Vai ser substituido por Integrator
+  static BackGroundColor background_;     // Vai ser substituido por Scene
   static std::string filename_;
   static bool ppm_;
   static std::vector<std::unique_ptr<Primitive>> primitives_;

@@ -9,6 +9,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(
     include
+    include/cameras
+    include/integrators
+    include/materials
+    include/shapes
+    include/primitives
     libs/lodepng
     libs/tinyxml2
     libs/math
