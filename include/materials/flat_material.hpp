@@ -8,7 +8,7 @@ class FlatMaterial : public Material {
 public:
   FlatMaterial(RGBColor color) : color_(color) {}
 
-  RGBColor getColor() const { return color_; }
+  RGBColor getColor() const override { return color_; }
 
 private:
   RGBColor color_;
