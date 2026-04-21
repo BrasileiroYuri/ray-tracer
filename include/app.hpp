@@ -1,6 +1,7 @@
 #ifndef API_HPP
 #define API_HPP
 
+#include "aggregate_primitive.hpp"
 #include "integrator.hpp"
 #include "param_set.hpp"
 #include <memory>
@@ -31,6 +32,7 @@ public:
 private:
   static void integratorConfig(const std::string &type);
   static std::unique_ptr<Integrator> integrator_;
+  static std::unique_ptr<AggregatePrimitive> aggrPrim;
 };
 
 #endif // !API_HPP

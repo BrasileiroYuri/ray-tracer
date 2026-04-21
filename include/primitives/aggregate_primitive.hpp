@@ -1,8 +1,14 @@
-#ifndef AGGREAGATE_PRIMITIVE_HPP
-#define AGGREAGATE_PRIMITIVE_HPP
+#ifndef AGGREGATE_PRIMITIVE_HPP
+#define AGGREGATE_PRIMITIVE_HPP
 
+#include "material.hpp"
 #include "primitive.hpp"
-struct AggregatePrimitive : public Primitive {
-  void addObject(Primitive *p) {}
+#include <memory>
+
+class AggregatePrimitive : public Primitive {
+public:
+  virtual void addObject(std::unique_ptr<Primitive> p) = 0;
+  Material *getMaterial() const override { return nullptr; }
 };
-#endif // !AGGREAGATE_PRIMITIVE_HPP
+
+#endif

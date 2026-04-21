@@ -1,6 +1,7 @@
 #include "app.hpp"
 #include "background.hpp"
 #include "flat_material.hpp"
+#include "geometric_primitive.hpp"
 #include "material.hpp"
 #include "math.hpp"
 #include "param_set.hpp"
@@ -9,10 +10,12 @@
 #include "raycast_integrator.hpp"
 #include "scene.hpp"
 #include "sphere.hpp"
+#include <algorithm>
 #include <array>
 #include <iostream>
 #include <memory>
 #include <string>
+#include <utility>
 
 // Acessando as opções do main.cpp
 namespace Global {
@@ -27,8 +30,7 @@ std::unique_ptr<AggregatePrimitive> App::aggrPrim =
 
 std::unique_ptr<Integrator> App::integrator_;
 std::unordered_map<std::string, std::shared_ptr<Material>> materials;
-std::shared_ptr<Material> actualMaterial =
-    nullptr; /* Apenas observa um material, não detém o Ownership. */
+std::shared_ptr<Material> actualMaterial = nullptr;
 
 struct GeneralConfig {
   std::string integratorType;
@@ -187,8 +189,14 @@ void App::sphere(const ParamSet &ps) {
   float z_max = ps.retrieve<float>("z_max", radius);
   float phi_max = ps.retrieve<float>("phi_max", 360.0f);
 
-  std::unique_ptr<Sphere> sphere =
-      std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max);
+  auto shape = std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max);
+
+  auto material = std::make_unique<Material>();
+
+  auto geoPrim = std::make_unique<GeometricPrimitive>(std::move(shape),
+                                                      std::move(material));
+
+  aggrPrim->addObject(std::move(geoPrim));
 }
 
 void App::integratorConfig(const std::string &type) {

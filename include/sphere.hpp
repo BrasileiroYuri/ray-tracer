@@ -18,8 +18,6 @@ public:
     theta_max_ = std::acos(low_z / radius);
   }
 
-  virtual ~Sphere() = default;
-
   bool intersect(const Ray &r, float &t_hit) const override;
 
 private:
