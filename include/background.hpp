@@ -19,7 +19,8 @@ struct RGBColor {
 
   std::string str() const {
     std::stringstream ss;
-    ss << "{" << R << ", " << G << ", " << B << ", " << A << "}";
+    ss << "{" << (int)R << ", " << (int)G << ", " << (int)B << ", " << (int)A
+       << "}";
     return ss.str();
   }
 };

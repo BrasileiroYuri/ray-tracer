@@ -105,10 +105,10 @@ void App::backGround(const ParamSet &ps) {
     sceneConfig.arr[3] = ps.retrieve<RGBColor>("br");
 
     std::cout << ">>> Usando 'colors': \n";
-    std::cout << "BL: " << sceneConfig.arr[0].str() << "\n";
-    std::cout << "TL: " << sceneConfig.arr[1].str() << "\n";
-    std::cout << "TR: " << sceneConfig.arr[2].str() << "\n";
-    std::cout << "BR: " << sceneConfig.arr[3].str() << "\n";
+    std::cout << "* BL: " << sceneConfig.arr[0].str() << "\n";
+    std::cout << "* TL: " << sceneConfig.arr[1].str() << "\n";
+    std::cout << "* TR: " << sceneConfig.arr[2].str() << "\n";
+    std::cout << "* BR: " << sceneConfig.arr[3].str() << "\n";
 
   } else if (key == "single_color") {
     RGBColor color = ps.retrieve<RGBColor>("color", {0, 0, 0});
@@ -176,6 +176,8 @@ void App::object(const ParamSet &ps) {
 
   if (type == "sphere") {
     sphere(ps);
+  } else {
+    std::cout << "Objeto " << (type.empty() ? "vazio" : type) << "inválido.\n";
   }
 }
 
