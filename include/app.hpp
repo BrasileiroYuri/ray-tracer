@@ -27,6 +27,7 @@ public:
   static void integrator(const ParamSet &);
   static void make_named_material(const ParamSet &);
   static void material(const ParamSet &);
+  static void include(const ParamSet &);
   static void named_material(const ParamSet &);
 
 private:

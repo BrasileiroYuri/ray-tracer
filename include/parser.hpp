@@ -21,6 +21,7 @@ private:
       {"film", App::film},
       {"background", App::backGround},
       {"camera", App::camera},
+      {"include", App::include},
       {"lookat", App::lookat},
       {"object", App::object},
       {"make_named_material", App::make_named_material},
