@@ -21,8 +21,6 @@ include_directories(
 
 set(SOURCES
     source/main.cpp
-    source/film.cpp
-    source/background.cpp
     source/parser.cpp
     source/sphere.cpp
     source/app.cpp

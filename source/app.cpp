@@ -25,12 +25,7 @@ extern int crop[4];
 extern bool has_crop;
 } // namespace Global
 
-std::unique_ptr<AggregatePrimitive> App::aggrPrim =
-    std::make_unique<PrimList>();
-
 std::unique_ptr<Integrator> App::integrator_;
-std::unordered_map<std::string, std::shared_ptr<Material>> materials;
-std::shared_ptr<Material> actualMaterial = nullptr;
 
 struct GeneralConfig {
   std::string integratorType;
@@ -39,12 +34,16 @@ struct GeneralConfig {
 };
 
 struct SceneConfig {
+  std::unique_ptr<AggregatePrimitive> aggrPrim = std::make_unique<PrimList>();
   std::array<RGBColor, 4> arr;
 };
 
 GeneralConfig generalConfig;
 CameraConfig cameraConfig;
 SceneConfig sceneConfig;
+
+std::unordered_map<std::string, std::shared_ptr<Material>> materials;
+std::shared_ptr<Material> actualMaterial = nullptr;
 
 void App::make_named_material(const ParamSet &ps) {
   auto name = ps.retrieve<std::string>("name");
@@ -185,18 +184,20 @@ void App::sphere(const ParamSet &ps) {
   point3 center = ps.retrieve<point3>("center", {0, 0, 0});
   float radius = ps.retrieve<float>("radius", 1.0f);
 
+  std::cout << ">>> Criando 'Sphere' com raio " << radius << " e centro "
+            << center.str() << ".\n";
+
   float z_min = ps.retrieve<float>("z_min", -radius);
   float z_max = ps.retrieve<float>("z_max", radius);
   float phi_max = ps.retrieve<float>("phi_max", 360.0f);
 
   auto shape = std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max);
 
-  auto material = std::make_unique<Material>();
+  std::shared_ptr<Material> mat = actualMaterial;
 
-  auto geoPrim = std::make_unique<GeometricPrimitive>(std::move(shape),
-                                                      std::move(material));
+  auto geoPrim = std::make_unique<GeometricPrimitive>(std::move(shape), mat);
 
-  aggrPrim->addObject(std::move(geoPrim));
+  sceneConfig.aggrPrim->addObject(std::move(geoPrim));
 }
 
 void App::integratorConfig(const std::string &type) {
@@ -212,50 +213,10 @@ void App::integratorConfig(const std::string &type) {
   integrator_->makeCamera(cameraConfig);
 }
 
-void scenConfig() {}
-
 void App::render() {
   integratorConfig(generalConfig.integratorType);
-  scenConfig();
 
-  integrator_->render(void);
-
-  /*
-  for (int i = y0; i < y1; i++) {
-    for (int j = x0; j < x1; j++) {
-      // Gera o raio com limites t_min e t_max
-      Ray r = camera_->generateRay(j, i);
-
-#ifdef DEBUG
-      std::cout << "\nFirst ray: " << r.str();
-#endif
-      bool hit_anything = false;
-
-      // Loop de Interseção: Testa contra todos os objetos
-      for (const auto &primitive : primitives_) {
-        float t_current;
-        if (primitive->intersect(r, t_current)) {
-          // Se atingiu, encurtamos o raio para buscar apenas o que estiver à
-          // frente
-          r.set_t_max(t_current);
-          hit_anything = true;
-        }
-      }
-
-#ifdef DEBUG
-      std::cout << "\nLast ray: " << r.str();
-#endif
-      if (hit_anything) {
-        // Pinta de uma cor sólida para testar a visibilidade
-        camera_->film_.add(j, i, RGBColor(255, 0, 0));
-      } else {
-        // Se falhou todos os testes, usa o fundo
-        float u = float(j) / float(w - 1);
-        float v = 1.f - (float(i) / (float)(h - 1));
-        camera_->film_.add(j, i, background_.sample(u, v));
-      }
-    }
-  }
-*/
+  Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim));
+  integrator_->render(sc);
   integrator_->write_image(generalConfig.filename_, generalConfig.ppm_);
 }

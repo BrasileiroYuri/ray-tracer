@@ -32,7 +32,7 @@ public:
 private:
   static void integratorConfig(const std::string &type);
   static std::unique_ptr<Integrator> integrator_;
-  static std::unique_ptr<AggregatePrimitive> aggrPrim;
+  // static std::unique_ptr<AggregatePrimitive> aggrPrim;
 };
 
 #endif // !API_HPP

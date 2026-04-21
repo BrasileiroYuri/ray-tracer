@@ -8,7 +8,7 @@
 class GeometricPrimitive : public Primitive {
 public:
   GeometricPrimitive(std::unique_ptr<Shape> shape,
-                     std::unique_ptr<Material> material)
+                     std::shared_ptr<Material> material)
       : shape_(std::move(shape)), material_(std::move(material)) {}
 
   bool intersect(const Ray &r, float &t_hit) const override {
@@ -19,7 +19,6 @@ public:
 
 private:
   std::unique_ptr<Shape> shape_;
-  std::unique_ptr<Material> material_;
+  std::shared_ptr<Material> material_;
 };
-
 #endif

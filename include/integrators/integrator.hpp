@@ -14,7 +14,7 @@ class Integrator {
 public:
   virtual ~Integrator() = default;
 
-  virtual void render(Scene, RenderConfig = RenderConfig{}) = 0;
+  virtual void render(const Scene &, RenderConfig = RenderConfig{}) = 0;
 
   void makeCamera(CameraConfig cc) {
     if (cc.type == "perspective")

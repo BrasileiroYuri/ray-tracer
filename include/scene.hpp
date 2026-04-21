@@ -3,15 +3,18 @@
 
 #include "aggregate_primitive.hpp"
 #include "background.hpp"
-#include "prim_list.hpp"
 #include "primitive.hpp"
 
+#include <array>
 #include <memory>
 
 class Scene {
 public:
-private:
-  std::unique_ptr<BackGroundColor> backGroundColor_;
-  std::unique_ptr<AggregatePrimitive> primitive_ = std::make_unique<PrimList>();
+  Scene(const std::array<RGBColor, 4> &arr,
+        std::unique_ptr<AggregatePrimitive> ag)
+      : backGroundColor_(arr), aggregate_(std::move(ag)) {}
+
+  BackGroundColor backGroundColor_;
+  std::unique_ptr<AggregatePrimitive> aggregate_;
 };
 #endif // !SCENE_HPP
