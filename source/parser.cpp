@@ -72,7 +72,6 @@ void Parser::parse() const {
       std::string attr_val = attr->Value();
 
       //@TODO: Refazer, não escala.
-
       // 1. Processamento de Cores
       if (attr_name == "color" || attr_name == "bl" || attr_name == "tl" ||
           attr_name == "tr" || attr_name == "br") {

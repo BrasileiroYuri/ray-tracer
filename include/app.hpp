@@ -1,19 +1,17 @@
 #ifndef API_HPP
 #define API_HPP
 
-#include "background.hpp"
-#include "camera.hpp"
 #include "integrator.hpp"
 #include "param_set.hpp"
-#include "primitive.hpp"
 #include <memory>
 #include <string>
 
 struct ScreenWindow {
-  ScreenWindow() {}
-  float l_, r_, b_, t_;
+  ScreenWindow(float l, float r, float b, float t)
+      : l_(l), r_(r), b_(b), t_(t) {}
   ScreenWindow(const std::array<float, 4> &arr)
       : l_{arr[0]}, r_{arr[1]}, b_{arr[2]}, t_{arr[3]} {}
+  float l_, r_, b_, t_;
 };
 
 class App {
@@ -31,15 +29,8 @@ public:
   static void named_material(const ParamSet &);
 
 private:
+  static void integratorConfig(const std::string &type);
   static std::unique_ptr<Integrator> integrator_;
-  static Scene Scene_;
-  static void calculateScreenWindow();
-  static void write_image();
-  static std::unique_ptr<Camera> camera_; // Vai ser substituido por Integrator
-  static BackGroundColor background_;     // Vai ser substituido por Scene
-  static std::string filename_;
-  static bool ppm_;
-  static std::vector<std::unique_ptr<Primitive>> primitives_;
 };
 
 #endif // !API_HPP

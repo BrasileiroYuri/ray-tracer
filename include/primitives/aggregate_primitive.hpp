@@ -2,5 +2,7 @@
 #define AGGREAGATE_PRIMITIVE_HPP
 
 #include "primitive.hpp"
-class AggregatePrimitive : public Primitive {};
+struct AggregatePrimitive : public Primitive {
+  void addObject(Primitive *p) {}
+};
 #endif // !AGGREAGATE_PRIMITIVE_HPP

@@ -14,11 +14,10 @@ public:
 
     float low_z = std::max(-radius, z_min);
     float high_z = std::min(radius, z_max);
+
     theta_min_ = std::acos(high_z / radius);
     theta_max_ = std::acos(low_z / radius);
   }
-
-  virtual ~Sphere() = default;
 
   bool intersect(const Ray &r, float &t_hit) const override;
 

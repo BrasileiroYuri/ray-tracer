@@ -1,15 +1,18 @@
 #ifndef RAYCAST_INTEGRATOR_HPP
 #define RAYCAST_INTEGRATOR_HPP
 
-#include "camera.hpp"
 #include "integrator.hpp"
 
-class RayCastIntegrator : public Integrator {
+struct RayCastIntegrator : public Integrator {
+  virtual void render(Scene sc, RenderConfig rc) override {
 
-public:
-  virtual void render(Scene) override;
+    auto widht = cam_->widht();
+    auto height = cam_->height();
 
-private:
-  static std::unique_ptr<Camera> camera_;
+    for (std::size_t j = 0; j < height; j++) {
+      for (std::size_t i = 0; i < widht; i++) {
+      }
+    }
+  }
 };
 #endif // !RAYCAST_INTEGRATOR_HPP

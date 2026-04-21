@@ -1,16 +1,16 @@
 #include "app.hpp"
 #include "background.hpp"
-#include "camera.hpp"
-#include "film.hpp"
-#include "lodepng.h"
+#include "flat_material.hpp"
+#include "material.hpp"
 #include "math.hpp"
-#include "orthographic_camera.hpp"
 #include "param_set.hpp"
-#include "perspective_camera.hpp"
+#include "prim_list.hpp"
+#include "primitive.hpp"
+#include "raycast_integrator.hpp"
+#include "scene.hpp"
 #include "sphere.hpp"
-#include <algorithm>
-#include <cmath>
-#include <cstddef>
+#include <array>
+#include <iostream>
 #include <memory>
 #include <string>
 
@@ -22,81 +22,157 @@ extern int crop[4];
 extern bool has_crop;
 } // namespace Global
 
-std::string App::filename_ = "";
-bool App::ppm_ = true;
+std::unique_ptr<AggregatePrimitive> App::aggrPrim =
+    std::make_unique<PrimList>();
 
-BackGroundColor App::background_ = BackGroundColor();
+std::unique_ptr<Integrator> App::integrator_;
+std::unordered_map<std::string, std::shared_ptr<Material>> materials;
+std::shared_ptr<Material> actualMaterial =
+    nullptr; /* Apenas observa um material, não detém o Ownership. */
 
-struct CameraConfig {
-  point3 look_from, look_at, up;
+struct GeneralConfig {
+  std::string integratorType;
+  std::string filename_ = "";
+  bool ppm_ = true;
 };
 
-int fovy = 0;
-float aspec = 0.f;
-bool has_aspect = false;
-CameraConfig config_;
-ScreenWindow screen_window_ = ScreenWindow();
-std::unique_ptr<Camera> App::camera_ = nullptr;
+struct SceneConfig {
+  std::array<RGBColor, 4> arr;
+};
 
-// Inicialização da lista estática de objetos da cena
-std::vector<std::unique_ptr<Primitive>> App::primitives_;
+GeneralConfig generalConfig;
+CameraConfig cameraConfig;
+SceneConfig sceneConfig;
+
+void App::make_named_material(const ParamSet &ps) {
+  auto name = ps.retrieve<std::string>("name");
+
+  /* Se o material nomeado não tem nome, não salvamos. */
+  if (name.empty()) {
+    std::cerr << ">>> Material nomeado sem nome! Não será salvo.\n";
+    return;
+  }
+
+  /* Usamos como base o FlatMaterial */
+  auto type = ps.retrieve<std::string>("type", "flat");
+  auto color = ps.retrieve<RGBColor>("color", {0, 0, 0});
+
+  std::cout << ">>> Criando material '" << type << "' com cor: " << color.str()
+            << ".\n";
+
+  if (type == "flat") {
+    materials[name] = std::make_shared<FlatMaterial>(color);
+  }
+}
+
+void App::named_material(const ParamSet &ps) {
+  auto name = ps.retrieve<std::string>("name");
+
+  auto it = materials.find(name);
+  if (it == materials.end()) {
+    std::cerr << ">>> Material não encontrado! Continuando com o material "
+                 "anterior.\n";
+    return;
+  }
+
+  std::cout << ">>> Usando material '" << name << "'.\n";
+  actualMaterial = materials[name];
+}
+
+void App::material(const ParamSet &ps) {
+  auto type = ps.retrieve<std::string>("type");
+
+  if (type.empty()) {
+    std::cout << ">>> Material de tipo inválido, usando 'FlatMaterial\n'";
+    auto color = ps.retrieve<RGBColor>("color", {0, 0, 0});
+    actualMaterial = std::make_shared<FlatMaterial>(color);
+    return;
+  }
+
+  if (type == "flat") {
+    auto color = ps.retrieve<RGBColor>("color", {0, 0, 0});
+    actualMaterial = std::make_shared<FlatMaterial>(color);
+  }
+}
 
 void App::backGround(const ParamSet &ps) {
-  std::array<RGBColor, 4> arr;
-  if (ps.retrieve<std::string>("type") == "colors") {
-    arr[0] = ps.retrieve<RGBColor>("bl");
-    arr[1] = ps.retrieve<RGBColor>("tl");
-    arr[2] = ps.retrieve<RGBColor>("tr");
-    arr[3] = ps.retrieve<RGBColor>("br");
+  std::string key = ps.retrieve<std::string>("type");
+  if (key == "colors") {
+    sceneConfig.arr[0] = ps.retrieve<RGBColor>("bl");
+    sceneConfig.arr[1] = ps.retrieve<RGBColor>("tl");
+    sceneConfig.arr[2] = ps.retrieve<RGBColor>("tr");
+    sceneConfig.arr[3] = ps.retrieve<RGBColor>("br");
+
+    std::cout << ">>> Usando 'colors': \n";
+    std::cout << "BL: " << sceneConfig.arr[0].str() << "\n";
+    std::cout << "TL: " << sceneConfig.arr[1].str() << "\n";
+    std::cout << "TR: " << sceneConfig.arr[2].str() << "\n";
+    std::cout << "BR: " << sceneConfig.arr[3].str() << "\n";
+
+  } else if (key == "single_color") {
+    RGBColor color = ps.retrieve<RGBColor>("color", {0, 0, 0});
+    std::fill(sceneConfig.arr.begin(), sceneConfig.arr.end(), color);
+
+    std::cout << ">>> Usando 'single_color': " << color.str() << "\n";
   } else {
-    RGBColor color = ps.retrieve<RGBColor>("color");
-    std::fill(arr.begin(), arr.end(), color);
+    RGBColor color = {0, 0, 0};
+    std::fill(sceneConfig.arr.begin(), sceneConfig.arr.end(), color);
+
+    std::cout << ">>> Cor indefinida. Usando: " << color.str() << "\n";
   }
-  background_ = BackGroundColor(arr);
 }
 
 void App::film(const ParamSet &ps) {
   std::string xml_file = ps.retrieve<std::string>("filename");
-  int x = ps.retrieve<int>("w_res");
-  int y = ps.retrieve<int>("h_res");
 
-  filename_ = Global::outfile.empty() ? xml_file : Global::outfile;
+  cameraConfig.w_res = ps.retrieve<int>("w_res");
+  cameraConfig.h_res = ps.retrieve<int>("h_res");
+
+  generalConfig.filename_ =
+      Global::outfile.empty() ? xml_file : Global::outfile;
+
   if (Global::quick) {
-    x /= 4;
-    y /= 4;
+    cameraConfig.w_res /= 4;
+    cameraConfig.h_res /= 4;
   }
 
-  ppm_ = ps.retrieve<std::string>("img_type") == "ppm";
-  camera_->film_ = Film((std::size_t)x, (std::size_t)y);
+  std::cout << ">>> Largura do 'Film': " << cameraConfig.w_res << "\n";
+  std::cout << ">>> Altura do 'Film': " << cameraConfig.h_res << "\n";
+
+  generalConfig.ppm_ = ps.retrieve<std::string>("img_type") == "ppm";
 }
 
 void App::camera(const ParamSet &ps) {
-  auto type = ps.retrieve<std::string>("type");
-  if (type == "perspective")
-    camera_ = std::make_unique<Perspective>();
-  else
-    camera_ = std::make_unique<Orthographic>();
+  cameraConfig.type = ps.retrieve<std::string>("type");
 
-  fovy = ps.retrieve<int>("fovy");
-  aspec = ps.retrieve<float>("frame_aspect_ratio");
+  /* Se houver 'screen_window_', damos preferência. */
+  if (ps.has_elem("screen_window")) {
+    auto sw = ps.retrieve<ScreenWindow>("screen_window", {0.0, 0.0, 0.0, 0.0});
+    cameraConfig.l_ = sw.l_;
+    cameraConfig.r_ = sw.r_;
+    cameraConfig.b_ = sw.b_;
+    cameraConfig.t_ = sw.t_;
+    return;
+  }
 
-  if (ps.has_elem("screen_window"))
-    screen_window_ = ps.retrieve<ScreenWindow>("screen_window");
+  /* Se não, trabalhamos com 'fovy', 'frame_aspect_ratio' ou w_res/h_res. */
+  cameraConfig.fovy = ps.retrieve<int>("fovy", 0);
+  cameraConfig.aspec = ps.retrieve<float>("frame_aspect_ratio", 0.0);
 }
 
 void App::lookat(const ParamSet &ps) {
-  config_.look_from = ps.retrieve<point3>("look_from", {0, 0, 0});
-  config_.look_at = ps.retrieve<point3>("look_at", {0, 0, 0});
-  config_.up = ps.retrieve<point3>("up", {0, 0, 0});
+  cameraConfig.look_from = ps.retrieve<point3>("look_from", {0, 0, 0});
+  cameraConfig.look_at = ps.retrieve<point3>("look_at", {0, 0, 0});
+  cameraConfig.up = ps.retrieve<point3>("up", {0, 0, 0});
 }
 
 void App::integrator(const ParamSet &ps) {
-  // Apenas recupera o tipo para validar a leitura
-  std::string type = ps.retrieve<std::string>("type");
+  generalConfig.integratorType = ps.retrieve<std::string>("type");
 }
 
 void App::object(const ParamSet &ps) {
   std::string type = ps.retrieve<std::string>("type");
+
   if (type == "sphere") {
     sphere(ps);
   }
@@ -107,65 +183,36 @@ void App::sphere(const ParamSet &ps) {
   point3 center = ps.retrieve<point3>("center", {0, 0, 0});
   float radius = ps.retrieve<float>("radius", 1.0f);
 
-  float z_min = -radius;
-  float z_max = radius;
-  float phi_max = 360.0f;
+  float z_min = ps.retrieve<float>("z_min", -radius);
+  float z_max = ps.retrieve<float>("z_max", radius);
+  float phi_max = ps.retrieve<float>("phi_max", 360.0f);
 
-  if (ps.has_elem("z_min"))
-    z_min = ps.retrieve<float>("z_min");
-  if (ps.has_elem("z_max"))
-    z_max = ps.retrieve<float>("z_max");
-  if (ps.has_elem("phi_max"))
-    phi_max = ps.retrieve<float>("phi_max");
-
-#ifdef DEBUG
-  std::cout << "Sphere XML -> z_min: " << z_min << " z_max: " << z_max
-            << " phi: " << phi_max << std::endl;
-#endif // DEBUG
-
-  primitives_.push_back(
-      std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max));
+  std::unique_ptr<Sphere> sphere =
+      std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max);
 }
 
-void App::calculateScreenWindow() {
-  float aspectratio =
-      aspec ? aspec : (float)camera_->film_.width() / camera_->film_.height();
-
-  if (fovy) {
-    float h = std::tan((fovy * M_PI / 180.0f) / 2.0f); // graus para radianos
-    screen_window_.l_ = -aspectratio * h;
-    screen_window_.r_ = aspectratio * h;
-    screen_window_.b_ = -h;
-    screen_window_.t_ = h;
+void App::integratorConfig(const std::string &type) {
+  if (type == "flat") {
+    std::cout << ">>> Usando 'RayCastIntegrator'.\n";
+    integrator_ = std::make_unique<RayCastIntegrator>();
+  } else {
+    std::cerr << ">>> Tipo do Integrator não identificado. Usando "
+                 "'RayCastIntegrator'.\n";
+    integrator_ = std::make_unique<RayCastIntegrator>();
   }
+
+  integrator_->makeCamera(cameraConfig);
 }
+
+void scenConfig() {}
 
 void App::render() {
+  integratorConfig(generalConfig.integratorType);
+  scenConfig();
 
-#ifdef DEBUG
-  std::cout << "Quantidade de objetos na cena: " << primitives_.size()
-            << std::endl;
-#endif // DEBUG
+  integrator_->render(void);
 
-  std::size_t h = camera_->film_.height(), w = camera_->film_.width();
-  camera_->getFrame(config_.look_from, config_.look_at, config_.up);
-
-  // Sempre calcula se houver valores definidos
-  if (fovy > 0 || aspec > 0) {
-    calculateScreenWindow();
-  }
-
-  camera_->window(screen_window_.l_, screen_window_.r_, screen_window_.b_,
-                  screen_window_.t_);
-
-  int x0 = 0, x1 = w, y0 = 0, y1 = h;
-  if (Global::has_crop) {
-    x0 = std::max(0, Global::crop[0]);
-    x1 = std::min((int)w, Global::crop[1]);
-    y0 = std::max(0, Global::crop[2]);
-    y1 = std::min((int)h, Global::crop[3]);
-  }
-
+  /*
   for (int i = y0; i < y1; i++) {
     for (int j = x0; j < x1; j++) {
       // Gera o raio com limites t_min e t_max
@@ -201,24 +248,6 @@ void App::render() {
       }
     }
   }
-
-  write_image();
-}
-
-void App::write_image() {
-  if (!ppm_) {
-    lodepng::encode(filename_, camera_->film_.data(),
-                    (unsigned)camera_->film_.width(),
-                    (unsigned)camera_->film_.height());
-  } else {
-    FILE *f = fopen(filename_.c_str(), "w");
-    if (!f)
-      return;
-    fprintf(f, "P3\n%d %d\n255\n", (int)camera_->film_.width(),
-            (int)camera_->film_.height());
-    for (size_t i = 0; i < camera_->film_.data().size(); i += 4)
-      fprintf(f, "%d %d %d\n", camera_->film_.data()[i],
-              camera_->film_.data()[i + 1], camera_->film_.data()[i + 2]);
-    fclose(f);
-  }
+*/
+  integrator_->write_image(generalConfig.filename_, generalConfig.ppm_);
 }

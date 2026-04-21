@@ -5,6 +5,8 @@
 #include "material.hpp"
 
 class FlatMaterial : public Material {
+public:
+  FlatMaterial(RGBColor color) : color_(color) {}
 
   RGBColor getColor() const { return color_; }
 
