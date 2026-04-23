@@ -14,8 +14,8 @@ struct RayCastIntegrator : public Integrator {
         Ray ray = cam_->generateRay(i, j);
 
         float t_hit;
-        if (sc.primitive_->intersect(ray, t_hit)) {
-          auto mat = sc.primitive_.get()->getMaterial();
+        if (sc.aggregate_->intersect(ray, t_hit)) {
+          auto mat = sc.aggregate_.get()->getMaterial();
           /* Dependendo da primitiva, 'AggregatePrimitive', por ex, mat é
            * nullptr. */
           if (mat)

@@ -2,6 +2,7 @@
 #define PRIM_LIST_HPP
 
 #include "aggregate_primitive.hpp"
+#include "primitive.hpp"
 #include <memory>
 #include <vector>
 

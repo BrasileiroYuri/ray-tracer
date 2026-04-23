@@ -60,9 +60,6 @@ void Parser::parse() const {
 
     // Verifica se a tag (ex: camera, sphere, background) existe no dicionário
     if (elements_.find(name) == elements_.end()) {
-#ifdef DEBUG
-      std::cerr << "Element \'" << name << "\' invalid.\n";
-#endif
       continue;
     }
 

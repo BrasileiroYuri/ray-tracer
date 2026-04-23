@@ -6,7 +6,6 @@
 #include "math.hpp"
 #include "param_set.hpp"
 #include "prim_list.hpp"
-#include "primitive.hpp"
 #include "raycast_integrator.hpp"
 #include "scene.hpp"
 #include "sphere.hpp"
@@ -43,7 +42,9 @@ CameraConfig cameraConfig;
 SceneConfig sceneConfig;
 
 std::unordered_map<std::string, std::shared_ptr<Material>> materials;
-std::shared_ptr<Material> actualMaterial = nullptr;
+std::shared_ptr<Material> currMaterial = nullptr;
+
+void App::include(const ParamSet &) {}
 
 void App::make_named_material(const ParamSet &ps) {
   auto name = ps.retrieve<std::string>("name");
@@ -77,7 +78,7 @@ void App::named_material(const ParamSet &ps) {
   }
 
   std::cout << ">>> Usando material '" << name << "'.\n";
-  actualMaterial = materials[name];
+  currMaterial = materials[name];
 }
 
 void App::material(const ParamSet &ps) {
@@ -86,13 +87,13 @@ void App::material(const ParamSet &ps) {
   if (type.empty()) {
     std::cout << ">>> Material de tipo inválido, usando 'FlatMaterial\n'";
     auto color = ps.retrieve<RGBColor>("color", {0, 0, 0});
-    actualMaterial = std::make_shared<FlatMaterial>(color);
+    currMaterial = std::make_shared<FlatMaterial>(color);
     return;
   }
 
   if (type == "flat") {
     auto color = ps.retrieve<RGBColor>("color", {0, 0, 0});
-    actualMaterial = std::make_shared<FlatMaterial>(color);
+    currMaterial = std::make_shared<FlatMaterial>(color);
   }
 }
 
@@ -195,7 +196,7 @@ void App::sphere(const ParamSet &ps) {
 
   auto shape = std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max);
 
-  std::shared_ptr<Material> mat = actualMaterial;
+  std::shared_ptr<Material> mat = currMaterial;
 
   auto geoPrim = std::make_unique<GeometricPrimitive>(std::move(shape), mat);
 

@@ -1,7 +1,6 @@
 #ifndef API_HPP
 #define API_HPP
 
-#include "aggregate_primitive.hpp"
 #include "integrator.hpp"
 #include "param_set.hpp"
 #include <memory>

@@ -3,7 +3,6 @@
 
 #include "aggregate_primitive.hpp"
 #include "background.hpp"
-#include "primitive.hpp"
 
 #include <array>
 #include <memory>
