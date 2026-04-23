@@ -194,11 +194,13 @@ void App::sphere(const ParamSet &ps) {
   float z_max = ps.retrieve<float>("z_max", radius);
   float phi_max = ps.retrieve<float>("phi_max", 360.0f);
 
+  /* Instanciando um 'Shape' de Owner único (unique_ptr). */
   auto shape = std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max);
 
+  /* Instanciando um 'Material' de Owner compartilhado (shared_ptr). */
   std::shared_ptr<Material> mat = currMaterial;
 
-  auto geoPrim = std::make_unique<GeometricPrimitive>(std::move(shape), mat);
+  auto geoPrim = std::make_shared<GeometricPrimitive>(std::move(shape), mat);
 
   sceneConfig.aggrPrim->addObject(std::move(geoPrim));
 }

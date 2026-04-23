@@ -8,17 +8,17 @@
 
 class PrimList : public AggregatePrimitive {
 public:
-  void addObject(std::unique_ptr<Primitive> p) override {
-    primitives_.push_back(std::move(p));
+  void addObject(std::shared_ptr<Primitive> p) override {
+    primitives_.push_back(p);
   }
 
-  bool intersect(const Ray &r, float &t_hit) const override {
+  bool intersect(const Ray &r, Surfel &s) const override {
     bool hit = false;
-    float closest = t_hit;
+    float closest = s.t_hit;
 
     for (const auto &p : primitives_) {
       float t = closest;
-      if (p->intersect(r, t)) {
+      if (p->intersect(r, s)) {
         hit = true;
         if (t < closest) {
           closest = t;
@@ -26,12 +26,12 @@ public:
       }
     }
 
-    t_hit = closest;
+    s.t_hit = closest;
     return hit;
   }
 
 private:
-  std::vector<std::unique_ptr<Primitive>> primitives_;
+  std::vector<std::shared_ptr<Primitive>> primitives_;
 };
 
 #endif

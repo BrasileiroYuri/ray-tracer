@@ -17,8 +17,14 @@ public:
               << (int)c.B << "\n";
   }
 
-  bool intersect(const Ray &r, float &t_hit) const override {
-    return shape_->intersect(r, t_hit);
+  bool intersect(const Ray &r, Surfel &s) const override {
+    bool result = shape_->intersect(r, s.t_hit);
+
+    std::cout << "COLOR FROM INTERSECT: ->" << (int)material_->getColor().R
+              << " " << (int)material_->getColor().G << " "
+              << (int)material_->getColor().B << "\n";
+    s.mat_ = material_;
+    return result;
   }
 
   Material *getMaterial() const override { return material_.get(); }

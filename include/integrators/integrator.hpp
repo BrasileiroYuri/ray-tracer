@@ -8,6 +8,8 @@
 #include <memory>
 #include <string>
 
+#define Surfel Primitive::Surfel
+
 struct RenderConfig {};
 
 class Integrator {

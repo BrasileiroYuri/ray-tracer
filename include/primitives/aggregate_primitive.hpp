@@ -7,7 +7,7 @@
 
 class AggregatePrimitive : public Primitive {
 public:
-  virtual void addObject(std::unique_ptr<Primitive> p) = 0;
+  virtual void addObject(std::shared_ptr<Primitive> p) = 0;
   Material *getMaterial() const override { return nullptr; }
 };
 

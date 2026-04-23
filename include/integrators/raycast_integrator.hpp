@@ -13,13 +13,11 @@ struct RayCastIntegrator : public Integrator {
       for (std::size_t i = 0; i < widht; i++) {
         Ray ray = cam_->generateRay(i, j);
 
-        float t_hit;
-        if (sc.aggregate_->intersect(ray, t_hit)) {
-          auto mat = sc.aggregate_.get()->getMaterial();
-          /* Dependendo da primitiva, 'AggregatePrimitive', por ex, mat é
-           * nullptr. */
-          if (mat)
-            cam_->add(i, j, mat->getColor());
+        Surfel s;
+
+        if (sc.aggregate_->intersect(ray, s)) {
+          if (s.mat_.get())
+            cam_->add(i, j, s.mat_->getColor());
         } else {
 
           float u = float(i) / float(widht - 1);
