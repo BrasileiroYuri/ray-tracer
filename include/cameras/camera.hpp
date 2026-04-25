@@ -8,6 +8,7 @@
 #include "ray.hpp"
 #include <cmath>
 #include <cstddef>
+#include <iostream>
 #include <string>
 
 struct CameraConfig {
@@ -63,6 +64,7 @@ public:
                 film_.data()[i + 2]);
       fclose(f);
     }
+    std::cout << ">>> Arquivo '" << filename << "' criado com sucesso.\n";
   }
 
 protected:

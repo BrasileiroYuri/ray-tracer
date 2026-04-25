@@ -21,7 +21,6 @@ private:
       {"film", App::film},
       {"background", App::backGround},
       {"camera", App::camera},
-      {"include", App::include},
       {"lookat", App::lookat},
       {"object", App::object},
       {"make_named_material", App::make_named_material},
@@ -71,6 +70,7 @@ private:
           {"tl", convert<RGBColor, int, 3>},
           {"tr", convert<RGBColor, int, 3>},
           {"single_color", convert<RGBColor, int, 3>},
+          {"color", convert<RGBColor, int, 3>},
           {"look_from", convert<point3, float, 3>},
           {"look_at", convert<point3, float, 3>},
           {"center", convert<point3, float, 3>},
@@ -78,6 +78,7 @@ private:
           {"screen_window", convert<ScreenWindow, float, 4>},
       };
 
+  void include(const std::string &) const;
   std::string filename_;
 };
 

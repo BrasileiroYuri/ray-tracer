@@ -14,19 +14,21 @@ public:
 
   bool intersect(const Ray &r, Surfel &s) const override {
     bool hit = false;
-    float closest = s.t_hit;
+    float closest = std::numeric_limits<float>::max();
+    Surfel closest_surfel;
 
     for (const auto &p : primitives_) {
-      float t = closest;
-      if (p->intersect(r, s)) {
+      Surfel temp;
+      temp.t_hit = closest;
+      if (p->intersect(r, temp) && temp.t_hit < closest) {
         hit = true;
-        if (t < closest) {
-          closest = t;
-        }
+        closest = temp.t_hit;
+        closest_surfel = temp;
       }
     }
 
-    s.t_hit = closest;
+    if (hit)
+      s = closest_surfel;
     return hit;
   }
 

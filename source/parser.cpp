@@ -32,11 +32,13 @@ RGBColor parse_color_format(const std::string &str) {
                   (unsigned char)v[2]);
 }
 
-void Parser::parse() const {
+void Parser::include(const std::string &filename) const {
   tinyxml2::XMLDocument doc;
 
-  if (doc.LoadFile(filename_.c_str()) != tinyxml2::XML_SUCCESS) {
-    std::cerr << "Error loading the XML file!" << '\n';
+  if (doc.LoadFile(filename.c_str()) != tinyxml2::XML_SUCCESS) {
+    std::cerr << ">>> Error loading the '" << filename
+              << "' XML file!\nError:" << '\n';
+    doc.PrintError();
     return;
   }
 
@@ -46,20 +48,10 @@ void Parser::parse() const {
 
   for (auto it = root->FirstChildElement(); it; it = it->NextSiblingElement()) {
     std::string name = it->Name();
-
-    // Ignora marcadores de escopo
     if (name == "world_begin") {
       continue;
-    }
-
-    // Dispara a renderização ao final do arquivo
-    if (name == "world_end") {
+    } else if (name == "world_end" || name == "render_again") {
       App::render();
-      continue;
-    }
-
-    // Verifica se a tag (ex: camera, sphere, background) existe no dicionário
-    if (elements_.find(name) == elements_.end()) {
       continue;
     }
 
@@ -76,9 +68,72 @@ void Parser::parse() const {
       }
 
       if (conversor_.find(attr_name) == conversor_.end()) {
-#ifdef DEBUG
         std::cerr << "Atribute: '" << attr_name << "' invalid.\n";
-#endif
+        continue;
+      }
+
+      conversor_.at(attr_name)(attr_name, attr_val, &ps);
+    }
+
+    // Executa a função associada à tag (ex: criar esfera, configurar câmera)
+    elements_.at(name)(ps);
+  }
+}
+
+void Parser::parse() const {
+  tinyxml2::XMLDocument doc;
+
+  if (doc.LoadFile(filename_.c_str()) != tinyxml2::XML_SUCCESS) {
+    std::cerr << ">>> Error loading the '" << filename_
+              << "' XML file!\nError:" << '\n';
+    doc.PrintError();
+    return;
+  }
+
+  auto root = doc.FirstChildElement("RT3");
+  if (!root)
+    return;
+
+  for (auto it = root->FirstChildElement(); it; it = it->NextSiblingElement()) {
+    std::string name = it->Name();
+
+    if (name == "world_begin") {
+      continue;
+    } else if (name == "world_end" || name == "render_again") {
+      App::render();
+      continue;
+    } else if (name == "include") {
+      std::string attr = it->FirstAttribute()->Name();
+
+      if (attr == "filename") {
+        include(it->FirstAttribute()->Value());
+        continue;
+      } else {
+        std::cout << ">>> Atributo '" << attr
+                  << "' from tag 'include' é inválido.\n";
+      }
+    }
+
+    // Verifica se a tag (ex: camera, sphere, background) existe no dicionário
+    if (elements_.find(name) == elements_.end()) {
+      std::cerr << "Tag: '" << name << "' inválida.\n";
+      continue;
+    }
+
+    ParamSet ps;
+    for (auto attr = it->FirstAttribute(); attr; attr = attr->Next()) {
+      std::string attr_name = attr->Name();
+      std::string attr_val = attr->Value();
+
+      //@TODO: Refazer, não escala.
+      // 1. Processamento de Cores
+      if (attr_name == "color" || attr_name == "bl" || attr_name == "tl" ||
+          attr_name == "tr" || attr_name == "br") {
+        ps.add(attr_name, parse_color_format(attr_val));
+      }
+
+      if (conversor_.find(attr_name) == conversor_.end()) {
+        std::cerr << "Atribute: '" << attr_name << "' invalid.\n";
         continue;
       }
 
