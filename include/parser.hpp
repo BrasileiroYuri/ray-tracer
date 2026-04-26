@@ -52,7 +52,7 @@ private:
       std::string,
       std::function<void(const std::string &, const std::string &, ParamSet *)>>
       conversor_{
-          {"frame_aspectratio", convert<float>},
+          {"frame_aspect_ratio", convert<float>},
           {"radius", convert<float>},
           {"z_min", convert<float>},
           {"z_max", convert<float>},

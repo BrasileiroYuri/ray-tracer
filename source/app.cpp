@@ -215,12 +215,12 @@ void App::integratorConfig(const std::string &type) {
 
   integrator_->makeCamera(cameraConfig);
 }
+
 void App::render() {
   integratorConfig(generalConfig.integratorType);
   Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim));
   integrator_->render(sc);
   integrator_->write_image(generalConfig.filename_, generalConfig.ppm_);
 
-  // Reinicializa para o próximo render_again
   sceneConfig.aggrPrim = std::make_unique<PrimList>();
 }
