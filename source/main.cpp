@@ -62,6 +62,7 @@ int main(int argc, char **argv) {
 
   Parser p(scene_file);
 
+
   p.parse();
 
   return EXIT_SUCCESS;
