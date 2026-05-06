@@ -6,9 +6,13 @@
 #include <cmath>
 #include <memory>
 
+class material;
+
 struct Surfel {
   std::shared_ptr<Material> mat_;
   float t_hit = INFINITY;
+  point3 p; // Ponto de interseção no espaço 3D
+  vec3 n;   // Vetor normal da superfície no ponto p
 };
 
 struct Primitive {

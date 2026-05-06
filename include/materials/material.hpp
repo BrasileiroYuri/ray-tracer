@@ -7,7 +7,7 @@ public:
   virtual ~Material() = default;
 
   /* Futuramente será 'scatter'. */
-  virtual RGBColor getColor() const = 0;
+  virtual RGBColor getColor() const = 0; //
 };
 
 #endif // !MATERIAL_HPP

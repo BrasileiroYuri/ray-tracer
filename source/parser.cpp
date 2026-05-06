@@ -5,7 +5,6 @@
 #include <sstream>
 #include <vector>
 
-// Mantive a lógica de processamento de cores
 RGBColor parse_color_format(const std::string &str) {
   std::stringstream ss(str);
   std::vector<float> v;
@@ -16,20 +15,20 @@ RGBColor parse_color_format(const std::string &str) {
   if (v.size() < 3)
     return RGBColor(0, 0, 0);
 
-  bool is_normalized = true;
+  // Verifica se o usuário está usando a escala 0-255
+  bool is_255_scale = false;
   for (float c : v) {
     if (c > 1.0f) {
-      is_normalized = false;
+      is_255_scale = true;
       break;
     }
   }
 
-  if (is_normalized) {
-    return RGBColor((unsigned char)(v[0] * 255), (unsigned char)(v[1] * 255),
-                    (unsigned char)(v[2] * 255));
+  // Converte para float 0.0-1.0 se necessário e retorna o RGBColor
+  if (is_255_scale) {
+    return RGBColor(v[0] / 255.0f, v[1] / 255.0f, v[2] / 255.0f);
   }
-  return RGBColor((unsigned char)v[0], (unsigned char)v[1],
-                  (unsigned char)v[2]);
+  return RGBColor(v[0], v[1], v[2]);
 }
 
 void Parser::include(const std::string &filename) const {
@@ -61,11 +60,13 @@ void Parser::include(const std::string &filename) const {
       std::string attr_val = attr->Value();
 
       //@TODO: Refazer, não escala.
-      // 1. Processamento de Cores
+      // 1. Processamento de Cores e intensidades
       if (attr_name == "color" || attr_name == "bl" || attr_name == "tl" ||
-          attr_name == "tr" || attr_name == "br") {
-        ps.add(attr_name, parse_color_format(attr_val));
-      }
+          attr_name == "tr" || attr_name == "br" || attr_name == "ambient" || 
+          attr_name == "diffuse" || attr_name == "specular" || attr_name == "I" || 
+          attr_name == "scale") {
+         ps.add(attr_name, parse_color_format(attr_val));
+}
 
       if (conversor_.find(attr_name) == conversor_.end()) {
         std::cerr << "Atribute: '" << attr_name << "' invalid.\n";
@@ -126,11 +127,13 @@ void Parser::parse() const {
       std::string attr_val = attr->Value();
 
       //@TODO: Refazer, não escala.
-      // 1. Processamento de Cores
+      // 1. Processamento de Cores e intensidades
       if (attr_name == "color" || attr_name == "bl" || attr_name == "tl" ||
-          attr_name == "tr" || attr_name == "br") {
-        ps.add(attr_name, parse_color_format(attr_val));
-      }
+          attr_name == "tr" || attr_name == "br" || attr_name == "ambient" || 
+          attr_name == "diffuse" || attr_name == "specular" || attr_name == "I" || 
+          attr_name == "scale") {
+          ps.add(attr_name, parse_color_format(attr_val));
+}
 
       if (conversor_.find(attr_name) == conversor_.end()) {
         std::cerr << "Atribute: '" << attr_name << "' invalid.\n";

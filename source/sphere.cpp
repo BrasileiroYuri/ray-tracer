@@ -1,14 +1,14 @@
 #include "sphere.hpp"
 #include <cmath>
 
-bool Sphere::intersect(const Ray &r, float &t_hit) const {
+// agora recebe a struct Surfel por referência
+bool Sphere::intersect(const Ray &r, Surfel &s) const {
   vec3 d_hat = normalize(r.direction());
   vec3 oc = r.origin() - center_;
 
   float parallel_len = dot(oc, d_hat);
   vec3 oc_perp = oc - parallel_len * d_hat;
 
-  // Cálculo do discriminante estável para esferas distantes
   float delta = (radius_ * radius_) - dot(oc_perp, oc_perp);
   if (delta < 0)
     return false;
@@ -26,15 +26,20 @@ bool Sphere::intersect(const Ray &r, float &t_hit) const {
     if (p_local.k_ < z_min_ || p_local.k_ > z_max_)
       continue;
 
-    // Verificação de corte em Phi (Azimute)
     float phi = std::atan2(p_local.j_, p_local.i_);
     if (phi < 0)
-      phi += 2.0f * (float)M_PI; // Normaliza para [0, 2*PI]
+      phi += 2.0f * (float)M_PI; 
 
     if (phi > phi_max_)
       continue;
 
-    t_hit = t;
+    s.t_hit = t;          // preenche o membro da struct em vez de variável local
+    s.p = p;              // Armazena o ponto exato da interseção para cálculos de luz
+    s.n = p_local * (1.0f / radius_); // Calcula e armazena a normal (unitário)
+    
+    // Note que não atribuímos o material aqui, pois isso geralmente é feito 
+    // pela classe GeometricPrimitive que envolve esta Shape[cite: 10]
+
     return true;
   }
 

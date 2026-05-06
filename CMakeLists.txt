@@ -14,6 +14,7 @@ include_directories(
     include/materials
     include/shapes
     include/primitives
+    include/lights
     libs/lodepng
     libs/tinyxml2
     libs/math

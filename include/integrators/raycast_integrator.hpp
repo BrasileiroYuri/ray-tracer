@@ -16,4 +16,4 @@ struct RayCastIntegrator : public Integrator {
     return {};
   }
 };
-#endif // !RAYCAST_INTEGRATOR_HPP
+#endif // !RAYCAST_INTEGRATOR_HPP. 

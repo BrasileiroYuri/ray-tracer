@@ -26,7 +26,8 @@ private:
       {"make_named_material", App::make_named_material},
       {"named_material", App::named_material},
       {"material", App::material},
-      {"integrator", App::integrator}};
+      {"integrator", App::integrator},
+      {"light_source", App::light_source}};
 
   template <typename T>
   static void convert(const std::string &name, const std::string &value,
@@ -44,7 +45,7 @@ private:
     std::array<K, size> arr;
     for (unsigned long i = 0; i < size; i++)
       ss >> arr[i];
-    T val{arr};
+    T val(arr);
     ps->add(name, val);
   }
 
@@ -76,6 +77,14 @@ private:
           {"center", convert<point3, float, 3>},
           {"up", convert<vec3, float, 3>},
           {"screen_window", convert<ScreenWindow, float, 4>},
+          {"ambient", convert<RGBColor, float, 3>},
+          {"diffuse", convert<RGBColor, float, 3>},
+          {"specular", convert<RGBColor, float, 3>},
+          {"I", convert<RGBColor, float, 3>},
+          {"scale", convert<RGBColor, float, 3>},
+          {"from", convert<point3, float, 3>},
+          {"to", convert<point3, float, 3>},
+          {"glossiness", convert<float>},
       };
 
   void include(const std::string &) const;

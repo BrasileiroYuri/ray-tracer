@@ -51,4 +51,4 @@ protected:
 
   virtual std::optional<RGBColor> li(const Ray &ray, const Scene &sc) = 0;
 };
-#endif // !INTEGRATOR_HPP
+#endif // !INTEGRATOR_HPP.
