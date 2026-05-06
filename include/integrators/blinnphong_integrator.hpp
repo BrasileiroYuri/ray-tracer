@@ -17,6 +17,7 @@ public:
         }
 
         RGBColor L_total(0, 0, 0);
+
         vec3 wo = normalize(ray.direction() * -1.0f);
         vec3 n = normalize(surfel.n);
 
@@ -28,16 +29,10 @@ public:
             // Obtém a intensidade e a direção da luz (wi) para o ponto atual
             RGBColor intensity = light->sample_Li(surfel.p, wi, dist);
 
-            if (light->flags == LightFlag::Ambient) {
-                // Componente Ambiente: L = Ia * ka (usamos getColor para obter ka/kd base)
-                L_total += intensity * surfel.mat_->getColor();
-            } else {
-                // O Integrator não sabe se é Blinn ou Flat, ele apenas pede o "espalhamento" da luz[cite: 3, 33]
-                L_total += intensity * surfel.mat_->scatter(wo, wi, n);
-            }
+            L_total += intensity * surfel.mat_->scatter(wo, wi, n);
         }
 
-        return L_total;
+        return std::make_optional(L_total);
     }
 };
 

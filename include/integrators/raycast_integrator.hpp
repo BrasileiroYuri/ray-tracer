@@ -9,7 +9,7 @@ struct RayCastIntegrator : public Integrator {
 
     // Apenas retorna a cor intrínseca do material no ponto de impacto
     if (sc.aggregate_->intersect(ray, s))
-      return s.mat_->getColor();
+      return s.mat_->scatter(NULL, NULL, NULL);
 
     return {};
   }

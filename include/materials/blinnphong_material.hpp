@@ -30,7 +30,6 @@ public:
         return diffuse + specular;
     }
 
-    RGBColor getColor() const override { return kd; }
 };
 
 #endif // !BLINNPHONG_MATERIAL_HPP
