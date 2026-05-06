@@ -216,6 +216,7 @@ void App::integratorConfig(const std::string &type) {
   integrator_->makeCamera(cameraConfig);
 }
 
+void App::lightSource(const ParamSet &ps)  {}
 void App::render() {
   integratorConfig(generalConfig.integratorType);
   Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim));

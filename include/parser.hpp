@@ -23,7 +23,7 @@ private:
       {"camera", App::camera},
       {"lookat", App::lookat},
       {"object", App::object},
-      {"ligth_source", App::lightSouce},
+      {"light_source", App::lightSource},
       {"make_named_material", App::make_named_material},
       {"named_material", App::named_material},
       {"material", App::material},
