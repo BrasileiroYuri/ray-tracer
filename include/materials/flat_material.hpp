@@ -6,11 +6,16 @@
 
 class FlatMaterial : public Material {
 public:
-  FlatMaterial(RGBColor color) : color_(color) {}
+    FlatMaterial(RGBColor color) : color_(color) {}
 
-  RGBColor getColor() const override { return color_; }
+    // Materiais flat ignoram vetores de luz e normal
+    RGBColor scatter(const vec3& wo, const vec3& wi, const vec3& n) const override {
+        return color_;
+    }
+
+    RGBColor getColor() const override { return color_; }
 
 private:
-  RGBColor color_;
+    RGBColor color_;
 };
-#endif // !FLAT_MATERIAL_HPP
+#endif

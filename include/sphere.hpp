@@ -2,6 +2,7 @@
 #define SPHERE_HPP
 
 #include "shape.hpp"
+#include "primitive.hpp"
 #include <cmath>
 
 class Sphere : public Shape {
@@ -14,11 +15,12 @@ public:
 
     float low_z = std::max(-radius, z_min);
     float high_z = std::min(radius, z_max);
+
     theta_min_ = std::acos(high_z / radius);
     theta_max_ = std::acos(low_z / radius);
   }
 
-  bool intersect(const Ray &r, float &t_hit) const override;
+  bool intersect(const Ray &r, Surfel &s) const override;
 
 private:
   point3 center_;

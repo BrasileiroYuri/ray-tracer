@@ -9,12 +9,18 @@
 #include "raycast_integrator.hpp"
 #include "scene.hpp"
 #include "sphere.hpp"
+#include "blinnphong_material.hpp"
+#include "blinnphong_integrator.hpp"
+#include "light.hpp"
+#include "ambient_light.hpp"
+#include "direcional_light.hpp"
+#include "point_light.hpp"
 #include <algorithm>
 #include <array>
 #include <iostream>
 #include <memory>
 #include <string>
-#include <utility>
+#include <utility> //
 
 // Acessando as opções do main.cpp
 namespace Global {
@@ -35,6 +41,7 @@ struct GeneralConfig {
 struct SceneConfig {
   std::unique_ptr<AggregatePrimitive> aggrPrim = std::make_unique<PrimList>();
   std::array<RGBColor, 4> arr;
+  std::vector<std::shared_ptr<Light>> lights;
 };
 
 GeneralConfig generalConfig;
@@ -62,6 +69,19 @@ void App::make_named_material(const ParamSet &ps) {
 
   if (type == "flat") {
     materials[name] = std::make_shared<FlatMaterial>(color);
+  }
+
+  if (type == "blinn") {
+    // Extrai os coeficientes de cor (que o parser já converteu para float 0-1)
+    auto ka = ps.retrieve<RGBColor>("ambient", {0.1f, 0.1f, 0.1f});
+    auto kd = ps.retrieve<RGBColor>("diffuse", {0.5f, 0.5f, 0.5f});
+    auto ks = ps.retrieve<RGBColor>("specular", {0.5f, 0.5f, 0.5f});
+    
+    // Extrai o expoente de brilho (glossiness)
+    auto gloss = ps.retrieve<float>("glossiness", 10.0f);
+
+    std::cout << ">>> Criando material Blinn: '" << name << "'\n";
+    materials[name] = std::make_shared<BlinnPhongMaterial>(ka, kd, ks, gloss);
   }
 }
 
@@ -92,6 +112,15 @@ void App::material(const ParamSet &ps) {
   if (type == "flat") {
     auto color = ps.retrieve<RGBColor>("color", {0, 0, 0});
     currMaterial = std::make_shared<FlatMaterial>(color);
+  }
+
+  if (type == "blinn") {
+    auto ka = ps.retrieve<RGBColor>("ambient", {0.1f, 0.1f, 0.1f});
+    auto kd = ps.retrieve<RGBColor>("diffuse", {0.5f, 0.5f, 0.5f});
+    auto ks = ps.retrieve<RGBColor>("specular", {0.5f, 0.5f, 0.5f});
+    auto gloss = ps.retrieve<float>("glossiness", 10.0f);
+
+    currMaterial = std::make_shared<BlinnPhongMaterial>(ka, kd, ks, gloss);
   }
 }
 
@@ -203,11 +232,33 @@ void App::sphere(const ParamSet &ps) {
   sceneConfig.aggrPrim->addObject(std::move(geoPrim));
 }
 
+void App::light_source(const ParamSet &ps) {
+  auto type = ps.retrieve<std::string>("type");
+  auto intensity = ps.retrieve<RGBColor>("I", {1, 1, 1});
+  auto scale = ps.retrieve<RGBColor>("scale", {1, 1, 1});
+
+  if (type == "ambient") {
+    sceneConfig.lights.push_back(std::make_shared<AmbientLight>(intensity, scale));
+  } else if (type == "directional") {
+    auto from = ps.retrieve<point3>("from", {0, 1, 0});
+    auto to = ps.retrieve<point3>("to", {0, 0, 0});
+    sceneConfig.lights.push_back(std::make_shared<DirectionalLight>(intensity, scale, from, to));
+  } else if (type == "point") {
+    auto from = ps.retrieve<point3>("from", {0, 0, 0});
+    sceneConfig.lights.push_back(std::make_shared<PointLight>(intensity, scale, from));
+  }
+}
+
 void App::integratorConfig(const std::string &type) {
   if (type == "flat") {
     std::cout << ">>> Usando 'RayCastIntegrator'.\n";
     integrator_ = std::make_unique<RayCastIntegrator>();
-  } else {
+  } 
+  else if (type == "blinn") {
+    std::cout << ">>> Usando 'BlinnPhongIntegrator'.\n";
+    integrator_ = std::make_unique<BlinnPhongIntegrator>();
+  }
+  else {
     std::cerr << ">>> Tipo do Integrator não identificado. Usando "
                  "'RayCastIntegrator'.\n";
     integrator_ = std::make_unique<RayCastIntegrator>();
@@ -218,10 +269,12 @@ void App::integratorConfig(const std::string &type) {
 
 void App::lightSource(const ParamSet &ps)  {}
 void App::render() {
+  
   integratorConfig(generalConfig.integratorType);
-  Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim));
+  //  garante que as luzes cheguem ao integrador
+  Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim), sceneConfig.lights);
   integrator_->render(sc);
   integrator_->write_image(generalConfig.filename_, generalConfig.ppm_);
-
   sceneConfig.aggrPrim = std::make_unique<PrimList>();
+  sceneConfig.lights.clear(); // evita que luzes de um render acumulem no próximo
 }

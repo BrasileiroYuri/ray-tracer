@@ -5,6 +5,7 @@
 #include "param_set.hpp"
 #include <memory>
 #include <string>
+#include "material.hpp"
 
 struct ScreenWindow {
   ScreenWindow(float l, float r, float b, float t)
@@ -29,6 +30,7 @@ public:
   static void include(const ParamSet &);
   static void lightSource(const ParamSet &);
   static void named_material(const ParamSet &);
+  static void light_source(const ParamSet &); 
 
 private:
   static void integratorConfig(const std::string &type);
@@ -37,3 +39,4 @@ private:
 };
 
 #endif // !API_HPP
+

@@ -12,9 +12,13 @@ public:
       : shape_(std::move(shape)), material_(std::move(material)) {}
 
   bool intersect(const Ray &r, Surfel &s) const override {
-    bool result = shape_->intersect(r, s.t_hit);
-    s.mat_ = material_;
-    return result;
+    // Agora passa a Surfel completa para que a Shape possa preencher a normal (n) e o ponto (p)
+    if (shape_->intersect(r, s)) {
+      // Se houve colisão, atribuímos o material desta primitiva ao surfel
+      s.mat_ = material_;
+      return true;
+    }
+    return false;
   }
 
   Material *getMaterial() const override { return material_.get(); }
