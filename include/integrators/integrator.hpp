@@ -34,9 +34,16 @@ public:
         }
     }
 
-    void makeCamera(CameraConfig cc); 
-    void write_image(std::string &f, bool ppm = false) const;
+  void makeCamera(CameraConfig cc) {
+    if (cc.type == "perspective")
+      cam_ = std::make_unique<Perspective>(cc);
+    else
+      cam_ = std::make_unique<Orthographic>(cc);
+  }
 
+  void write_image(std::string &f, bool ppm = false) const {
+    cam_->write_image(f, ppm);
+  }
 protected:
     std::unique_ptr<Camera> cam_ = nullptr;
     virtual std::optional<RGBColor> li(const Ray &ray, const Scene &sc) = 0;
