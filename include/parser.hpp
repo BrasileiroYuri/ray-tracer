@@ -1,7 +1,7 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
-#include "app.hpp"
+
 #include "param_set.hpp"
 #include "background.hpp"
 #include <array>
@@ -10,6 +10,9 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
+#include "math.hpp"
+
+class App;
 
 class Parser {
 public:

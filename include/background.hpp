@@ -13,7 +13,13 @@ struct RGBColor {
   RGBColor(const std::array<int, 3> &arr)
       : r{arr[0]/255.0f}, g{arr[1]/255.0f}, b{arr[2]/255.0f} {}
 
-  RGBColor(float r, float g, float b, float a = 1.0f) : r{r}, g{g}, b{b}, a{a} {}
+  // contrutor para float
+  RGBColor(const std::array<float, 3> &arr)
+      : r{arr[0]}, g{arr[1]}, b{arr[2]}, a{1.0f} {}
+
+  // Construtor direto
+  RGBColor(float r_, float g_, float b_, float a_ = 1.0f) 
+      : r{r_}, g{g_}, b{b_}, a{a_} {}
 
   RGBColor() = default;
 

@@ -3,7 +3,7 @@
 #include "tinyxml2.h"
 #include <iostream>
 #include <sstream>
-#include <vector>
+#include <vector> 
 
 RGBColor parse_color_format(const std::string &str) {
   std::stringstream ss(str);

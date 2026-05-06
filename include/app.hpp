@@ -5,6 +5,7 @@
 #include "param_set.hpp"
 #include <memory>
 #include <string>
+#include "material.hpp"
 
 struct ScreenWindow {
   ScreenWindow(float l, float r, float b, float t)

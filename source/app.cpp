@@ -274,7 +274,6 @@ void App::render() {
   Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim), sceneConfig.lights);
   integrator_->render(sc);
   integrator_->write_image(generalConfig.filename_, generalConfig.ppm_);
-  // Limpa APENAS o necessário para o próximo comando 'render' do XML
   sceneConfig.aggrPrim = std::make_unique<PrimList>();
   sceneConfig.lights.clear(); // evita que luzes de um render acumulem no próximo
 }
