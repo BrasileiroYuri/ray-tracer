@@ -3,7 +3,7 @@
 
 #include "app.hpp"
 #include "param_set.hpp"
-
+#include "background.hpp"
 #include <array>
 #include <cstddef>
 #include <functional>
@@ -45,7 +45,7 @@ private:
     std::array<K, size> arr;
     for (unsigned long i = 0; i < size; i++)
       ss >> arr[i];
-    T val(arr);
+    T val{arr};
     ps->add(name, val);
   }
 

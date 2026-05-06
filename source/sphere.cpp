@@ -37,8 +37,6 @@ bool Sphere::intersect(const Ray &r, Surfel &s) const {
     s.p = p;              // Armazena o ponto exato da interseção para cálculos de luz
     s.n = p_local * (1.0f / radius_); // Calcula e armazena a normal (unitário)
     
-    // Note que não atribuímos o material aqui, pois isso geralmente é feito 
-    // pela classe GeometricPrimitive que envolve esta Shape[cite: 10]
 
     return true;
   }

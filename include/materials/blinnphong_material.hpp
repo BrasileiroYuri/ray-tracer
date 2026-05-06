@@ -10,6 +10,10 @@ public:
 
     BlinnPhongMaterial(const RGBColor& a, const RGBColor& d, const RGBColor& s, float g) 
         : ka(a), kd(d), ks(s), glossiness(g) {}
+
+    RGBColor getColor() const override {
+        return kd; 
+    }
 };
 
 #endif

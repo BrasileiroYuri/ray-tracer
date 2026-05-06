@@ -4,7 +4,7 @@
 #include <array>
 #include <sstream>
 #include <string>
-#include <algorithm>
+#include <algorithm> 
 
 struct RGBColor {
   
@@ -25,6 +25,15 @@ struct RGBColor {
   RGBColor& operator+=(const RGBColor& other) { 
     r += other.r; g += other.g; b += other.b; 
     return *this; 
+  }
+
+  std::string str() const {
+    std::stringstream ss;
+    // Converte os valores de 0.0-1.0 para inteiros 0-255 para exibição no log
+    ss << "{" << static_cast<int>(r * 255) 
+       << ", " << static_cast<int>(g * 255) 
+       << ", " << static_cast<int>(b * 255) << "}";
+    return ss.str();
   }
 
   // Método auxiliar para o Integrator obter a cor base em materiais não-Blinn
