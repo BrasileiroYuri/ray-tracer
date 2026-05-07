@@ -1,0 +1,74 @@
+<RT3>
+    <lookat look_from="-2 5.5 -16" look_at="0 1 2" up="0 1 0" />
+    <camera type="perspective" fovy="42" />
+    <integrator type="blinn" depth="2" />
+    <film type="image" w_res="1920" h_res="1200" filename="cool_scene.png" img_type="png" gamma_corrected="true" />
+
+    <!-- Objects storage -->
+    <aggregator type="list"/>
+
+    <!-- Scene -->
+    <world_begin/>
+
+        <!-- Background: stronger sky gradient -->
+        <background type="colors" bl="160 210 255" tl="8 58 145" tr="8 58 145" br="160 210 255" />
+
+        <!-- Soft ambient fill -->
+        <light_source type="ambient" I="0.10 0.10 0.12" scale="0.7 0.7 0.7" />
+        <light_source type="ambient" I="0.08 0.08 0.10" scale="0.5 0.5 0.5" />
+
+        <!-- Key light -->
+        <light_source type="directional" I="1.0 0.95 0.88" scale="0.55 0.55 0.55" from="2 3 -2" to="0 0 1" />
+
+        <!-- Rim light for highlights -->
+        <light_source type="directional" I="0.60 0.70 1.00" scale="0.35 0.35 0.35" from="-3 2 -1" to="0 0 1" />
+
+        <!-- Warm accent point light -->
+        <light_source type="point" I="1.0 0.75 0.55" scale="0.55 0.55 0.55" from="-4 4 0" />
+
+        <!-- Materials -->
+        <make_named_material type="blinn" name="gold"     ambient="0.25 0.22 0.10" diffuse="1.00 0.72 0.10" specular="0.95 0.78 0.35" glossiness="256"/>
+        <make_named_material type="blinn" name="silver"   ambient="0.18 0.18 0.20" diffuse="0.75 0.78 0.82" specular="0.95 0.95 0.98" glossiness="512"/>
+        <make_named_material type="blinn" name="redish"   ambient="0.35 0.12 0.10" diffuse="0.92 0.22 0.14" specular="0.85 0.72 0.72" glossiness="96"/>
+        <make_named_material type="blinn" name="greenish" ambient="0.14 0.30 0.14" diffuse="0.20 0.88 0.28" specular="0.78 0.90 0.78" glossiness="192"/>
+        <make_named_material type="blinn" name="blueish"  ambient="0.12 0.16 0.32" diffuse="0.12 0.28 0.92" specular="0.80 0.82 0.96" glossiness="48"/>
+        <make_named_material type="blinn" name="dark"     ambient="0.08 0.08 0.08" diffuse="0.22 0.22 0.22" specular="0.05 0.05 0.05" glossiness="8"/>
+
+        <!-- Ground -->
+        <named_material name="dark"/>
+        <object type="sphere" center="0 -5000 0" radius="5000" />
+
+        <!-- Main composition: a small cluster with varied sizes -->
+        <named_material name="redish"/>
+        <object type="sphere" center="0 1.0 0" radius="1.0" />
+
+        <named_material name="greenish"/>
+        <object type="sphere" center="-3.1 1.0 2.2" radius="1.0" />
+
+        <named_material name="blueish"/>
+        <object type="sphere" center="2.7 1.2 3.2" radius="1.2" />
+
+        <named_material name="gold"/>
+        <object type="sphere" center="5.2 2.8 -0.8" radius="1.35" />
+
+        <named_material name="silver"/>
+        <object type="sphere" center="-0.8 3.6 5.5" radius="0.55" />
+
+        <!-- Extra floating objects for a more interesting silhouette -->
+        <material type="flat" color="255 110 220" />
+        <object type="sphere" center="-4.6 1.6 7.5" radius="1.15" />
+
+        <material type="flat" color="80 240 120" />
+        <object type="sphere" center="1.8 4.0 6.2" radius="0.45" />
+
+        <material type="flat" color="255 180 70" />
+        <object type="sphere" center="-2.2 0.2 4.6" radius="0.42" />
+
+        <material type="flat" color="255 80 80" />
+        <object type="sphere" center="0.9 -1.9 4.2" radius="0.82" />
+
+        <material type="flat" color="120 190 255" />
+        <object type="sphere" center="-5.8 2.7 2.0" radius="0.72" />
+
+    <world_end/>
+</RT3>

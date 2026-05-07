@@ -1,0 +1,87 @@
+<RT3>
+    <lookat look_from="0 5 -16" look_at="0 1 0" up="0 1 0" />
+    <camera type="perspective" fovy="48" />
+    <integrator type="blinn" depth="1" />
+    <film type="image" w_res="1920" h_res="1200" filename="golden_hour.png" img_type="png" gamma_corrected="true" />
+    <aggregator type="list"/>
+    <world_begin/>
+        <!-- Sunset gradient: warm amber horizon, deep crimson top -->
+        <background type="colors" bl="240 130 30" tl="100 10 30" tr="100 10 30" br="240 130 30" />
+
+        <!-- Sol no horizonte: luz quente intensa -->
+        <light_source type="directional" I="1.0 0.6 0.1" scale="1.5 1.5 1.5" from="1 0.2 1" to="0 0 0" />
+        <!-- Luz de preenchimento azul-frio do céu -->
+        <light_source type="directional" I="0.3 0.35 0.6" scale="0.5 0.5 0.5" from="0 1 0" to="0 0 1" />
+        <!-- Ambient quente -->
+        <light_source type="ambient" I="0.3 0.15 0.05" scale="0.8 0.8 0.8" />
+        <!-- Point light suave de "reflexo do sol no chão" -->
+        <light_source type="point" I="0.9 0.5 0.1" scale="0.6 0.6 0.6" from="0 0.5 0" />
+
+        <!-- Materials -->
+        <make_named_material type="blinn" name="polished_gold"
+            ambient="0.3 0.2 0.0"
+            diffuse ="1.0 0.75 0.1"
+            specular ="1.0 0.9 0.5"
+            glossiness ="512"/>
+
+        <make_named_material type="blinn" name="rose_gold"
+            ambient="0.3 0.1 0.1"
+            diffuse ="0.9 0.45 0.35"
+            specular ="1.0 0.8 0.7"
+            glossiness ="256"/>
+
+        <make_named_material type="blinn" name="dark_bronze"
+            ambient="0.15 0.08 0.0"
+            diffuse ="0.4 0.2 0.05"
+            specular ="0.7 0.5 0.2"
+            glossiness ="128"/>
+
+        <make_named_material type="blinn" name="copper"
+            ambient="0.2 0.08 0.02"
+            diffuse ="0.7 0.3 0.1"
+            specular ="0.9 0.6 0.3"
+            glossiness ="256"/>
+
+        <make_named_material type="blinn" name="warm_sand"
+            ambient="0.2 0.12 0.04"
+            diffuse ="0.65 0.5 0.25"
+            specular ="0.1 0.08 0.04"
+            glossiness ="4"/>
+
+        <!-- Chão: areia quente -->
+        <named_material name="warm_sand"/>
+        <object type="sphere" center="0 -5000 0" radius="5000" />
+
+        <!-- Esfera principal: ouro polido -->
+        <named_material name="polished_gold"/>
+        <object type="sphere" center="0 2.0 0" radius="2.0" />
+
+        <!-- Esfera rose gold à esquerda -->
+        <named_material name="rose_gold"/>
+        <object type="sphere" center="-4.5 1.0 2" radius="1.0" />
+
+        <!-- Esfera cobre à direita -->
+        <named_material name="copper"/>
+        <object type="sphere" center="4.5 1.2 1" radius="1.2" />
+
+        <!-- Esferas pequenas bronze -->
+        <named_material name="dark_bronze"/>
+        <object type="sphere" center="-2 0.5 4" radius="0.5" />
+        <object type="sphere" center="2.5 0.6 5" radius="0.6" />
+        <object type="sphere" center="-6 0.4 6" radius="0.4" />
+
+        <!-- Esferas flat de "poeira dourada" flutuando -->
+        <material type="flat" color="255 200 50" />
+        <object type="sphere" center="-1 5.5 -2" radius="0.2" />
+        <object type="sphere" center="2 6.0 -1" radius="0.15" />
+        <object type="sphere" center="-3 4.8 0"  radius="0.18" />
+
+        <material type="flat" color="255 120 20" />
+        <object type="sphere" center="1 4.5 -3"  radius="0.22" />
+        <object type="sphere" center="4 5.2 -2"  radius="0.14" />
+
+        <!-- Disco solar no horizonte (flat, large, atrás) -->
+        <material type="flat" color="255 220 60" />
+        <object type="sphere" center="0 1.5 30" radius="5.0" />
+    <world_end/>
+</RT3>

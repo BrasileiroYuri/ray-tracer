@@ -1,0 +1,497 @@
+
+<RT3>
+    <lookat look_from="-2 5.5 -16" look_at="0 1 2" up="0 1 0" />
+    <camera type="perspective" fovy="42" />
+    <integrator type="blinn" depth="2" />
+    <film type="image" w_res="1920" h_res="1200" filename="cool_scene.png" img_type="png" gamma_corrected="true" />
+
+    <!-- Objects storage -->
+    <aggregator type="list"/>
+
+    <!-- Scene -->
+    <world_begin/>
+
+        <!-- Background: stronger sky gradient -->
+        <background type="colors" bl="160 210 255" tl="8 58 145" tr="8 58 145" br="160 210 255" />
+
+        <!-- Soft ambient fill -->
+        <light_source type="ambient" I="0.10 0.10 0.12" scale="0.7 0.7 0.7" />
+        <light_source type="ambient" I="0.08 0.08 0.10" scale="0.5 0.5 0.5" />
+
+        <!-- Key light -->
+        <light_source type="directional" I="1.0 0.95 0.88" scale="0.55 0.55 0.55" from="2 3 -2" to="0 0 1" />
+
+        <!-- Rim light for highlights -->
+        <light_source type="directional" I="0.60 0.70 1.00" scale="0.35 0.35 0.35" from="-3 2 -1" to="0 0 1" />
+
+        <!-- Warm accent point light -->
+        <light_source type="point" I="1.0 0.75 0.55" scale="0.55 0.55 0.55" from="-4 4 0" />
+
+        <!-- Materials -->
+        <make_named_material type="blinn" name="gold"     ambient="0.25 0.22 0.10" diffuse="1.00 0.72 0.10" specular="0.95 0.78 0.35" glossiness="256"/>
+        <make_named_material type="blinn" name="silver"   ambient="0.18 0.18 0.20" diffuse="0.75 0.78 0.82" specular="0.95 0.95 0.98" glossiness="512"/>
+        <make_named_material type="blinn" name="redish"   ambient="0.35 0.12 0.10" diffuse="0.92 0.22 0.14" specular="0.85 0.72 0.72" glossiness="96"/>
+        <make_named_material type="blinn" name="greenish" ambient="0.14 0.30 0.14" diffuse="0.20 0.88 0.28" specular="0.78 0.90 0.78" glossiness="192"/>
+        <make_named_material type="blinn" name="blueish"  ambient="0.12 0.16 0.32" diffuse="0.12 0.28 0.92" specular="0.80 0.82 0.96" glossiness="48"/>
+        <make_named_material type="blinn" name="dark"     ambient="0.08 0.08 0.08" diffuse="0.22 0.22 0.22" specular="0.05 0.05 0.05" glossiness="8"/>
+
+        <!-- Ground -->
+        <named_material name="dark"/>
+        <object type="sphere" center="0 -5000 0" radius="5000" />
+
+        <!-- Main composition: a small cluster with varied sizes -->
+        <named_material name="redish"/>
+        <object type="sphere" center="0 1.0 0" radius="1.0" />
+
+        <named_material name="greenish"/>
+        <object type="sphere" center="-3.1 1.0 2.2" radius="1.0" />
+
+        <named_material name="blueish"/>
+        <object type="sphere" center="2.7 1.2 3.2" radius="1.2" />
+
+        <named_material name="gold"/>
+        <object type="sphere" center="5.2 2.8 -0.8" radius="1.35" />
+
+        <named_material name="silver"/>
+        <object type="sphere" center="-0.8 3.6 5.5" radius="0.55" />
+
+        <!-- Extra floating objects for a more interesting silhouette -->
+        <material type="flat" color="255 110 220" />
+        <object type="sphere" center="-4.6 1.6 7.5" radius="1.15" />
+
+        <material type="flat" color="80 240 120" />
+        <object type="sphere" center="1.8 4.0 6.2" radius="0.45" />
+
+        <material type="flat" color="255 180 70" />
+        <object type="sphere" center="-2.2 0.2 4.6" radius="0.42" />
+
+        <material type="flat" color="255 80 80" />
+        <object type="sphere" center="0.9 -1.9 4.2" radius="0.82" />
+
+        <material type="flat" color="120 190 255" />
+        <object type="sphere" center="-5.8 2.7 2.0" radius="0.72" />
+
+    <world_end/>
+</RT3>
+
+
+<!-- ===================================================== -->
+<!-- SUNSET SCENE -->
+<!-- ===================================================== -->
+
+<RT3>
+    <lookat look_from="0 6 -18" look_at="0 1 2" up="0 1 0" />
+    <camera type="perspective" fovy="38" />
+    <integrator type="blinn" depth="2" />
+    <film type="image" w_res="1920" h_res="1200" filename="sunset_scene.png" img_type="png" gamma_corrected="true" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="colors" bl="255 180 90" tl="255 80 40" tr="120 40 120" br="255 180 90" />
+
+        <light_source type="ambient" I="0.12 0.08 0.06" scale="0.7 0.7 0.7" />
+
+        <light_source type="directional" I="1.0 0.6 0.3" scale="0.7 0.7 0.7" from="-2 1 -1" to="0 0 1" />
+
+        <light_source type="point" I="1.0 0.7 0.5" scale="0.5 0.5 0.5" from="-5 5 -2" />
+
+        <make_named_material type="blinn" name="orange" ambient="0.3 0.15 0.08" diffuse="1.0 0.45 0.1" specular="0.9 0.8 0.6" glossiness="180"/>
+        <make_named_material type="blinn" name="purple" ambient="0.15 0.08 0.2" diffuse="0.5 0.1 0.8" specular="0.9 0.8 1.0" glossiness="220"/>
+        <make_named_material type="blinn" name="dark" ambient="0.05 0.05 0.05" diffuse="0.18 0.18 0.18" specular="0 0 0" glossiness="0"/>
+
+        <named_material name="dark"/>
+        <object type="sphere" center="0 -5000 0" radius="5000" />
+
+        <named_material name="orange"/>
+        <object type="sphere" center="0 1 0" radius="1" />
+        <object type="sphere" center="3 1.2 3" radius="1.2" />
+
+        <named_material name="purple"/>
+        <object type="sphere" center="-3 2 5" radius="2" />
+        <object type="sphere" center="-5 0.8 1" radius="0.8" />
+
+        <material type="flat" color="255 240 180" />
+        <object type="sphere" center="1 5 8" radius="0.5" />
+
+    <world_end/>
+</RT3>
+
+
+<!-- ===================================================== -->
+<!-- CYBERPUNK / NEON SCENE -->
+<!-- ===================================================== -->
+
+<RT3>
+    <lookat look_from="0 4 -14" look_at="0 1 3" up="0 1 0" />
+    <camera type="perspective" fovy="50" />
+    <integrator type="blinn" depth="3" />
+    <film type="image" w_res="1920" h_res="1200" filename="neon_scene.png" img_type="png" gamma_corrected="true" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="colors" bl="10 10 20" tl="0 0 0" tr="40 0 70" br="10 10 20" />
+
+        <light_source type="ambient" I="0.04 0.04 0.08" scale="0.6 0.6 0.6" />
+
+        <light_source type="directional" I="0.1 0.8 1.0" scale="0.6 0.6 0.6" from="2 2 -1" to="0 0 1" />
+
+        <light_source type="directional" I="1.0 0.0 0.8" scale="0.4 0.4 0.4" from="-2 1 -1" to="0 0 1" />
+
+        <make_named_material type="blinn" name="cyan" ambient="0.05 0.2 0.25" diffuse="0.1 0.9 1.0" specular="0.9 1.0 1.0" glossiness="512"/>
+        <make_named_material type="blinn" name="pink" ambient="0.2 0.05 0.18" diffuse="1.0 0.1 0.7" specular="1.0 0.9 1.0" glossiness="512"/>
+        <make_named_material type="blinn" name="black" ambient="0.02 0.02 0.02" diffuse="0.08 0.08 0.08" specular="0.5 0.5 0.5" glossiness="64"/>
+
+        <named_material name="black"/>
+        <object type="sphere" center="0 -5000 0" radius="5000" />
+
+        <named_material name="cyan"/>
+        <object type="sphere" center="-2 1 1" radius="1" />
+        <object type="sphere" center="3 2 4" radius="2" />
+
+        <named_material name="pink"/>
+        <object type="sphere" center="1 1 -1" radius="1" />
+        <object type="sphere" center="-4 0.5 5" radius="0.5" />
+
+        <material type="flat" color="255 255 255" />
+        <object type="sphere" center="0 6 10" radius="0.4" />
+
+    <world_end/>
+</RT3>
+
+
+<!-- ===================================================== -->
+<!-- MINIMAL WHITE STUDIO -->
+<!-- ===================================================== -->
+
+<RT3>
+    <lookat look_from="0 3.5 -12" look_at="0 1 0" up="0 1 0" />
+    <camera type="perspective" fovy="32" />
+    <integrator type="blinn" depth="1" />
+    <film type="image" w_res="1920" h_res="1200" filename="minimal_scene.png" img_type="png" gamma_corrected="true" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="colors" bl="250 250 250" tl="220 220 220" tr="220 220 220" br="250 250 250" />
+
+        <light_source type="ambient" I="0.2 0.2 0.2" scale="0.8 0.8 0.8" />
+
+        <light_source type="directional" I="1.0 1.0 1.0" scale="0.7 0.7 0.7" from="1 2 -1" to="0 0 1" />
+
+        <make_named_material type="blinn" name="white" ambient="0.3 0.3 0.3" diffuse="0.9 0.9 0.9" specular="1.0 1.0 1.0" glossiness="700"/>
+        <make_named_material type="blinn" name="red" ambient="0.2 0.1 0.1" diffuse="0.9 0.1 0.1" specular="1.0 1.0 1.0" glossiness="400"/>
+
+        <named_material name="white"/>
+        <object type="sphere" center="0 -5000 0" radius="5000" />
+        <object type="sphere" center="-2 1 2" radius="1" />
+        <object type="sphere" center="2 1 2" radius="1" />
+
+        <named_material name="red"/>
+        <object type="sphere" center="0 1 0" radius="1" />
+
+    <world_end/>
+</RT3>
+
+<!-- ===================================================== -->
+<!-- PLANETARY SYSTEM / SPACE -->
+<!-- ===================================================== -->
+
+<RT3>
+    <lookat look_from="0 8 -30" look_at="0 0 5" up="0 1 0" />
+    <camera type="perspective" fovy="28" />
+    <integrator type="blinn" depth="3" />
+    <film type="image" w_res="1920" h_res="1200" filename="planetary_system.png" img_type="png" gamma_corrected="true" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="colors" bl="0 0 0" tl="5 5 30" tr="0 0 0" br="0 0 0" />
+
+        <light_source type="ambient" I="0.01 0.01 0.03" scale="0.3 0.3 0.3" />
+        <light_source type="point" I="1.0 0.95 0.75" scale="2.0 2.0 2.0" from="0 0 8" />
+
+        <make_named_material type="blinn" name="sun" ambient="0.5 0.3 0.1" diffuse="1.0 0.8 0.2" specular="1.0 0.9 0.5" glossiness="700"/>
+        <make_named_material type="blinn" name="planet1" ambient="0.1 0.15 0.3" diffuse="0.1 0.4 1.0" specular="0.9 0.9 1.0" glossiness="120"/>
+        <make_named_material type="blinn" name="planet2" ambient="0.3 0.1 0.1" diffuse="0.9 0.2 0.1" specular="0.8 0.7 0.7" glossiness="90"/>
+        <make_named_material type="blinn" name="planet3" ambient="0.1 0.25 0.1" diffuse="0.2 0.8 0.3" specular="0.8 1.0 0.8" glossiness="200"/>
+
+        <named_material name="sun"/>
+        <object type="sphere" center="0 0 8" radius="3" />
+
+        <named_material name="planet1"/>
+        <object type="sphere" center="-8 0 0" radius="1.2" />
+
+        <named_material name="planet2"/>
+        <object type="sphere" center="7 2 4" radius="2" />
+
+        <named_material name="planet3"/>
+        <object type="sphere" center="-2 -3 -2" radius="0.8" />
+
+        <!-- Stars -->
+        <material type="flat" color="255 255 255" />
+        <object type="sphere" center="-15 8 20" radius="0.15" />
+        <object type="sphere" center="10 10 25" radius="0.10" />
+        <object type="sphere" center="3 12 18" radius="0.12" />
+        <object type="sphere" center="-6 14 22" radius="0.08" />
+
+    <world_end/>
+</RT3>
+
+
+<!-- ===================================================== -->
+<!-- ABSTRACT TOWER COMPOSITION -->
+<!-- ===================================================== -->
+
+<RT3>
+    <lookat look_from="0 10 -22" look_at="0 4 0" up="0 1 0" />
+    <camera type="perspective" fovy="35" />
+    <integrator type="blinn" depth="2" />
+    <film type="image" w_res="1920" h_res="1200" filename="tower_scene.png" img_type="png" gamma_corrected="true" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="colors" bl="30 30 40" tl="140 160 220" tr="140 160 220" br="30 30 40" />
+
+        <light_source type="ambient" I="0.08 0.08 0.08" scale="0.7 0.7 0.7" />
+        <light_source type="directional" I="1 1 1" scale="0.8 0.8 0.8" from="1 3 -1" to="0 0 1" />
+
+        <make_named_material type="blinn" name="metal" ambient="0.15 0.15 0.15" diffuse="0.5 0.5 0.55" specular="1.0 1.0 1.0" glossiness="600"/>
+        <make_named_material type="blinn" name="red" ambient="0.2 0.05 0.05" diffuse="0.9 0.2 0.2" specular="1.0 0.9 0.9" glossiness="200"/>
+
+        <named_material name="metal"/>
+        <object type="sphere" center="0 -5000 0" radius="5000" />
+
+        <!-- Vertical stacks -->
+        <object type="sphere" center="0 1 0" radius="1" />
+        <object type="sphere" center="0 3 0" radius="1" />
+        <object type="sphere" center="0 5 0" radius="1" />
+        <object type="sphere" center="0 7 0" radius="1" />
+
+        <object type="sphere" center="-4 1 3" radius="1" />
+        <object type="sphere" center="-4 3 3" radius="1" />
+        <object type="sphere" center="-4 5 3" radius="1" />
+
+        <named_material name="red"/>
+        <object type="sphere" center="4 2 -1" radius="1.5" />
+        <object type="sphere" center="4 5 -1" radius="1.5" />
+
+    <world_end/>
+</RT3>
+
+
+<!-- ===================================================== -->
+<!-- GIANT MOON OVER DESERT -->
+<!-- ===================================================== -->
+
+<RT3>
+    <lookat look_from="0 5 -18" look_at="0 1 4" up="0 1 0" />
+    <camera type="perspective" fovy="40" />
+    <integrator type="blinn" depth="2" />
+    <film type="image" w_res="1920" h_res="1200" filename="moon_desert.png" img_type="png" gamma_corrected="true" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="colors" bl="40 20 20" tl="10 10 40" tr="10 10 40" br="40 20 20" />
+
+        <light_source type="ambient" I="0.04 0.04 0.06" scale="0.6 0.6 0.6" />
+        <light_source type="directional" I="0.5 0.6 1.0" scale="0.9 0.9 0.9" from="-1 2 -1" to="0 0 1" />
+
+        <make_named_material type="blinn" name="sand" ambient="0.1 0.08 0.05" diffuse="0.5 0.4 0.25" specular="0.05 0.05 0.05" glossiness="0"/>
+        <make_named_material type="blinn" name="moon" ambient="0.4 0.4 0.45" diffuse="0.85 0.85 0.9" specular="1 1 1" glossiness="512"/>
+
+        <named_material name="sand"/>
+        <object type="sphere" center="0 -5000 0" radius="5000" />
+
+        <named_material name="moon"/>
+        <object type="sphere" center="0 12 30" radius="8" />
+
+        <material type="flat" color="255 120 60" />
+        <object type="sphere" center="-3 1 0" radius="1" />
+        <object type="sphere" center="2 0.7 4" radius="0.7" />
+        <object type="sphere" center="5 1.5 -1" radius="1.5" />
+
+    <world_end/>
+</RT3>
+
+
+
+<!-- ===================================================== -->
+<!-- UNDERWATER ORB GARDEN -->
+<!-- ===================================================== -->
+
+<RT3>
+    <lookat look_from="0 5 -14" look_at="0 0 3" up="0 1 0" />
+    <camera type="perspective" fovy="44" />
+    <integrator type="blinn" depth="3" />
+    <film type="image" w_res="1920" h_res="1200" filename="underwater_orbs.png" img_type="png" gamma_corrected="true" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="colors" bl="0 40 70" tl="0 120 180" tr="0 90 150" br="0 30 55" />
+
+        <light_source type="ambient" I="0.03 0.08 0.10" scale="0.8 0.8 0.8" />
+        <light_source type="directional" I="0.6 0.9 1.0" scale="0.9 0.9 0.9" from="-1 3 -2" to="0 0 1" />
+        <light_source type="point" I="0.4 0.8 1.0" scale="0.8 0.8 0.8" from="2 6 0" />
+
+        <make_named_material type="blinn" name="water" ambient="0.02 0.08 0.10" diffuse="0.10 0.55 0.75" specular="0.95 0.98 1.0" glossiness="400"/>
+        <make_named_material type="blinn" name="coral" ambient="0.20 0.08 0.04" diffuse="0.95 0.35 0.15" specular="0.80 0.75 0.70" glossiness="120"/>
+        <make_named_material type="blinn" name="pearl" ambient="0.20 0.20 0.24" diffuse="0.90 0.92 0.95" specular="1 1 1" glossiness="700"/>
+        <make_named_material type="blinn" name="seaweed" ambient="0.05 0.15 0.05" diffuse="0.15 0.70 0.25" specular="0.50 0.70 0.50" glossiness="40"/>
+
+        <named_material name="water"/>
+        <object type="sphere" center="0 -5000 0" radius="5000" />
+
+        <named_material name="pearl"/>
+        <object type="sphere" center="0 1 3" radius="1.2" />
+        <object type="sphere" center="-2.8 2.6 5.2" radius="0.7" />
+        <object type="sphere" center="2.6 3.2 7.0" radius="0.45" />
+
+        <named_material name="coral"/>
+        <object type="sphere" center="-4 0.6 2" radius="0.9" />
+        <object type="sphere" center="4 -0.2 4" radius="1.1" />
+
+        <named_material name="seaweed"/>
+        <object type="sphere" center="-5 1 8" radius="0.5" />
+        <object type="sphere" center="5 2 1" radius="0.65" />
+
+    <world_end/>
+</RT3>
+
+
+<!-- ===================================================== -->
+<!-- LAVA CAVERN -->
+<!-- ===================================================== -->
+
+<RT3>
+    <lookat look_from="0 4.5 -13" look_at="0 0.8 2" up="0 1 0" />
+    <camera type="perspective" fovy="46" />
+    <integrator type="blinn" depth="3" />
+    <film type="image" w_res="1920" h_res="1200" filename="lava_cavern.png" img_type="png" gamma_corrected="true" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="colors" bl="20 0 0" tl="80 10 0" tr="120 20 0" br="20 0 0" />
+
+        <light_source type="ambient" I="0.08 0.03 0.02" scale="0.7 0.7 0.7" />
+        <light_source type="point" I="1.0 0.35 0.05" scale="1.2 1.2 1.2" from="0 2 1" />
+        <light_source type="directional" I="1.0 0.55 0.20" scale="0.5 0.5 0.5" from="-2 3 -1" to="0 0 1" />
+
+        <make_named_material type="blinn" name="rock" ambient="0.08 0.05 0.04" diffuse="0.22 0.18 0.16" specular="0.10 0.08 0.08" glossiness="12"/>
+        <make_named_material type="blinn" name="lava" ambient="0.40 0.08 0.01" diffuse="1.00 0.25 0.02" specular="1.00 0.70 0.30" glossiness="200"/>
+        <make_named_material type="blinn" name="ember" ambient="0.35 0.15 0.05" diffuse="1.00 0.55 0.10" specular="1.00 0.85 0.40" glossiness="350"/>
+
+        <named_material name="rock"/>
+        <object type="sphere" center="0 -5000 0" radius="5000" />
+
+        <named_material name="lava"/>
+        <object type="sphere" center="0 0.8 1.5" radius="1.4" />
+        <object type="sphere" center="2.5 1.2 4" radius="1.0" />
+        <object type="sphere" center="-3 0.5 3" radius="0.8" />
+
+        <named_material name="ember"/>
+        <object type="sphere" center="1 3.5 5.5" radius="0.35" />
+        <object type="sphere" center="-2 2.8 7" radius="0.28" />
+        <object type="sphere" center="4 1.8 2.2" radius="0.22" />
+
+    <world_end/>
+</RT3>
+
+
+<!-- ===================================================== -->
+<!-- CRYSTAL FOREST -->
+<!-- ===================================================== -->
+
+<RT3>
+    <lookat look_from="0 6 -16" look_at="0 2 4" up="0 1 0" />
+    <camera type="perspective" fovy="36" />
+    <integrator type="blinn" depth="3" />
+    <film type="image" w_res="1920" h_res="1200" filename="crystal_forest.png" img_type="png" gamma_corrected="true" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="colors" bl="180 240 255" tl="30 180 255" tr="180 240 255" br="150 220 240" />
+
+        <light_source type="ambient" I="0.08 0.10 0.14" scale="0.7 0.7 0.7" />
+        <light_source type="directional" I="0.75 0.95 1.0" scale="0.8 0.8 0.8" from="1 4 -1" to="0 0 1" />
+        <light_source type="point" I="0.55 0.85 1.0" scale="0.7 0.7 0.7" from="-3 5 2" />
+
+        <make_named_material type="blinn" name="crystalA" ambient="0.10 0.20 0.25" diffuse="0.30 0.90 1.00" specular="1 1 1" glossiness="650"/>
+        <make_named_material type="blinn" name="crystalB" ambient="0.18 0.10 0.25" diffuse="0.80 0.30 1.00" specular="1 1 1" glossiness="500"/>
+        <make_named_material type="blinn" name="crystalC" ambient="0.10 0.20 0.10" diffuse="0.20 0.95 0.45" specular="0.90 1 0.90" glossiness="420"/>
+        <make_named_material type="blinn" name="ground" ambient="0.06 0.08 0.06" diffuse="0.18 0.20 0.18" specular="0.05 0.05 0.05" glossiness="4"/>
+
+        <named_material name="ground"/>
+        <object type="sphere" center="0 -5000 0" radius="5000" />
+
+        <named_material name="crystalA"/>
+        <object type="sphere" center="-3 0.7 2" radius="0.6" />
+        <object type="sphere" center="-1 2 4" radius="1.1" />
+        <object type="sphere" center="2 3 6" radius="0.8" />
+
+        <named_material name="crystalB"/>
+        <object type="sphere" center="3 1.5 3" radius="1.0" />
+        <object type="sphere" center="-4 2.2 7" radius="0.5" />
+
+        <named_material name="crystalC"/>
+        <object type="sphere" center="0 4.5 5" radius="0.35" />
+        <object type="sphere" center="4 4.0 1" radius="0.45" />
+
+    <world_end/>
+</RT3>
+
+
+<!-- ===================================================== -->
+<!-- SURREAL CLOCKWORK PLANET -->
+<!-- ===================================================== -->
+
+<RT3>
+    <lookat look_from="-2 6 -20" look_at="0 1 4" up="0 1 0" />
+    <camera type="perspective" fovy="34" />
+    <integrator type="blinn" depth="3" />
+    <film type="image" w_res="1920" h_res="1200" filename="clockwork_planet.png" img_type="png" gamma_corrected="true" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="colors" bl="40 40 55" tl="180 180 210" tr="120 130 160" br="40 40 55" />
+
+        <light_source type="ambient" I="0.07 0.07 0.09" scale="0.8 0.8 0.8" />
+        <light_source type="directional" I="1.0 0.92 0.78" scale="0.7 0.7 0.7" from="2 4 -2" to="0 0 1" />
+        <light_source type="point" I="0.8 0.8 1.0" scale="0.5 0.5 0.5" from="-5 3 1" />
+
+        <make_named_material type="blinn" name="brass" ambient="0.22 0.18 0.08" diffuse="0.85 0.65 0.20" specular="0.95 0.85 0.50" glossiness="500"/>
+        <make_named_material type="blinn" name="steel" ambient="0.12 0.12 0.14" diffuse="0.65 0.68 0.72" specular="1 1 1" glossiness="650"/>
+        <make_named_material type="blinn" name="ink" ambient="0.05 0.05 0.08" diffuse="0.15 0.15 0.20" specular="0.2 0.2 0.25" glossiness="20"/>
+
+        <named_material name="ink"/>
+        <object type="sphere" center="0 -5000 0" radius="5000" />
+
+        <named_material name="steel"/>
+        <object type="sphere" center="0 1 2" radius="1.4" />
+        <object type="sphere" center="-3 2 4" radius="1.0" />
+        <object type="sphere" center="4 3 5" radius="0.9" />
+
+        <named_material name="brass"/>
+        <object type="sphere" center="2 0.8 0" radius="0.8" />
+        <object type="sphere" center="-5 1.5 6" radius="0.6" />
+        <object type="sphere" center="0 4.5 7" radius="0.5" />
+
+    <world_end/>
+</RT3>

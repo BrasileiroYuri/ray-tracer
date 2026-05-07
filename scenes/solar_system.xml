@@ -1,0 +1,128 @@
+<RT3>
+    <lookat look_from="-2 8 -20" look_at="0 0 5" up="0 1 0" />
+    <camera type="perspective" fovy="55" />
+    <integrator type="blinn" depth="1" />
+    <film type="image" w_res="1920" h_res="1200" filename="solar_system.png" img_type="png" gamma_corrected="true" />
+    <aggregator type="list"/>
+    <world_begin/>
+        <!-- Space background: deep navy to black -->
+        <background type="colors" bl="2 5 20" tl="0 0 5" tr="0 0 5" br="2 5 20" />
+
+        <!-- Sol: emissão branca-amarela intensa -->
+        <light_source type="point" I="1.0 0.95 0.8" scale="2.5 2.5 2.5" from="0 4 12" />
+        <!-- Rim azulado sutil (estrela distante) -->
+        <light_source type="point" I="0.2 0.3 1.0" scale="0.4 0.4 0.4" from="-10 8 -5" />
+        <!-- Ambient mínimo -->
+        <light_source type="ambient" I="0.03 0.03 0.05" scale="1 1 1" />
+        <light_source type="ambient" I="0.03 0.03 0.05" scale="1 1 1" />
+        <light_source type="ambient" I="0.03 0.03 0.05" scale="1 1 1" />
+        <light_source type="ambient" I="0.03 0.03 0.05" scale="1 1 1" />
+
+        <!-- Materials: planetas inspirados no sistema solar -->
+        <make_named_material type="blinn" name="sun_mat"
+            ambient="0.8 0.6 0.1"
+            diffuse ="1.0 0.85 0.2"
+            specular ="1.0 0.9 0.4"
+            glossiness ="16"/>
+
+        <make_named_material type="blinn" name="mercury"
+            ambient="0.2 0.18 0.15"
+            diffuse ="0.55 0.50 0.45"
+            specular ="0.3 0.3 0.3"
+            glossiness ="32"/>
+
+        <make_named_material type="blinn" name="venus"
+            ambient="0.3 0.25 0.1"
+            diffuse ="0.9 0.75 0.3"
+            specular ="0.5 0.4 0.2"
+            glossiness ="16"/>
+
+        <make_named_material type="blinn" name="earth"
+            ambient="0.0 0.1 0.2"
+            diffuse ="0.1 0.4 0.8"
+            specular ="0.6 0.7 0.9"
+            glossiness ="128"/>
+
+        <make_named_material type="blinn" name="mars"
+            ambient="0.3 0.1 0.0"
+            diffuse ="0.8 0.25 0.1"
+            specular ="0.4 0.2 0.15"
+            glossiness ="16"/>
+
+        <make_named_material type="blinn" name="jupiter"
+            ambient="0.25 0.18 0.1"
+            diffuse ="0.85 0.65 0.4"
+            specular ="0.5 0.4 0.3"
+            glossiness ="8"/>
+
+        <make_named_material type="blinn" name="saturn_ring"
+            ambient="0.2 0.15 0.05"
+            diffuse ="0.7 0.6 0.3"
+            specular ="0.3 0.3 0.2"
+            glossiness ="4"/>
+
+        <make_named_material type="blinn" name="space_rock"
+            ambient="0.05 0.05 0.05"
+            diffuse ="0.15 0.12 0.1"
+            specular ="0.05 0.05 0.05"
+            glossiness ="2"/>
+
+        <!-- "Chão" invisível: esfera enorme preta -->
+        <named_material name="space_rock"/>
+        <object type="sphere" center="0 -5002 0" radius="5000" />
+
+        <!-- Sol (grande, atrás) -->
+        <named_material name="sun_mat"/>
+        <object type="sphere" center="0 4 12" radius="3.0" />
+
+        <!-- Mercúrio: pequeno, próximo -->
+        <named_material name="mercury"/>
+        <object type="sphere" center="-4 1.2 8" radius="0.35" />
+
+        <!-- Vênus: médio, amarelado -->
+        <named_material name="venus"/>
+        <object type="sphere" center="-2 1.5 6" radius="0.6" />
+
+        <!-- Terra: azul com brilho -->
+        <named_material name="earth"/>
+        <object type="sphere" center="1.5 1.8 3" radius="0.65" />
+
+        <!-- Marte: laranja-avermelhado -->
+        <named_material name="mars"/>
+        <object type="sphere" center="4 1.4 5" radius="0.45" />
+
+        <!-- Júpiter: grande, marrom/laranja -->
+        <named_material name="jupiter"/>
+        <object type="sphere" center="8 2.5 2" radius="1.4" />
+
+        <!-- Saturno: dourado, com anel flat -->
+        <named_material name="saturn_ring"/>
+        <object type="sphere" center="-7 3.0 0" radius="1.1" />
+
+        <!-- Anel de saturno: esferas flat pequenas orbitando -->
+        <material type="flat" color="180 155 90" />
+        <object type="sphere" center="-5.2 3.0 0"  radius="0.18" />
+        <object type="sphere" center="-5.5 3.0 0.8" radius="0.15" />
+        <object type="sphere" center="-5.8 3.0 -0.6" radius="0.14" />
+        <object type="sphere" center="-8.8 3.0 0"  radius="0.18" />
+        <object type="sphere" center="-8.5 3.0 0.9" radius="0.15" />
+        <object type="sphere" center="-8.2 3.0 -0.7" radius="0.14" />
+        <object type="sphere" center="-6.8 3.0 1.5" radius="0.12" />
+        <object type="sphere" center="-7.0 3.0 -1.5" radius="0.12" />
+
+        <!-- Estrelas: tiny flat spheres -->
+        <material type="flat" color="255 255 255" />
+        <object type="sphere" center="-8 7 8"  radius="0.08" />
+        <object type="sphere" center="6 8 10"  radius="0.06" />
+        <object type="sphere" center="-3 9 15" radius="0.07" />
+        <object type="sphere" center="10 6 8"  radius="0.09" />
+        <object type="sphere" center="-12 5 6" radius="0.06" />
+        <object type="sphere" center="4 10 7"  radius="0.05" />
+        <object type="sphere" center="-1 11 12" radius="0.07" />
+
+        <material type="flat" color="180 200 255" />
+        <object type="sphere" center="9 9 13"  radius="0.06" />
+        <object type="sphere" center="-6 10 11" radius="0.05" />
+        <object type="sphere" center="2 8 18"  radius="0.08" />
+    <world_end/>
+</RT3>
