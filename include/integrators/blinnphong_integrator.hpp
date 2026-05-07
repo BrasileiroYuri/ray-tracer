@@ -29,7 +29,16 @@ public:
             // Obtém a intensidade e a direção da luz (wi) para o ponto atual
             RGBColor intensity = light->sample_Li(surfel.p, wi, dist);
 
+	    /*
+	     * Origem definida igual ao ponto de intersecção,
+	     * Direção definida do ponto a luz,
+	     * Distância básica 0 e máxima igual dist.
+	     */
+	    Ray shadow(surfel.p, wi, 0, dist);
+
+
             L_total += intensity * surfel.mat_->scatter(wo, wi, n);
+
         }
 
         return std::make_optional(L_total);
