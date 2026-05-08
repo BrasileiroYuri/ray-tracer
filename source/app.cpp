@@ -78,7 +78,7 @@ void App::make_named_material(const ParamSet &ps) {
     auto ka = ps.retrieve<RGBColor>("ambient", {0.1f, 0.1f, 0.1f});
     auto kd = ps.retrieve<RGBColor>("diffuse", {0.5f, 0.5f, 0.5f});
     auto ks = ps.retrieve<RGBColor>("specular", {0.5f, 0.5f, 0.5f});
-    
+
     // Extrai o expoente de brilho (glossiness)
     auto gloss = ps.retrieve<float>("glossiness", 10.0f);
     auto mirror = ps.retrieve<RGBColor>("mirror");
@@ -129,7 +129,7 @@ void App::material(const ParamSet &ps) {
 
 void App::backGround(const ParamSet &ps) {
   std::string key = ps.retrieve<std::string>("type");
-  if (key == "colors") {
+  if (key == "colors" || key == "4_colors") {
     sceneConfig.arr[0] = ps.retrieve<RGBColor>("bl");
     sceneConfig.arr[1] = ps.retrieve<RGBColor>("tl");
     sceneConfig.arr[2] = ps.retrieve<RGBColor>("tr");
@@ -264,7 +264,7 @@ void App::integratorConfig(const std::string &type) {
   if (type == "flat") {
     std::cout << ">>> Usando 'RayCastIntegrator'.\n";
     integrator_ = std::make_unique<RayCastIntegrator>();
-  } 
+  }
   else if (type == "blinn" || type == "blinn_phong") {
     std::cout << ">>> Usando 'BlinnPhongIntegrator'.\n";
     integrator_ = std::make_unique<BlinnPhongIntegrator>();
@@ -280,7 +280,7 @@ void App::integratorConfig(const std::string &type) {
 
 void App::lightSource(const ParamSet &ps)  {}
 void App::render() {
-  
+
   integratorConfig(generalConfig.integratorType);
   //  garante que as luzes cheguem ao integrador
   Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim), sceneConfig.lights);

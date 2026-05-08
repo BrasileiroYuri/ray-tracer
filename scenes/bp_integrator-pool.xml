@@ -1,0 +1,71 @@
+<RT3>
+    <lookat look_from="0 10 -15" look_at="0 0 0" up="0 1 0" />
+    <camera type="perspective" fovy="45" />
+    <integrator type="blinn" depth="1" />
+    <film type="image" w_res="1920" h_res="1200" filename="bp_integrator-pool.png" img_type="png" />
+
+    <!-- Objects storage -->
+    <aggregator type="list"/>
+
+    <!-- The Scene -->
+    <world_begin/>
+
+        <!-- The Background -->
+        <background type="single_color" color="80 80 80" />
+
+        <!-- Lights -->
+        <light_source type="ambient" I="0.1 0.1 0.1" scale="0.5 0.5 0.5" />
+        <light_source type="directional" I="0.9 0.9 0.9" scale="0.4 0.4 0.4" from="1 0.8 -1" to="0 0 1" />
+        <light_source type="point" I="0.95 0.9 0.8" scale="1 1 1" from="0 5 10" />
+
+        <!-- Material Library -->
+        <make_named_material type="blinn" name="redish"   ambient="0.6 0.6 0.6" diffuse="0.9 0.2 0.1"  specular="0.8 0.8 0.8"  glossiness="64"/>
+        <make_named_material type="blinn" name="greenish" ambient="0.6 0.6 0.6" diffuse="0.2 0.9 0.2"  specular="0.8 0.8 0.8"  glossiness="256"/>
+        <make_named_material type="blinn" name="blueish"  ambient="0.6 0.6 0.6" diffuse="0.1 0.2 0.9"  specular="0.8 0.8 0.8"  glossiness="16"/>
+        <make_named_material type="blinn" name="gold"     ambient="0.4 0.4 0.4" diffuse="1 0.65 0.0"   specular="0.8 0.6 0.2"  glossiness="256"/>
+        <make_named_material type="blinn" name="grey"     ambient="0.1 0.1 0.1" diffuse="0.1 0.7 0.1"  specular="0 0 0"        glossiness="0"/>
+        <make_named_material type="blinn" name="white"    ambient="0.1 0.1 0.1" diffuse="0.7 0.7 0.7"  specular="0 0 0"        glossiness="255"/>
+
+        <!-- Objects -->
+        <!-- Layer 4 -->
+        <named_material name="gold"/>
+        <object type="sphere" center="3 0 -2" radius="1" />
+
+        <named_material name="redish"/>
+        <object type="sphere" center="1 0 -2" radius="1" />
+
+        <named_material name="blueish"/>
+        <object type="sphere" center="-1 0 -2" radius="1" />
+
+        <named_material name="redish"/>
+        <object type="sphere" center="-3 0 -2" radius="1" />
+
+        <!-- Layer 3 -->
+        <named_material name="redish"/>
+        <object type="sphere" center="0 0 0" radius="1" />
+
+        <named_material name="gold"/>
+        <object type="sphere" center="-2 0 0" radius="1" />
+
+        <named_material name="greenish"/>
+        <object type="sphere" center="2 0 0" radius="1" />
+        <object type="sphere" center="0 -20 0" radius="19" />
+
+
+        <!-- Layer 2 -->
+        <named_material name="greenish"/>
+        <object type="sphere" center="1 0 2" radius="1" />
+
+        <named_material name="blueish"/>
+        <object type="sphere" center="-1 0 2" radius="1" />
+
+        <!-- Layer 1 -->
+        <named_material name="greenish"/>
+        <object type="sphere" center="0 0 4" radius="1" />
+
+        <!-- Layer 0 -->
+        <named_material name="white"/>
+        <object type="sphere" center="-4 2 8" radius="0.6" />
+
+    <world_end/>
+</RT3>
