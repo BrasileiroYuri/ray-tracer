@@ -15,6 +15,7 @@
 #include "ambient_light.hpp"
 #include "direcional_light.hpp"
 #include "point_light.hpp"
+#include "spot_light.hpp"
 #include <algorithm>
 #include <array>
 #include <iostream>
@@ -246,6 +247,14 @@ void App::light_source(const ParamSet &ps) {
   } else if (type == "point") {
     auto from = ps.retrieve<point3>("from", {0, 0, 0});
     sceneConfig.lights.push_back(std::make_shared<PointLight>(intensity, scale, from));
+  } else if (type == "spot") {
+
+    auto from = ps.retrieve<point3>("from", {0, 0, 0});
+    auto to = ps.retrieve<point3>("to", {0, 0, 0});
+    auto c = ps.retrieve<int>("cutoff",50);
+    auto f = ps.retrieve<int>("falloff", 20);
+
+    sceneConfig.lights.push_back(std::make_shared<SpotLight>(intensity, scale, from, to, c, f));
   }
 }
 
@@ -254,7 +263,7 @@ void App::integratorConfig(const std::string &type) {
     std::cout << ">>> Usando 'RayCastIntegrator'.\n";
     integrator_ = std::make_unique<RayCastIntegrator>();
   } 
-  else if (type == "blinn") {
+  else if (type == "blinn" || type == "blinn_phong") {
     std::cout << ">>> Usando 'BlinnPhongIntegrator'.\n";
     integrator_ = std::make_unique<BlinnPhongIntegrator>();
   }

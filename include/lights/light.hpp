@@ -8,12 +8,12 @@
 
 enum class LightFlag : uint8_t {
     Ambient = 1,
-    Directional = 2,
-    Point = 4
+    Directional,
+    Point,
+    Spot
 };
 
-class Light {
-public:
+struct Light {
     LightFlag flags;
     RGBColor intensity;
     RGBColor scale;
