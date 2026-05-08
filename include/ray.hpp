@@ -34,7 +34,6 @@ public:
     return s.str();
   };
 
-private:
   point3 origin_;
   vec3 direction_;
   float min_t_;

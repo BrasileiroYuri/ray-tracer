@@ -11,7 +11,7 @@ class BlinnPhongIntegrator : public Integrator {
 public:
   BlinnPhongIntegrator() = default;
 
-  std::optional<RGBColor> li(const Ray &ray, const Scene &sc) override {
+  std::optional<RGBColor> li(const Ray &ray, const Scene &sc, std::size_t depth) override {
     Surfel surfel;
 
     //  se não houver intersecção, o Integrator base usa o background
@@ -48,13 +48,23 @@ public:
       if (sc.aggregate_->intersect(shadow, s)) {
         if (light->flags == LightFlag::Ambient)
           L_total += intensity * s.mat_->getColor();
-        continue;
-      }
+	surfel = s;
+	
+      } else {
 
       if (light->flags == LightFlag::Ambient)
         L_total += intensity * surfel.mat_->getColor();
       else
         L_total += intensity * surfel.mat_->scatter(wo, wi, n);
+      }
+
+      ///
+      	auto dir = ray.direction_ - n * 2*dot(ray.direction_,n);
+	Ray reflected_ray(surfel.p+offset, dir, ray.min_t_, ray.max_t_);
+	RGBColor color(1,1,1);
+	
+    if (depth < max_depth_)
+	    L_total+= surfel.mat_->getMirror() * li(reflected_ray, sc, depth+1).value_or(color);
     }
 
     return std::make_optional(L_total);

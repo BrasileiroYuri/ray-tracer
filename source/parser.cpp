@@ -65,7 +65,7 @@ conversor_ = {
           {"look_from", convert<point3, float, 3>},
           {"look_at", convert<point3, float, 3>},
           {"center", convert<point3, float, 3>},
-          {"mirror", convert<point3, float, 3>},
+          {"mirror", convert<RGBColor, float, 3>},
           {"up", convert<vec3, float, 3>},
           {"screen_window", convert<ScreenWindow, float, 4>},
           {"ambient", convert<RGBColor, float, 3>},

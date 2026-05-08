@@ -36,6 +36,7 @@ std::unique_ptr<Integrator> App::integrator_;
 struct GeneralConfig {
   std::string integratorType;
   std::string filename_ = "";
+  std::size_t depth = 0;
   bool ppm_ = true;
 };
 
@@ -65,11 +66,11 @@ void App::make_named_material(const ParamSet &ps) {
   auto type = ps.retrieve<std::string>("type", "flat");
   auto color = ps.retrieve<RGBColor>("color", {0, 0, 0});
 
-  std::cout << ">>> Criando material '" << type << "' com cor: " << color.str()
-            << ".\n";
 
   if (type == "flat") {
     materials[name] = std::make_shared<FlatMaterial>(color);
+	  std::cout << ">>> Criando material '" << type << "' com cor: " << color.str()
+            << ".\n";
   }
 
   if (type == "blinn") {
@@ -80,13 +81,14 @@ void App::make_named_material(const ParamSet &ps) {
     
     // Extrai o expoente de brilho (glossiness)
     auto gloss = ps.retrieve<float>("glossiness", 10.0f);
+    auto mirror = ps.retrieve<RGBColor>("mirror");
 
     std::cout << ">>> Criando material Blinn: '" << name << "'\n";
-    materials[name] = std::make_shared<BlinnPhongMaterial>(ka, kd, ks, gloss);
+    materials[name] = std::make_shared<BlinnPhongMaterial>(ka, kd, ks, gloss, mirror);
   }
 }
 
-void App::named_material(const ParamSet &ps) {
+	void App::named_material(const ParamSet &ps) {
   auto name = ps.retrieve<std::string>("name");
 
   auto it = materials.find(name);
@@ -198,6 +200,7 @@ void App::lookat(const ParamSet &ps) {
 
 void App::integrator(const ParamSet &ps) {
   generalConfig.integratorType = ps.retrieve<std::string>("type");
+  generalConfig.depth = ps.retrieve<std::size_t>("depth");
 }
 
 void App::object(const ParamSet &ps) {
@@ -248,7 +251,6 @@ void App::light_source(const ParamSet &ps) {
     auto from = ps.retrieve<point3>("from", {0, 0, 0});
     sceneConfig.lights.push_back(std::make_shared<PointLight>(intensity, scale, from));
   } else if (type == "spot") {
-
     auto from = ps.retrieve<point3>("from", {0, 0, 0});
     auto to = ps.retrieve<point3>("to", {0, 0, 0});
     auto c = ps.retrieve<int>("cutoff",50);
@@ -282,7 +284,7 @@ void App::render() {
   integratorConfig(generalConfig.integratorType);
   //  garante que as luzes cheguem ao integrador
   Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim), sceneConfig.lights);
-  integrator_->render(sc);
+  integrator_->render(sc, generalConfig.depth);
   integrator_->write_image(generalConfig.filename_, generalConfig.ppm_);
   sceneConfig.aggrPrim = std::make_unique<PrimList>();
   sceneConfig.lights.clear(); // evita que luzes de um render acumulem no próximo

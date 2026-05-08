@@ -4,7 +4,7 @@
 #include "integrator.hpp"
 
 struct RayCastIntegrator : public Integrator {
-  std::optional<RGBColor> li(const Ray &ray, const Scene &sc) override {
+  std::optional<RGBColor> li(const Ray &ray, const Scene &sc, std::size_t depth) override {
     Surfel s;
 
     // Apenas retorna a cor intrínseca do material no ponto de impacto

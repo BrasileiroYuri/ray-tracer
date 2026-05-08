@@ -14,6 +14,7 @@ public:
     }
 
   RGBColor getColor() const override {return color_;}
+  RGBColor getMirror() const override {return {0,0,0};} // Espelhamento nulo.
 private:
     RGBColor color_;
 };

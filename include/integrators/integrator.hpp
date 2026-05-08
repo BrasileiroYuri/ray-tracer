@@ -18,7 +18,8 @@ public:
     virtual ~Integrator() = default;
 
     // O método render permanece genérico
-    virtual void render(const Scene &sc) {
+    virtual void render(const Scene &sc, std::size_t max_depth) {
+	max_depth_ = max_depth;
         auto width = cam_->widht();
         auto height = cam_->height();
 
@@ -45,6 +46,7 @@ public:
   }
 protected:
     std::unique_ptr<Camera> cam_ = nullptr;
-    virtual std::optional<RGBColor> li(const Ray &ray, const Scene &sc) = 0;
+    std::size_t max_depth_;
+    virtual std::optional<RGBColor> li(const Ray &ray, const Scene &sc, std::size_t depht = 0) = 0;
 };
 #endif
