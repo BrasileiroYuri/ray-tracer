@@ -15,6 +15,7 @@
 #include "raycast_integrator.hpp"
 #include "scene.hpp"
 #include "sphere.hpp"
+#include "spot_light.hpp"
 #include <algorithm>
 #include <array>
 #include <iostream>
@@ -249,6 +250,15 @@ void App::light_source(const ParamSet &ps) {
     auto from = ps.retrieve<point3>("from", {0, 0, 0});
     sceneConfig.lights.push_back(
         std::make_shared<PointLight>(intensity, scale, from));
+  } else if (type == "spot") {
+
+    auto from = ps.retrieve<point3>("from", {0, 0, 0});
+    auto to = ps.retrieve<point3>("to", {0, 0, 0});
+    auto c = ps.retrieve<int>("cutoff", 50);
+    auto f = ps.retrieve<int>("falloff", 20);
+
+    sceneConfig.lights.push_back(
+        std::make_shared<SpotLight>(intensity, scale, from, to, c, f));
   }
 }
 
