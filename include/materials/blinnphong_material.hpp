@@ -16,6 +16,8 @@ public:
     BlinnPhongMaterial(const RGBColor& a, const RGBColor& d, const RGBColor& s, float g)
         : ka(a), kd(d), ks(s), glossiness(g) {}
 
+    RGBColor getColor() const override { return ka;}
+
     // Implementação da BRDF de Blinn-Phong
     RGBColor scatter(const vec3& wo, const vec3& wi, const vec3& n) const override {
         // 1. Componente Difusa (Lambertiana): cos(theta) * kd

@@ -13,6 +13,7 @@ public:
         return color_;
     }
 
+  RGBColor getColor() const override {return color_;}
 private:
     RGBColor color_;
 };
