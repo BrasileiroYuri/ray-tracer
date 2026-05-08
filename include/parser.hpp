@@ -14,27 +14,6 @@ public:
 private:
   std::unordered_map<std::string, std::function<void(ParamSet &)>> elements_;
 
-  /*
-  template <typename T>
-  static void convert(const std::string &name, const std::string &value,
-                      ParamSet *ps) {
-    std::istringstream ss{value};
-    T val{};
-    ss >> val;
-    ps->add(name, val);
-  }
-
-  template <typename T, typename K, std::size_t size>
-  static void convert(const std::string &name, const std::string &value,
-                      ParamSet *ps) {
-    std::istringstream ss{value};
-    std::array<K, size> arr;
-    for (unsigned long i = 0; i < size; i++)
-      ss >> arr[i];
-    T val{arr};
-    ps->add(name, val);
-  }*/
-
   std::unordered_map<
       std::string,
       std::function<void(const std::string &, const std::string &, ParamSet *)>>
