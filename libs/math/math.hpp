@@ -36,6 +36,12 @@ typedef struct vec3 {
     return {i_ - v.i_, j_ - v.j_, k_ - v.k_};
   }
   inline vec3 operator*(float a) const { return {i_ * a, j_ * a, k_ * a}; }
+  inline vec3 operator*(const vec3 &v) const {
+    return {i_ * v.i_, j_ * v.j_, k_ * v.k_};
+  }
+  inline vec3 operator/(const vec3 &v) const {
+    return {i_ / v.i_, j_ / v.j_, k_ / v.k_};
+  }
 
   inline void operator*=(float a) {
     i_ *= a;

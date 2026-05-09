@@ -5,29 +5,29 @@
 #include <sstream>
 #include <vector>
 
-  template <typename T>
-  static void convert(const std::string &name, const std::string &value,
-                      ParamSet *ps) {
-    std::istringstream ss{value};
-    T val{};
-    ss >> val;
-    ps->add(name, val);
-  }
+template <typename T>
+static void convert(const std::string &name, const std::string &value,
+                    ParamSet *ps) {
+  std::istringstream ss{value};
+  T val{};
+  ss >> val;
+  ps->add(name, val);
+}
 
-  template <typename T, typename K, std::size_t size>
-  static void convert(const std::string &name, const std::string &value,
-                      ParamSet *ps) {
-    std::istringstream ss{value};
-    std::array<K, size> arr;
-    for (unsigned long i = 0; i < size; i++)
-      ss >> arr[i];
-    T val{arr};
-    ps->add(name, val);
-  }
+template <typename T, typename K, std::size_t size>
+static void convert(const std::string &name, const std::string &value,
+                    ParamSet *ps) {
+  std::istringstream ss{value};
+  std::array<K, size> arr;
+  for (unsigned long i = 0; i < size; i++)
+    ss >> arr[i];
+  T val{arr};
+  ps->add(name, val);
+}
 
 //!< Def:
 Parser::Parser(const std::string &filename) : filename_(filename) {
-elements_ = {
+  elements_ = {
       {"film", App::film},
       {"background", App::backGround},
       {"camera", App::camera},
@@ -38,46 +38,48 @@ elements_ = {
       {"material", App::material},
       {"integrator", App::integrator},
       {"light_source", App::light_source},
-};
+  };
 
-conversor_ = {
-          {"frame_aspect_ratio", convert<float>},
-          {"radius", convert<float>},
-          {"z_min", convert<float>},
-          {"z_max", convert<float>},
-          {"phi_max", convert<float>},
-          {"w_res", convert<int>},
-          {"h_res", convert<int>},
-          {"fovy", convert<int>},
-          {"cutoff", convert<int>},
-          {"depth", convert<int>},
-          {"falloff", convert<int>},
-          {"type", convert<std::string>},
-          {"name", convert<std::string>},
-          {"filename", convert<std::string>},
-          {"img_type", convert<std::string>},
-          {"mapping", convert<std::string>},
-          {"bl", convert<RGBColor, int, 3>},
-          {"br", convert<RGBColor, int, 3>},
-          {"tl", convert<RGBColor, int, 3>},
-          {"tr", convert<RGBColor, int, 3>},
-          {"single_color", convert<RGBColor, int, 3>},
-          {"color", convert<RGBColor, int, 3>},
-          {"look_from", convert<point3, float, 3>},
-          {"look_at", convert<point3, float, 3>},
-          {"center", convert<point3, float, 3>},
-          {"mirror", convert<RGBColor, float, 3>},
-          {"up", convert<vec3, float, 3>},
-          {"screen_window", convert<ScreenWindow, float, 4>},
-          {"ambient", convert<RGBColor, float, 3>},
-          {"diffuse", convert<RGBColor, float, 3>},
-          {"specular", convert<RGBColor, float, 3>},
-          {"I", convert<RGBColor, float, 3>},
-          {"scale", convert<RGBColor, float, 3>},
-          {"from", convert<point3, float, 3>},
-          {"to", convert<point3, float, 3>},
-          {"glossiness", convert<float>},
-      };
+  conversor_ = {
+      {"frame_aspect_ratio", convert<float>},
+      {"radius", convert<float>},
+      {"z_min", convert<float>},
+      {"z_max", convert<float>},
+      {"phi_max", convert<float>},
+      {"w_res", convert<int>},
+      {"h_res", convert<int>},
+      {"fovy", convert<int>},
+      {"cutoff", convert<int>},
+      {"depth", convert<int>},
+      {"falloff", convert<int>},
+      {"type", convert<std::string>},
+      {"name", convert<std::string>},
+      {"filename", convert<std::string>},
+      {"img_type", convert<std::string>},
+      {"mapping", convert<std::string>},
+      {"bl", convert<RGBColor, int, 3>},
+      {"br", convert<RGBColor, int, 3>},
+      {"tl", convert<RGBColor, int, 3>},
+      {"tr", convert<RGBColor, int, 3>},
+      {"single_color", convert<RGBColor, int, 3>},
+      {"color", convert<RGBColor, int, 3>},
+      {"look_from", convert<point3, float, 3>},
+      {"look_at", convert<point3, float, 3>},
+      {"plane", convert<point3, float, 3>},
+      {"center", convert<point3, float, 3>},
+      {"mirror", convert<RGBColor, float, 3>},
+      {"normal", convert<vec3, float, 3>},
+      {"up", convert<vec3, float, 3>},
+      {"screen_window", convert<ScreenWindow, float, 4>},
+      {"ambient", convert<RGBColor, float, 3>},
+      {"diffuse", convert<RGBColor, float, 3>},
+      {"specular", convert<RGBColor, float, 3>},
+      {"I", convert<RGBColor, float, 3>},
+      {"scale", convert<RGBColor, float, 3>},
+      {"from", convert<point3, float, 3>},
+      {"to", convert<point3, float, 3>},
+      {"glossiness", convert<float>},
+  };
 }
 RGBColor parse_color_format(const std::string &str) {
   std::stringstream ss(str);
@@ -137,10 +139,10 @@ void Parser::include(const std::string &filename) const {
       // 1. Processamento de Cores e intensidades
       if (attr_name == "color" || attr_name == "bl" || attr_name == "tl" ||
           attr_name == "tr" || attr_name == "br" || attr_name == "ambient" ||
-          attr_name == "diffuse" || attr_name == "specular" || attr_name == "I" ||
-          attr_name == "scale") {
-         ps.add(attr_name, parse_color_format(attr_val));
-}
+          attr_name == "diffuse" || attr_name == "specular" ||
+          attr_name == "I" || attr_name == "scale") {
+        ps.add(attr_name, parse_color_format(attr_val));
+      }
 
       if (conversor_.find(attr_name) == conversor_.end()) {
         std::cerr << "Atribute: '" << attr_name << "' invalid.\n";
@@ -204,10 +206,10 @@ void Parser::parse() const {
       // 1. Processamento de Cores e intensidades
       if (attr_name == "color" || attr_name == "bl" || attr_name == "tl" ||
           attr_name == "tr" || attr_name == "br" || attr_name == "ambient" ||
-          attr_name == "diffuse" || attr_name == "specular" || attr_name == "I" ||
-          attr_name == "scale") {
-          ps.add(attr_name, parse_color_format(attr_val));
-}
+          attr_name == "diffuse" || attr_name == "specular" ||
+          attr_name == "I" || attr_name == "scale") {
+        ps.add(attr_name, parse_color_format(attr_val));
+      }
 
       if (conversor_.find(attr_name) == conversor_.end()) {
         std::cerr << "Atribute: '" << attr_name << "' invalid.\n";

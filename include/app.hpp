@@ -28,6 +28,7 @@ public:
   static void material(const ParamSet &);
   static void include(const ParamSet &);
   static void named_material(const ParamSet &);
+  static void plane(const ParamSet &);
   static void light_source(const ParamSet &);
 
 private:
