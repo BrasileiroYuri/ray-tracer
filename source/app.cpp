@@ -18,6 +18,7 @@
 #include "spot_light.hpp"
 #include <algorithm>
 #include <array>
+#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -36,6 +37,7 @@ std::unique_ptr<Integrator> App::integrator_;
 struct GeneralConfig {
   std::string integratorType;
   std::string filename_ = "";
+  std::size_t depth = 0;
   bool ppm_ = true;
 };
 
@@ -65,11 +67,10 @@ void App::make_named_material(const ParamSet &ps) {
   auto type = ps.retrieve<std::string>("type", "flat");
   auto color = ps.retrieve<RGBColor>("color", {0, 0, 0});
 
-  std::cout << ">>> Criando material '" << type << "' com cor: " << color.str()
-            << ".\n";
-
   if (type == "flat") {
     materials[name] = std::make_shared<FlatMaterial>(color);
+    std::cout << ">>> Criando material '" << type
+              << "' com cor: " << color.str() << ".\n";
   }
 
   if (type == "blinn") {
@@ -80,9 +81,11 @@ void App::make_named_material(const ParamSet &ps) {
 
     // Extrai o expoente de brilho (glossiness)
     auto gloss = ps.retrieve<float>("glossiness", 10.0f);
+    auto mirror = ps.retrieve<RGBColor>("mirror");
 
     std::cout << ">>> Criando material Blinn: '" << name << "'\n";
-    materials[name] = std::make_shared<BlinnPhongMaterial>(ka, kd, ks, gloss);
+    materials[name] =
+        std::make_shared<BlinnPhongMaterial>(ka, kd, ks, gloss, mirror);
   }
 }
 
@@ -127,7 +130,7 @@ void App::material(const ParamSet &ps) {
 
 void App::backGround(const ParamSet &ps) {
   std::string key = ps.retrieve<std::string>("type");
-  if (key == "colors") {
+  if (key == "colors" || key == "4_colors") {
     sceneConfig.arr[0] = ps.retrieve<RGBColor>("bl");
     sceneConfig.arr[1] = ps.retrieve<RGBColor>("tl");
     sceneConfig.arr[2] = ps.retrieve<RGBColor>("tr");
@@ -198,6 +201,7 @@ void App::lookat(const ParamSet &ps) {
 
 void App::integrator(const ParamSet &ps) {
   generalConfig.integratorType = ps.retrieve<std::string>("type");
+  generalConfig.depth = (std::size_t)ps.retrieve<int>("depth");
 }
 
 void App::object(const ParamSet &ps) {
@@ -251,7 +255,6 @@ void App::light_source(const ParamSet &ps) {
     sceneConfig.lights.push_back(
         std::make_shared<PointLight>(intensity, scale, from));
   } else if (type == "spot") {
-
     auto from = ps.retrieve<point3>("from", {0, 0, 0});
     auto to = ps.retrieve<point3>("to", {0, 0, 0});
     auto c = ps.retrieve<int>("cutoff", 50);
@@ -284,7 +287,7 @@ void App::render() {
   //  garante que as luzes cheguem ao integrador
   Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim),
            sceneConfig.lights);
-  integrator_->render(sc);
+  integrator_->render(sc, generalConfig.depth);
   integrator_->write_image(generalConfig.filename_, generalConfig.ppm_);
   sceneConfig.aggrPrim = std::make_unique<PrimList>();
   sceneConfig.lights

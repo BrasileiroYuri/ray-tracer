@@ -42,6 +42,6 @@ if(NOT MSVC)
 #-Wpedantic
 #-DDEBUG
   -g
- -O2
+ -O3
   )
 endif()

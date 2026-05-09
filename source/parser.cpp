@@ -3,7 +3,7 @@
 #include "tinyxml2.h"
 #include <iostream>
 #include <sstream>
-#include <vector> 
+#include <vector>
 
   template <typename T>
   static void convert(const std::string &name, const std::string &value,
@@ -50,6 +50,7 @@ conversor_ = {
           {"h_res", convert<int>},
           {"fovy", convert<int>},
           {"cutoff", convert<int>},
+          {"depth", convert<int>},
           {"falloff", convert<int>},
           {"type", convert<std::string>},
           {"name", convert<std::string>},
@@ -65,7 +66,7 @@ conversor_ = {
           {"look_from", convert<point3, float, 3>},
           {"look_at", convert<point3, float, 3>},
           {"center", convert<point3, float, 3>},
-          {"mirror", convert<point3, float, 3>},
+          {"mirror", convert<RGBColor, float, 3>},
           {"up", convert<vec3, float, 3>},
           {"screen_window", convert<ScreenWindow, float, 4>},
           {"ambient", convert<RGBColor, float, 3>},
@@ -135,8 +136,8 @@ void Parser::include(const std::string &filename) const {
       //@TODO: Refazer, não escala.
       // 1. Processamento de Cores e intensidades
       if (attr_name == "color" || attr_name == "bl" || attr_name == "tl" ||
-          attr_name == "tr" || attr_name == "br" || attr_name == "ambient" || 
-          attr_name == "diffuse" || attr_name == "specular" || attr_name == "I" || 
+          attr_name == "tr" || attr_name == "br" || attr_name == "ambient" ||
+          attr_name == "diffuse" || attr_name == "specular" || attr_name == "I" ||
           attr_name == "scale") {
          ps.add(attr_name, parse_color_format(attr_val));
 }
@@ -202,8 +203,8 @@ void Parser::parse() const {
       //@TODO: Refazer, não escala.
       // 1. Processamento de Cores e intensidades
       if (attr_name == "color" || attr_name == "bl" || attr_name == "tl" ||
-          attr_name == "tr" || attr_name == "br" || attr_name == "ambient" || 
-          attr_name == "diffuse" || attr_name == "specular" || attr_name == "I" || 
+          attr_name == "tr" || attr_name == "br" || attr_name == "ambient" ||
+          attr_name == "diffuse" || attr_name == "specular" || attr_name == "I" ||
           attr_name == "scale") {
           ps.add(attr_name, parse_color_format(attr_val));
 }

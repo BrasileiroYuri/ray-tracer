@@ -6,22 +6,13 @@
 #include <sstream>
 #include <string>
 
-class Ray {
-public:
+struct Ray {
   Ray() : min_t_{0.001f}, max_t_{std::numeric_limits<float>::infinity()} {}
 
   // Construtor com origem, direção e suporte opcional a limites de t
-  Ray(const point3 &origin, const vec3 &direction, float t_min = 0.001f,
-      float t_max = std::numeric_limits<float>::infinity())
-      : origin_{origin}, direction_{direction}, min_t_{t_min}, max_t_{t_max} {}
-
-  point3 origin() const { return origin_; }
-  vec3 direction() const { return direction_; }
-  float t_min() const { return min_t_; }
-  float t_max() const { return max_t_; }
-
-  // Setter para atualizar o t máximo durante a busca pela primeira interseção
-  void set_t_max(float t) { max_t_ = t; }
+  Ray(const point3 &o, const vec3 &d, float min = 0.001f,
+      float max = std::numeric_limits<float>::infinity())
+      : origin_{o}, direction_{normalize(d)}, min_t_{min}, max_t_{max} {}
 
   // Operador para calcular o ponto na reta: p(t) = o + t*d
   point3 operator()(float t) const { return origin_ + direction_ * t; }
@@ -34,7 +25,6 @@ public:
     return s.str();
   };
 
-private:
   point3 origin_;
   vec3 direction_;
   float min_t_;

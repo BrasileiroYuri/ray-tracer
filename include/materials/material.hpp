@@ -7,7 +7,8 @@
 struct Material {
     virtual ~Material() = default;
     virtual RGBColor scatter(const vec3& wo, const vec3& wi, const vec3& n) const = 0;
-    virtual RGBColor getColor() const = 0;
+    virtual RGBColor getColor() const = 0; 
+    virtual RGBColor getMirror() const = 0; //!< Usado pelo blinn material;
 };
 
 #endif
