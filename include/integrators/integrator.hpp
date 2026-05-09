@@ -15,24 +15,25 @@ struct RenderConfig {};
 
 class Integrator {
 public:
-    virtual ~Integrator() = default;
+  virtual ~Integrator() = default;
 
-    // O método render permanece genérico
-    virtual void render(const Scene &sc, std::size_t max_depth) {
-	max_depth_ = max_depth;
-        auto width = cam_->widht();
-        auto height = cam_->height();
+  // O método render permanece genérico
+  virtual void render(const Scene &sc, std::size_t max_depth) {
+    max_depth_ = max_depth;
+    auto width = cam_->widht();
+    auto height = cam_->height();
 
-        for (std::size_t j = 0; j < height; j++) {
-            for (std::size_t i = 0; i < width; i++) {
-                Ray ray = cam_->generateRay(i, j);
-                auto color = li(ray, sc).value_or(
-                    sc.backGroundColor_.sample(float(i) / float(width - 1),
-                                               1.f - (float(j) / (float)(height - 1))));
-                cam_->add(i, j, color);
-            }
-        }
+    for (std::size_t j = 0; j < height; j++) {
+      for (std::size_t i = 0; i < width; i++) {
+        Ray ray = cam_->generateRay(i, j);
+        auto color = li(ray, sc, 0)
+                         .value_or(sc.backGroundColor_.sample(
+                             float(i) / float(width - 1),
+                             1.f - (float(j) / (float)(height - 1))));
+        cam_->add(i, j, color);
+      }
     }
+  }
 
   void makeCamera(CameraConfig cc) {
     if (cc.type == "perspective")
@@ -44,9 +45,11 @@ public:
   void write_image(std::string &f, bool ppm = false) const {
     cam_->write_image(f, ppm);
   }
+
 protected:
-    std::unique_ptr<Camera> cam_ = nullptr;
-    std::size_t max_depth_;
-    virtual std::optional<RGBColor> li(const Ray &ray, const Scene &sc, std::size_t depht = 0) = 0;
+  std::unique_ptr<Camera> cam_ = nullptr;
+  std::size_t max_depth_;
+  virtual std::optional<RGBColor> li(const Ray &ray, const Scene &sc,
+                                     std::size_t depht) = 0;
 };
 #endif

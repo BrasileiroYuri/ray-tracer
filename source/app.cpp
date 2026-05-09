@@ -1,23 +1,24 @@
 #include "app.hpp"
+#include "ambient_light.hpp"
 #include "background.hpp"
+#include "blinnphong_integrator.hpp"
+#include "blinnphong_material.hpp"
+#include "direcional_light.hpp"
 #include "flat_material.hpp"
 #include "geometric_primitive.hpp"
+#include "light.hpp"
 #include "material.hpp"
 #include "math.hpp"
 #include "param_set.hpp"
+#include "point_light.hpp"
 #include "prim_list.hpp"
 #include "raycast_integrator.hpp"
 #include "scene.hpp"
 #include "sphere.hpp"
-#include "blinnphong_material.hpp"
-#include "blinnphong_integrator.hpp"
-#include "light.hpp"
-#include "ambient_light.hpp"
-#include "direcional_light.hpp"
-#include "point_light.hpp"
 #include "spot_light.hpp"
 #include <algorithm>
 #include <array>
+#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -66,11 +67,10 @@ void App::make_named_material(const ParamSet &ps) {
   auto type = ps.retrieve<std::string>("type", "flat");
   auto color = ps.retrieve<RGBColor>("color", {0, 0, 0});
 
-
   if (type == "flat") {
     materials[name] = std::make_shared<FlatMaterial>(color);
-	  std::cout << ">>> Criando material '" << type << "' com cor: " << color.str()
-            << ".\n";
+    std::cout << ">>> Criando material '" << type
+              << "' com cor: " << color.str() << ".\n";
   }
 
   if (type == "blinn") {
@@ -84,11 +84,12 @@ void App::make_named_material(const ParamSet &ps) {
     auto mirror = ps.retrieve<RGBColor>("mirror");
 
     std::cout << ">>> Criando material Blinn: '" << name << "'\n";
-    materials[name] = std::make_shared<BlinnPhongMaterial>(ka, kd, ks, gloss, mirror);
+    materials[name] =
+        std::make_shared<BlinnPhongMaterial>(ka, kd, ks, gloss, mirror);
   }
 }
 
-	void App::named_material(const ParamSet &ps) {
+void App::named_material(const ParamSet &ps) {
   auto name = ps.retrieve<std::string>("name");
 
   auto it = materials.find(name);
@@ -200,7 +201,7 @@ void App::lookat(const ParamSet &ps) {
 
 void App::integrator(const ParamSet &ps) {
   generalConfig.integratorType = ps.retrieve<std::string>("type");
-  generalConfig.depth = ps.retrieve<std::size_t>("depth");
+  generalConfig.depth = (std::size_t)ps.retrieve<int>("depth");
 }
 
 void App::object(const ParamSet &ps) {
@@ -242,21 +243,25 @@ void App::light_source(const ParamSet &ps) {
   auto scale = ps.retrieve<RGBColor>("scale", {1, 1, 1});
 
   if (type == "ambient") {
-    sceneConfig.lights.push_back(std::make_shared<AmbientLight>(intensity, scale));
+    sceneConfig.lights.push_back(
+        std::make_shared<AmbientLight>(intensity, scale));
   } else if (type == "directional") {
     auto from = ps.retrieve<point3>("from", {0, 1, 0});
     auto to = ps.retrieve<point3>("to", {0, 0, 0});
-    sceneConfig.lights.push_back(std::make_shared<DirectionalLight>(intensity, scale, from, to));
+    sceneConfig.lights.push_back(
+        std::make_shared<DirectionalLight>(intensity, scale, from, to));
   } else if (type == "point") {
     auto from = ps.retrieve<point3>("from", {0, 0, 0});
-    sceneConfig.lights.push_back(std::make_shared<PointLight>(intensity, scale, from));
+    sceneConfig.lights.push_back(
+        std::make_shared<PointLight>(intensity, scale, from));
   } else if (type == "spot") {
     auto from = ps.retrieve<point3>("from", {0, 0, 0});
     auto to = ps.retrieve<point3>("to", {0, 0, 0});
-    auto c = ps.retrieve<int>("cutoff",50);
+    auto c = ps.retrieve<int>("cutoff", 50);
     auto f = ps.retrieve<int>("falloff", 20);
 
-    sceneConfig.lights.push_back(std::make_shared<SpotLight>(intensity, scale, from, to, c, f));
+    sceneConfig.lights.push_back(
+        std::make_shared<SpotLight>(intensity, scale, from, to, c, f));
   }
 }
 
@@ -264,12 +269,10 @@ void App::integratorConfig(const std::string &type) {
   if (type == "flat") {
     std::cout << ">>> Usando 'RayCastIntegrator'.\n";
     integrator_ = std::make_unique<RayCastIntegrator>();
-  }
-  else if (type == "blinn" || type == "blinn_phong") {
+  } else if (type == "blinn" || type == "blinn_phong") {
     std::cout << ">>> Usando 'BlinnPhongIntegrator'.\n";
     integrator_ = std::make_unique<BlinnPhongIntegrator>();
-  }
-  else {
+  } else {
     std::cerr << ">>> Tipo do Integrator não identificado. Usando "
                  "'RayCastIntegrator'.\n";
     integrator_ = std::make_unique<RayCastIntegrator>();
@@ -278,14 +281,16 @@ void App::integratorConfig(const std::string &type) {
   integrator_->makeCamera(cameraConfig);
 }
 
-void App::lightSource(const ParamSet &ps)  {}
+void App::lightSource(const ParamSet &ps) {}
 void App::render() {
 
   integratorConfig(generalConfig.integratorType);
   //  garante que as luzes cheguem ao integrador
-  Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim), sceneConfig.lights);
+  Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim),
+           sceneConfig.lights);
   integrator_->render(sc, generalConfig.depth);
   integrator_->write_image(generalConfig.filename_, generalConfig.ppm_);
   sceneConfig.aggrPrim = std::make_unique<PrimList>();
-  sceneConfig.lights.clear(); // evita que luzes de um render acumulem no próximo
+  sceneConfig.lights
+      .clear(); // evita que luzes de um render acumulem no próximo
 }
