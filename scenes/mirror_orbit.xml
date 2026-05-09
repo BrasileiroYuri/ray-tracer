@@ -1,0 +1,41 @@
+<RT3>
+    <lookat look_from="6 4 -14" look_at="0 1 1" up="0 1 0" />
+    <camera type="perspective" fovy="40" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1080" filename="mirror_orbit.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="4_colors" bl="0 0 0" tl="10 10 20" tr="15 10 25" br="0 0 0" />
+
+        <light_source type="ambient" I="0.06 0.06 0.06" scale="0.8 0.8 0.8" />
+        <light_source type="spot" I="1.0 1.0 1.0" scale="1 1 1" from="8 9 -8" to="0 1 1" cutoff="20" falloff="8" />
+        <light_source type="spot" I="0.4 0.7 1.0" scale="1 1 1" from="-10 8 5" to="0 1 1" cutoff="25" falloff="20" />
+        <light_source type="spot" I="1.0 0.3 0.2" scale="1 1 1" from="0 12 -2" to="2 1 -1" cutoff="18" falloff="10" />
+
+        <make_named_material type="blinn" name="silver" ambient="0.10 0.10 0.10" diffuse="0.65 0.65 0.70" specular="1.0 1.0 1.0" glossiness="512"/>
+        <make_named_material type="blinn" name="blackglass" ambient="0.03 0.03 0.03" diffuse="0.05 0.05 0.08" specular="1.0 1.0 1.0" glossiness="1024"/>
+        <make_named_material type="blinn" name="ruby" ambient="0.18 0.04 0.04" diffuse="0.85 0.10 0.12" specular="0.95 0.85 0.85" glossiness="128"/>
+        <make_named_material type="blinn" name="emerald" ambient="0.04 0.18 0.05" diffuse="0.12 0.80 0.20" specular="0.95 0.95 0.90" glossiness="128"/>
+        <make_named_material type="blinn" name="floor" ambient="0.08 0.08 0.09" diffuse="0.55 0.55 0.58" specular="0 0 0" glossiness="0"/>
+
+        <named_material name="floor"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <named_material name="silver"/>
+        <object type="sphere" center="-4 1 0" radius="1" />
+        <object type="sphere" center="4 1 0" radius="1" />
+
+        <named_material name="ruby"/>
+        <object type="sphere" center="-1.8 1.2 3.5" radius="1.2" />
+
+        <named_material name="emerald"/>
+        <object type="sphere" center="2.2 1.1 2.8" radius="1.1" />
+
+        <named_material name="blackglass"/>
+        <object type="sphere" center="0 2.8 0.5" radius="2.8" />
+
+    <world_end/>
+</RT3>

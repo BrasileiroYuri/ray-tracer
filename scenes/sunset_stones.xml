@@ -1,0 +1,45 @@
+<RT3>
+    <lookat look_from="0 8 -22" look_at="0 2 6" up="0 1 0" />
+    <camera type="perspective" fovy="38" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1080" filename="sunset_stones.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="4_colors" bl="20 10 5" tl="120 60 20" tr="220 140 40" br="35 15 10" />
+
+        <light_source type="ambient" I="0.12 0.08 0.06" scale="0.8 0.8 0.8" />
+        <light_source type="directional" I="1.0 0.7 0.4" scale="1 1 1" from="1 1 -1" to="0 0 0" world_radius="50" />
+        <light_source type="spot" I="1.0 0.5 0.2" scale="1 1 1" from="-14 10 -10" to="-2 1 6" cutoff="24" falloff="20" />
+        <light_source type="spot" I="0.6 0.7 1.0" scale="1 1 1" from="14 14 -6" to="4 1 7" cutoff="22" falloff="18" />
+
+        <make_named_material type="blinn" name="sand" ambient="0.20 0.16 0.10" diffuse="0.70 0.58 0.35" specular="0.10 0.08 0.05" glossiness="8"/>
+        <make_named_material type="blinn" name="stone1" ambient="0.12 0.11 0.10" diffuse="0.52 0.46 0.40" specular="0.35 0.32 0.30" glossiness="48"/>
+        <make_named_material type="blinn" name="stone2" ambient="0.10 0.10 0.12" diffuse="0.35 0.40 0.55" specular="0.45 0.48 0.60" glossiness="72"/>
+        <make_named_material type="blinn" name="stone3" ambient="0.12 0.08 0.06" diffuse="0.70 0.36 0.20" specular="0.55 0.35 0.20" glossiness="32"/>
+        <make_named_material type="blinn" name="gold" ambient="0.25 0.18 0.05" diffuse="1.00 0.62 0.10" specular="1.0 0.9 0.5" glossiness="256"/>
+
+        <named_material name="sand"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <named_material name="stone1"/>
+        <object type="sphere" center="-6 1 -2" radius="1" />
+        <object type="sphere" center="-2 1 0" radius="1" />
+        <object type="sphere" center="2 1 2" radius="1" />
+        <object type="sphere" center="6 1 4" radius="1" />
+
+        <named_material name="stone2"/>
+        <object type="sphere" center="-4 2.4 1.5" radius="1.4" />
+        <object type="sphere" center="0 2.2 4" radius="1.2" />
+        <object type="sphere" center="4 2.7 6.5" radius="1.5" />
+
+        <named_material name="stone3"/>
+        <object type="sphere" center="-1.5 3.8 7.5" radius="1.8" />
+
+        <named_material name="gold"/>
+        <object type="sphere" center="3 5.5 9" radius="0.9" />
+
+    <world_end/>
+</RT3>

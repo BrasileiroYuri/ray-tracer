@@ -1,0 +1,73 @@
+<RT3>
+    <lookat look_from="0 7 -18" look_at="0 2 2" up="0 1 0" />
+    <camera type="perspective" fovy="45" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1080" filename="cotton_candy.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <background type="4_colors"
+            bl="255 170 220"
+            tl="255 210 240"
+            tr="180 240 255"
+            br="255 190 230"/>
+
+        <light_source type="ambient"
+            I="0.15 0.12 0.15"
+            scale="1 1 1"/>
+
+        <light_source type="spot"
+            I="1 0.7 0.9"
+            scale="1 1 1"
+            from="-10 10 -6"
+            to="-2 1 2"
+            cutoff="20"
+            falloff="10"/>
+
+        <light_source type="spot"
+            I="0.6 0.9 1"
+            scale="1 1 1"
+            from="10 10 -4"
+            to="2 1 4"
+            cutoff="20"
+            falloff="10"/>
+
+        <make_named_material type="blinn" name="pink"
+            ambient="0.25 0.12 0.20"
+            diffuse="1 0.5 0.8"
+            specular="1 1 1"
+            glossiness="128"/>
+
+        <make_named_material type="blinn" name="babyblue"
+            ambient="0.12 0.20 0.25"
+            diffuse="0.5 0.8 1"
+            specular="1 1 1"
+            glossiness="128"/>
+
+        <make_named_material type="blinn" name="white"
+            ambient="0.25 0.25 0.25"
+            diffuse="1 1 1"
+            specular="1 1 1"
+            glossiness="512"/>
+
+        <make_named_material type="blinn" name="floor"
+            ambient="0.15 0.15 0.15"
+            diffuse="0.95 0.95 0.95"
+            specular="0.05 0.05 0.05"
+            glossiness="0"/>
+
+        <named_material name="floor"/>
+        <object type="plane" point="0 0 0" normal="0 1 0"/>
+
+        <named_material name="pink"/>
+        <object type="sphere" center="-4 1 1" radius="1"/>
+
+        <named_material name="babyblue"/>
+        <object type="sphere" center="4 1 2" radius="1"/>
+
+        <named_material name="white"/>
+        <object type="sphere" center="0 3 4" radius="2"/>
+
+    <world_end/>
+</RT3>

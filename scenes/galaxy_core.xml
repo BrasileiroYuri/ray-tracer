@@ -1,0 +1,81 @@
+<RT3>
+    <lookat look_from="0 12 -30" look_at="0 2 8" up="0 1 0" />
+    <camera type="perspective" fovy="30" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1080" filename="galaxy_core.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <background type="4_colors"
+            bl="0 0 0"
+            tl="10 10 40"
+            tr="40 0 80"
+            br="0 0 0"/>
+
+        <light_source type="ambient"
+            I="0.03 0.03 0.05"
+            scale="1 1 1"/>
+
+        <light_source type="spot"
+            I="0.2 0.5 1"
+            scale="1 1 1"
+            from="-15 20 -10"
+            to="0 2 8"
+            cutoff="25"
+            falloff="20"/>
+
+        <light_source type="spot"
+            I="1 0.2 0.8"
+            scale="1 1 1"
+            from="15 16 -6"
+            to="0 2 8"
+            cutoff="25"
+            falloff="20"/>
+
+        <light_source type="spot"
+            I="1 1 1"
+            scale="1 1 1"
+            from="0 25 10"
+            to="0 5 10"
+            cutoff="10"
+            falloff="4"/>
+
+        <make_named_material type="blinn" name="star"
+            ambient="0.2 0.2 0.2"
+            diffuse="1 1 0.8"
+            specular="1 1 1"
+            glossiness="1024"/>
+
+        <make_named_material type="blinn" name="planet1"
+            ambient="0.1 0.05 0.2"
+            diffuse="0.5 0.1 1"
+            specular="0.8 0.8 1"
+            glossiness="128"/>
+
+        <make_named_material type="blinn" name="planet2"
+            ambient="0.05 0.15 0.2"
+            diffuse="0 0.7 1"
+            specular="0.8 0.9 1"
+            glossiness="128"/>
+
+        <make_named_material type="blinn" name="planet3"
+            ambient="0.2 0.08 0.08"
+            diffuse="1 0.2 0.3"
+            specular="1 0.9 0.9"
+            glossiness="128"/>
+
+        <named_material name="star"/>
+        <object type="sphere" center="0 6 10" radius="3"/>
+
+        <named_material name="planet1"/>
+        <object type="sphere" center="-8 1 4" radius="1"/>
+
+        <named_material name="planet2"/>
+        <object type="sphere" center="7 2 8" radius="2"/>
+
+        <named_material name="planet3"/>
+        <object type="sphere" center="0 1 -2" radius="1.4"/>
+
+    <world_end/>
+</RT3>

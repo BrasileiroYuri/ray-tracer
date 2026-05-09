@@ -1,0 +1,51 @@
+<RT3>
+    <lookat look_from="0 4 -20" look_at="0 2 10" up="0 1 0" />
+    <camera type="perspective" fovy="35" />
+
+    <integrator type="blinn_phong" depth="1"/>
+
+    <film type="image"
+          w_res="1600"
+          h_res="900"
+          filename="depth_corridor.png"
+          img_type="png"
+          gamma_corrected="false"/>
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="4_colors"
+            bl="0 0 0"
+            tl="20 20 40"
+            tr="20 20 40"
+            br="0 0 0"/>
+
+        <light_source type="ambient"
+            I="0.1 0.1 0.1"
+            scale="1 1 1"/>
+
+        <light_source type="point"
+            I="1 1 1"
+            scale="1 1 1"
+            from="0 10 -10"/>
+
+        <make_named_material type="blinn"
+            name="white"
+            ambient="0.2 0.2 0.2"
+            diffuse="0.8 0.8 0.8"
+            specular="0.7 0.7 0.7"
+            glossiness="64"/>
+
+        <named_material name="white"/>
+
+        <object type="sphere" center="0 1 0" radius="1"/>
+        <object type="sphere" center="0 1 5" radius="1"/>
+        <object type="sphere" center="0 1 10" radius="1"/>
+        <object type="sphere" center="0 1 15" radius="1"/>
+        <object type="sphere" center="0 1 20" radius="1"/>
+
+        <object type="plane" point="0 0 0" normal="0 1 0"/>
+
+    <world_end/>
+</RT3>
