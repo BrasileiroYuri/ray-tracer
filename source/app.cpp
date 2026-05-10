@@ -3,6 +3,7 @@
 #include "background.hpp"
 #include "blinnphong_integrator.hpp"
 #include "blinnphong_material.hpp"
+#include "cube.hpp"
 #include "direcional_light.hpp"
 #include "flat_material.hpp"
 #include "geometric_primitive.hpp"
@@ -212,6 +213,8 @@ void App::object(const ParamSet &ps) {
     sphere(ps);
   } else if (type == "plane") {
     plane(ps);
+  } else if (type == "cube") {
+    cube(ps);
   } else {
     std::cout << "Objeto " << (type.empty() ? "vazio" : type) << "inválido.\n";
   }
@@ -283,11 +286,20 @@ void App::integratorConfig(const std::string &type) {
 
   integrator_->makeCamera(cameraConfig);
 }
-// hit_t = dot(point - origin, normal) / dot(direction, normal)
+
 void App::plane(const ParamSet &ps) {
   point3 point = ps.retrieve<point3>("point", {0, 0, 0});
   vec3 normal = ps.retrieve<vec3>("normal", {0, 1, 0});
   auto shape = std::make_unique<Plane>(point, normal);
+  auto geoPrim =
+      std::make_shared<GeometricPrimitive>(std::move(shape), currMaterial);
+  sceneConfig.aggrPrim->addObject(std::move(geoPrim));
+}
+
+void App::cube(const ParamSet &ps) {
+  auto p1 = ps.retrieve<point3>("p1");
+  auto p2 = ps.retrieve<point3>("p2");
+  auto shape = std::make_unique<Cube>(p1, p2);
   auto geoPrim =
       std::make_shared<GeometricPrimitive>(std::move(shape), currMaterial);
   sceneConfig.aggrPrim->addObject(std::move(geoPrim));

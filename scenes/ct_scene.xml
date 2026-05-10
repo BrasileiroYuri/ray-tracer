@@ -3,7 +3,7 @@
     <lookat look_from="-2 5.5 -16" look_at="0 1 2" up="0 1 0" />
     <camera type="perspective" fovy="42" />
     <integrator type="blinn" depth="2" />
-    <film type="image" w_res="1920" h_res="1200" filename="cool_scene.png" img_type="png" gamma_corrected="true" />
+    <film type="image" w_res="1920" h_res="1200" filename="ct_scene.png" img_type="png" gamma_corrected="true" />
 
     <!-- Objects storage -->
     <aggregator type="list"/>

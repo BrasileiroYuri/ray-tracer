@@ -1,0 +1,33 @@
+<RT3>
+    <lookat look_from="0 12 -12" look_at="0 0 0" up="0 1 0" />
+    <camera type="perspective" fovy="40" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1200" filename="rgb.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <background type="4_colors" bl="5 5 5" tl="15 15 15" tr="15 15 15" br="5 5 5" />
+        <light_source type="ambient" I="0.05 0.05 0.05" scale="0.1 0.1 0.1" />
+
+        <light_source type="spot" I="1.0 0.0 0.0" scale="1 1 1" from="-8 10 -4" to="0 0 0" cutoff="30" falloff="15" />
+
+        <light_source type="spot" I="0.0 1.0 0.0" scale="1 1 1" from="8 10 -4" to="0 0 0" cutoff="30" falloff="15" />
+
+        <light_source type="spot" I="0.0 0.0 1.0" scale="1 1 1" from="0 10 8" to="0 0 0" cutoff="30" falloff="15" />
+
+        <make_named_material type="blinn" name="pure_white" ambient="0.1 0.1 0.1" diffuse ="0.9 0.9 0.9" specular ="0.8 0.8 0.8" glossiness ="128"/>
+
+        <named_material name="pure_white"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <object type="sphere" center="0 1.5 0" radius="1.5" />
+
+        <object type="cube" p1="-3 0 -1" p2="-1.5 2 1" />
+        <object type="cube" p1="1.5 0 -1" p2="3 2 1" />
+        <object type="cube" p1="-1 0 1.5" p2="1 1 3" />
+
+        <object type="sphere" center="0 0.8 -2.5" radius="0.8" />
+
+    <world_end/>
+</RT3>

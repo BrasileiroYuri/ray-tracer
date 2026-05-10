@@ -10,7 +10,7 @@
 
         <background type="4_colors" bl="0 0 0" tl="0 0 0" tr="8 8 12" br="0 0 0" />
 
-        <light_source type="ambient" I="0.03 0.03 0.03" scale="1 1 1" />
+        <light_source type="ambient" I="0.03 0.03 0.03" scale="2 2 2" />
         <light_source type="spot" I="1.0 0.95 0.85" scale="1 1 1" from="-6 9 -2" to="-2 1 2" cutoff="12" falloff="8" />
         <light_source type="spot" I="0.4 0.7 1.0" scale="1 1 1" from="7 10 -4" to="2 1 5" cutoff="10" falloff="6" />
         <light_source type="spot" I="1.0 0.2 0.2" scale="1 1 1" from="0 12 5" to="0 1 0" cutoff="14" falloff="10" />

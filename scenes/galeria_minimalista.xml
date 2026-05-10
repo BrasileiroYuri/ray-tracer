@@ -1,0 +1,36 @@
+<RT3>
+    <lookat look_from="-2 3 -5" look_at="0 1.5 0" up="0 1 0" />
+    <camera type="perspective" fovy="45" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1200" filename="galeria_minimalista.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="4_colors" bl="10 10 15" tl="20 20 25" tr="20 20 25" br="10 10 15" />
+
+        <light_source type="ambient" I="0.05 0.05 0.05" scale="0.2 0.2 0.2" />
+
+        <light_source type="spot" I="1.0 0.95 0.8" scale="1 1 1" from="0 6 0" to="0 1.5 0" cutoff="20" falloff="10" />
+
+        <light_source type="spot" I="0.4 0.5 1.0" scale="1 1 1" from="-5 3 -2" to="0 1 0" cutoff="35" falloff="25" />
+
+        <make_named_material type="blinn" name="sculpture_gold"   ambient="0.4 0.4 0.4" diffuse ="1.0 0.7 0.1"   specular ="0.9 0.7 0.3" glossiness ="512"/>
+        <make_named_material type="blinn" name="pedestal_stone" ambient="0.1 0.1 0.1" diffuse ="0.6 0.6 0.6"   specular ="0 0 0"        glossiness ="0"/>
+        <make_named_material type="blinn" name="void_redish"     ambient="0.6 0.6 0.6" diffuse ="0.9 0.1 0.1"   specular ="0.8 0.8 0.8" glossiness ="64"/>
+
+        <named_material name="pedestal_stone"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <named_material name="pedestal_stone"/>
+        <object type="cube" p1="-1 0 -1" p2="1 1 1" />
+
+        <named_material name="void_redish"/>
+        <object type="sphere" center="0 1.5 0" radius="0.5" />
+
+        <named_material name="sculpture_gold"/>
+        <object type="cube" p1="-0.3 1.8 -0.3" p2="0.3 2.4 0.3" />
+
+    <world_end/>
+</RT3>

@@ -78,6 +78,8 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
       {"scale", convert<RGBColor, float, 3>},
       {"from", convert<point3, float, 3>},
       {"to", convert<point3, float, 3>},
+      {"p1", convert<point3, float, 3>},
+      {"p2", convert<point3, float, 3>},
       {"glossiness", convert<float>},
   };
 }

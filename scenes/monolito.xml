@@ -1,0 +1,34 @@
+<RT3>
+    <lookat look_from="0 1 -12" look_at="0 5 0" up="0 1 0" />
+    <camera type="perspective" fovy="55" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1200" filename="monolito.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <background type="4_colors" bl="2 2 4" tl="8 10 15" tr="8 10 15" br="2 2 4" />
+
+        <light_source type="ambient" I="0.01 0.01 0.02" scale="5 5 5" />
+
+        <light_source type="spot" I="1.2 1.2 1.5" scale="2 2 2" from="0 8 5" to="0 0 -15" cutoff="40" falloff="20" />
+
+        <light_source type="spot" I="0.3 0.1 0.1" scale="2 2 2" from="-5 5 -10" to="0 0 0" cutoff="45" falloff="30" />
+
+        <make_named_material type="blinn" name="obsidian"   ambient="0.05 0.05 0.05" diffuse ="0.1 0.1 0.1"   specular ="0.8 0.8 0.9" glossiness ="128"/>
+        <make_named_material type="blinn" name="dust_floor" ambient="0.1 0.1 0.1"   diffuse ="0.4 0.4 0.4"   specular ="0 0 0"       glossiness ="0"/>
+        <make_named_material type="blinn" name="blood_red"  ambient="0.2 0.1 0.1"   diffuse ="0.7 0.1 0.1"   specular ="0.5 0.5 0.5" glossiness ="32"/>
+
+        <named_material name="dust_floor"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <named_material name="obsidian"/>
+        <object type="cube" p1="-1.5 0 0" p2="1.5 12 2" />
+
+        <named_material name="blood_red"/>
+        <object type="sphere" center="-3 0.5 -3" radius="0.5" />
+        <object type="sphere" center="3 0.5 -2" radius="0.5" />
+        <object type="sphere" center="0 0.8 -4" radius="0.8" />
+
+    <world_end/>
+</RT3>

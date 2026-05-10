@@ -1,0 +1,40 @@
+<RT3>
+    <lookat look_from="0 0.2 -15" look_at="0 1 5" up="0 1 0" />
+    <camera type="perspective" fovy="45" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1200" filename="cidade.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <background type="4_colors" bl="0 0 0" tl="5 15 25" tr="5 15 25" br="0 0 0" />
+        <light_source type="ambient" I="2 2 2" scale="1 1 1" />
+
+        <light_source type="spot" I="1.8 1.9 1.0" scale="1 1 1" from="-5 10 15" to="0 0 5" cutoff="40" falloff="20" />
+        <light_source type="spot" I="1.1 1.5 1.1" scale="1 1 1" from="3 5 -2" to="0 0 0" cutoff="30" falloff="15" />
+
+        <make_named_material type="blinn" name="asphalt" ambient="0.05 0.05 0.05" diffuse ="0.2 0.2 0.2" specular ="0.1 0.1 0.1" glossiness ="8"/>
+        <make_named_material type="blinn" name="building_blue" ambient="0.1 0.1 0.15" diffuse ="0.2 0.3 0.6" specular ="0.5 0.5 0.5" glossiness ="64"/>
+        <make_named_material type="blinn" name="building_grey" ambient="0.1 0.1 0.1" diffuse ="0.4 0.4 0.4" specular ="0.3 0.3 0.3" glossiness ="32"/>
+
+        <named_material name="asphalt"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <named_material name="building_grey"/>
+        <object type="cube" p1="-4 0 -10" p2="-2 3 -8" />
+        <object type="cube" p1="-5 0 -5" p2="-3 6 -3" />
+        <object type="cube" p1="-3.5 0 2" p2="-1.5 8 4" />
+        <object type="cube" p1="-6 0 8" p2="-2 12 10" /> <named_material name="building_blue"/>
+        <object type="cube" p1="2 0 -12" p2="3 2 -10" />
+        <object type="cube" p1="3 0 -6" p2="5 5 -4" />
+        <object type="cube" p1="1.5 0 0" p2="4 7 2" />
+        <object type="cube" p1="2 0 6" p2="5 10 8" />
+
+        <named_material name="building_grey"/>
+        <object type="cube" p1="-0.5 0 -8" p2="0.5 1 -7" />
+
+        <named_material name="building_blue"/>
+        <object type="sphere" center="0 8 20" radius="5" />
+
+    <world_end/>
+</RT3>

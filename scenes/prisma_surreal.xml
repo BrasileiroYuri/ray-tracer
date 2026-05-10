@@ -1,0 +1,41 @@
+<RT3>
+    <lookat look_from="0 3 -10" look_at="0 0 0" up="0 1 0" />
+    <camera type="perspective" fovy="45" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1200" filename="cena14_prisma_surreal.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <background type="4_colors" bl="0 0 0" tl="0 0 0" tr="0 0 0" br="0 0 0" />
+
+        <light_source type="ambient" I="1 1 1" scale="1 1 3.1" />
+
+        <light_source type="spot" I="1.0 0.1 0.8" scale="3 5 5" from="0 5 0" to="0 0 0" cutoff="25" falloff="10" />
+
+        <light_source type="spot" I="0.1 1.0 1.0" scale="3 4 5" from="0 -5 0" to="0 0 0" cutoff="25" falloff="10" />
+
+        <light_source type="spot" I="1.0 1.0 0.1" scale="2 8 1" from="0 0 5" to="0 0 0" cutoff="25" falloff="10" />
+
+        <make_named_material type="blinn" name="obsidian_glass" ambient="0.05 0.05 0.05" diffuse ="0.1 0.1 0.1" specular ="1.0 1.0 1.0" glossiness ="512"/>
+        <make_named_material type="blinn" name="void_grey" ambient="0.1 0.1 0.1" diffuse ="0.5 0.5 0.5" specular ="0.2 0.2 0.2" glossiness ="16"/>
+
+        <named_material name="void_grey"/>
+        <object type="plane" point="0 -3 0" normal="0 1 0" />
+
+        <named_material name="obsidian_glass"/>
+
+        <object type="cube" p1="-1 -1 -1" p2="1 1 1" />
+
+        <object type="sphere" center="0 1.2 0" radius="1.0" />
+        <object type="cube" p1="-1.5 -1.5 1.1" p2="1.5 1.5 1.2" /> <object type="sphere" center="1.2 0 0" radius="1.0" />
+        <object type="sphere" center="-1.2 0 0" radius="1.0" />
+        <object type="cube" p1="1.1 -1.5 -1.5" p2="1.2 1.5 1.5" /> <object type="sphere" center="0 0 1.2" radius="1.0" />
+        <object type="sphere" center="0 0 -1.2" radius="1.0" />
+
+        <object type="cube" p1="1.8 1.8 1.8" p2="2.0 2.0 2.0" />
+        <object type="sphere" center="-1.8 -1.8 -1.8" radius="0.2" />
+        <object type="cube" p1="0.1 2 0.1" p2="0.3 3 0.3" />
+
+    <world_end/>
+</RT3>

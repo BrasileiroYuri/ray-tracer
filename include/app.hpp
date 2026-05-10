@@ -21,17 +21,18 @@ public:
   static void film(const ParamSet &);
   static void lookat(const ParamSet &);
   static void camera(const ParamSet &);
-  static void sphere(const ParamSet &);
   static void object(const ParamSet &);
   static void integrator(const ParamSet &);
   static void make_named_material(const ParamSet &);
   static void material(const ParamSet &);
-  static void include(const ParamSet &);
   static void named_material(const ParamSet &);
-  static void plane(const ParamSet &);
   static void light_source(const ParamSet &);
 
 private:
+  static void plane(const ParamSet &);
+  static void sphere(const ParamSet &);
+  static void cube(const ParamSet &);
+
   static void integratorConfig(const std::string &type);
   static std::unique_ptr<Integrator> integrator_;
 };

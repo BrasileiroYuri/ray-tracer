@@ -1,0 +1,32 @@
+<RT3>
+    <lookat look_from="0 0.5 -5" look_at="0 4 10" up="0 1 0" />
+    <camera type="perspective" fovy="50" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1200" filename="abismo.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <background type="4_colors" bl="2 2 2" tl="10 10 15" tr="10 10 15" br="2 2 2" />
+        <light_source type="ambient" I="2 2 2" scale="1 1 1" />
+
+        <light_source type="spot" I="2 1 9" scale="1 1 1" from="0 8 12" to="0 3 8" cutoff="30" falloff="20" />
+
+        <light_source type="spot" I="1 2 4" scale="1 1 1" from="0 5 -10" to="0 0 0" cutoff="45" falloff="30" />
+
+        <make_named_material type="blinn" name="stone" ambient="0.1 0.1 0.1" diffuse ="0.5 0.5 0.5" specular ="0.2 0.2 0.2" glossiness ="16"/>
+        <make_named_material type="blinn" name="ruby"  ambient="0.2 0.0 0.0" diffuse ="0.8 0.1 0.1" specular ="0.9 0.7 0.7" glossiness ="256"/>
+
+        <named_material name="stone"/>
+
+        <object type="cube" p1="-3 0.0 0" p2="3 0.5 2" />
+        <object type="cube" p1="-3 0.5 2" p2="3 1.0 4" />
+        <object type="cube" p1="-3 1.0 4" p2="3 1.5 6" />
+        <object type="cube" p1="-3 1.5 6" p2="3 2.0 8" />
+        <object type="cube" p1="-3 2.0 8" p2="3 2.5 10" />
+
+        <named_material name="ruby"/>
+        <object type="sphere" center="0 3.5 9" radius="1.0" />
+
+    <world_end/>
+</RT3>

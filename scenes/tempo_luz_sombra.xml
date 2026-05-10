@@ -1,0 +1,36 @@
+<RT3>
+    <lookat look_from="-8 5 -15" look_at="0 1.5 0" up="0 1 0" />
+    <camera type="perspective" fovy="50" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1200" filename="templo_luz_sombra.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <background type="4_colors" bl="5 5 5" tl="10 10 10" tr="10 10 10" br="5 5 5" />
+
+        <light_source type="ambient" I="0.02 0.02 0.03" scale="1 1 1" />
+
+        <light_source type="spot" I="1.0 0.8 0.2" scale="1 1 1" from="12 8 -2" to="0 3 0" cutoff="15" falloff="5" />
+
+        <light_source type="spot" I="0.2 0.3 1.0" scale="1 1 1" from="-12 8 -2" to="0 3 0" cutoff="15" falloff="5" />
+
+        <light_source type="spot" I="1.0 0.9 0.8" scale="1 1 1" from="0 6 2" to="0 1.5 2" cutoff="20" falloff="10" />
+
+        <make_named_material type="blinn" name="stone_column" ambient="0.1 0.1 0.1" diffuse ="0.5 0.5 0.5"   specular ="0.1 0.1 0.1" glossiness ="16"/>
+        <make_named_material type="blinn" name="relic_gold"  ambient="0.4 0.4 0.4" diffuse ="1.0 0.6 0.0"   specular ="0.8 0.6 0.2" glossiness ="256"/>
+
+        <named_material name="stone_column"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <named_material name="stone_column"/>
+
+
+        <object type="cube" p1="-1 0 1" p2="1 1.5 3" />
+
+        <named_material name="relic_gold"/>
+        <object type="sphere" center="0 2.2 2" radius="0.3" />
+
+    <world_end/>
+</RT3>
