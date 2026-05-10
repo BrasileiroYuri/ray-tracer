@@ -1,0 +1,252 @@
+<RT3>
+    <!-- Labirinto: câmera quase top-down, perspectiva isométrica -->
+    <lookat look_from="0 28 -8" look_at="0 0 10" up="0 1 0" />
+    <camera type="perspective" fovy="50" />
+    <integrator type="blinn_phong" depth="2" />
+    <film type="image" w_res="1920" h_res="1200" filename="labirinto.png" img_type="png" gamma_corrected="true" />
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <background type="colors" bl="15 12 20" tl="8 6 15" tr="8 6 15" br="15 12 20" />
+
+        <light_source type="ambient" I="0.1 0.08 0.12" scale="1 1 1" />
+        <light_source type="directional" I="0.8 0.78 0.9" scale="1.0 1.0 1.0" from="-3 10 -5" to="0 0 1" />
+        <light_source type="point" I="0.9 0.4 0.1" scale="3.0 3.0 3.0" from="-8 5 2" />
+        <light_source type="point" I="0.1 0.4 0.9" scale="3.0 3.0 3.0" from=" 8 5 18" />
+        <light_source type="point" I="0.3 0.9 0.3" scale="2.0 2.0 2.0" from=" 0 6 10" />
+
+        <make_named_material type="blinn" name="wall_stone"
+            ambient="0.06 0.05 0.08" diffuse="0.28 0.25 0.38" specular="0.5 0.48 0.6" glossiness="64"/>
+        <make_named_material type="blinn" name="floor_tile"
+            ambient="0.05 0.05 0.06" diffuse="0.18 0.18 0.22" specular="0.35 0.35 0.4" glossiness="128"/>
+        <make_named_material type="blinn" name="wall_glowing"
+            ambient="0.15 0.05 0.0" diffuse="0.55 0.2 0.02" specular="0.8 0.5 0.2" glossiness="256"/>
+        <make_named_material type="blinn" name="goal_material"
+            ambient="0.0 0.2 0.0" diffuse="0.1 0.8 0.1" specular="0.7 1.0 0.7" glossiness="512"/>
+
+        <!-- Chão -->
+        <named_material name="floor_tile"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <!-- ===== PAREDES DO LABIRINTO ===== -->
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-13.0 0 0.0" p2="-11.0 2.5 2.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-9.0 0 0.0" p2="-7.0 2.5 2.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-7.0 0 0.0" p2="-5.0 2.5 2.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-5.0 0 0.0" p2="-3.0 2.5 2.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-3.0 0 0.0" p2="-1.0 2.5 2.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-1.0 0 0.0" p2="1.0 2.5 2.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="1.0 0 0.0" p2="3.0 2.5 2.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="3.0 0 0.0" p2="5.0 2.5 2.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="5.0 0 0.0" p2="7.0 2.5 2.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="7.0 0 0.0" p2="9.0 2.5 2.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="9.0 0 0.0" p2="11.0 2.5 2.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="11.0 0 0.0" p2="13.0 2.5 2.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-13.0 0 2.0" p2="-11.0 2.5 4.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="11.0 0 2.0" p2="13.0 2.5 4.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-13.0 0 4.0" p2="-11.0 2.5 6.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-11.0 0 4.0" p2="-9.0 2.5 6.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-9.0 0 4.0" p2="-7.0 2.5 6.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-7.0 0 4.0" p2="-5.0 2.5 6.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-5.0 0 4.0" p2="-3.0 2.5 6.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-3.0 0 4.0" p2="-1.0 2.5 6.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-1.0 0 4.0" p2="1.0 2.5 6.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="1.0 0 4.0" p2="3.0 2.5 6.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="3.0 0 4.0" p2="5.0 2.5 6.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="5.0 0 4.0" p2="7.0 2.5 6.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="7.0 0 4.0" p2="9.0 2.5 6.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="11.0 0 4.0" p2="13.0 2.5 6.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-13.0 0 6.0" p2="-11.0 2.5 8.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-1.0 0 6.0" p2="1.0 2.5 8.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="7.0 0 6.0" p2="9.0 2.5 8.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="11.0 0 6.0" p2="13.0 2.5 8.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-13.0 0 8.0" p2="-11.0 2.5 10.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-9.0 0 8.0" p2="-7.0 2.5 10.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-7.0 0 8.0" p2="-5.0 2.5 10.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-5.0 0 8.0" p2="-3.0 2.5 10.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-1.0 0 8.0" p2="1.0 2.5 10.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="3.0 0 8.0" p2="5.0 2.5 10.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="5.0 0 8.0" p2="7.0 2.5 10.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="7.0 0 8.0" p2="9.0 2.5 10.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="11.0 0 8.0" p2="13.0 2.5 10.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-13.0 0 10.0" p2="-11.0 2.5 12.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-9.0 0 10.0" p2="-7.0 2.5 12.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="3.0 0 10.0" p2="5.0 2.5 12.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="11.0 0 10.0" p2="13.0 2.5 12.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-13.0 0 12.0" p2="-11.0 2.5 14.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-9.0 0 12.0" p2="-7.0 2.5 14.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-7.0 0 12.0" p2="-5.0 2.5 14.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-5.0 0 12.0" p2="-3.0 2.5 14.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-3.0 0 12.0" p2="-1.0 2.5 14.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-1.0 0 12.0" p2="1.0 2.5 14.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="3.0 0 12.0" p2="5.0 2.5 14.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="7.0 0 12.0" p2="9.0 2.5 14.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="9.0 0 12.0" p2="11.0 2.5 14.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="11.0 0 12.0" p2="13.0 2.5 14.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-13.0 0 14.0" p2="-11.0 2.5 16.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-5.0 0 14.0" p2="-3.0 2.5 16.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="3.0 0 14.0" p2="5.0 2.5 16.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="11.0 0 14.0" p2="13.0 2.5 16.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-13.0 0 16.0" p2="-11.0 2.5 18.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-9.0 0 16.0" p2="-7.0 2.5 18.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-5.0 0 16.0" p2="-3.0 2.5 18.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-3.0 0 16.0" p2="-1.0 2.5 18.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-1.0 0 16.0" p2="1.0 2.5 18.0" />
+        <named_material name="wall_glowing"/>
+        <object type="cube" p1="1.0 0 16.0" p2="3.0 2.5 18.0" />
+        <material type="flat" color="255 120 30" />
+        <object type="sphere" center="2.0 2.9 17.0" radius="0.25" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="3.0 0 16.0" p2="5.0 2.5 18.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="5.0 0 16.0" p2="7.0 2.5 18.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="7.0 0 16.0" p2="9.0 2.5 18.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="11.0 0 16.0" p2="13.0 2.5 18.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-13.0 0 18.0" p2="-11.0 2.5 20.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-9.0 0 18.0" p2="-7.0 2.5 20.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-5.0 0 18.0" p2="-3.0 2.5 20.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="11.0 0 18.0" p2="13.0 2.5 20.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-13.0 0 20.0" p2="-11.0 2.5 22.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-9.0 0 20.0" p2="-7.0 2.5 22.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-5.0 0 20.0" p2="-3.0 2.5 22.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-1.0 0 20.0" p2="1.0 2.5 22.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="1.0 0 20.0" p2="3.0 2.5 22.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="3.0 0 20.0" p2="5.0 2.5 22.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="5.0 0 20.0" p2="7.0 2.5 22.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="7.0 0 20.0" p2="9.0 2.5 22.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="9.0 0 20.0" p2="11.0 2.5 22.0" />
+        <named_material name="wall_glowing"/>
+        <object type="cube" p1="11.0 0 20.0" p2="13.0 2.5 22.0" />
+        <material type="flat" color="255 120 30" />
+        <object type="sphere" center="12.0 2.9 21.0" radius="0.25" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-13.0 0 22.0" p2="-11.0 2.5 24.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-9.0 0 22.0" p2="-7.0 2.5 24.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="11.0 0 22.0" p2="13.0 2.5 24.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-13.0 0 24.0" p2="-11.0 2.5 26.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-11.0 0 24.0" p2="-9.0 2.5 26.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-9.0 0 24.0" p2="-7.0 2.5 26.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-7.0 0 24.0" p2="-5.0 2.5 26.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-5.0 0 24.0" p2="-3.0 2.5 26.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-3.0 0 24.0" p2="-1.0 2.5 26.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="-1.0 0 24.0" p2="1.0 2.5 26.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="1.0 0 24.0" p2="3.0 2.5 26.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="3.0 0 24.0" p2="5.0 2.5 26.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="5.0 0 24.0" p2="7.0 2.5 26.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="7.0 0 24.0" p2="9.0 2.5 26.0" />
+        <named_material name="wall_stone"/>
+        <object type="cube" p1="11.0 0 24.0" p2="13.0 2.5 26.0" />
+
+        <!-- ENTRADA (marcador verde) -->
+        <named_material name="goal_material"/>
+        <object type="cube" p1="-10.4 0 -0.3" p2="-9.6 0.1 0.5" />
+        <material type="flat" color="50 255 80" />
+        <object type="sphere" center="-10.0 1.5 0.5" radius="0.3" />
+
+        <!-- SAÍDA (marcador dourado) -->
+        <make_named_material type="blinn" name="gold_goal"
+            ambient="0.25 0.18 0.0" diffuse="0.95 0.75 0.1" specular="0.95 0.8 0.4" glossiness="512"/>
+        <named_material name="gold_goal"/>
+        <object type="sphere" center="10.0 1.5 25.0" radius="0.5" />
+        <material type="flat" color="255 220 50" />
+        <object type="sphere" center="10.0 2.2 25.0" radius="0.28" />
+
+        <!-- AVENTUREIRO no labirinto (esfera azul no caminho) -->
+        <make_named_material type="blinn" name="player"
+            ambient="0.05 0.08 0.22" diffuse="0.12 0.2 0.88" specular="0.9 0.92 1.0" glossiness="1024"/>
+        <named_material name="player"/>
+        <object type="sphere" center="2.0 0.7 9.0" radius="0.6" />
+        <material type="flat" color="100 150 255" />
+        <object type="sphere" center="2.0 1.5 9.0" radius="0.22" />
+
+    <world_end/>
+</RT3>

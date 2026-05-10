@@ -1,0 +1,280 @@
+<RT3>
+    <!-- Tabuleiro de Xadrez: câmera em perspectiva isométrica elevada -->
+    <lookat look_from="-2 14 -14" look_at="0 0 4" up="0 1 0" />
+    <camera type="perspective" fovy="42" />
+    <integrator type="blinn_phong" depth="2" />
+    <film type="image" w_res="1920" h_res="1200" filename="xadrez.png" img_type="png" gamma_corrected="true" />
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <!-- Fundo neutro escuro -->
+        <background type="colors" bl="18 14 10" tl="12 10 8" tr="12 10 8" br="18 14 10" />
+
+        <!-- Iluminação de estúdio -->
+        <light_source type="ambient" I="0.12 0.1 0.08" scale="1 1 1" />
+        <light_source type="directional" I="0.9 0.88 0.82" scale="1.0 1.0 1.0" from="-3 8 -5" to="0 0 1" />
+        <light_source type="point" I="0.7 0.68 0.62" scale="1.8 1.8 1.8" from=" 5 10  2" />
+        <light_source type="point" I="0.4 0.42 0.5"  scale="0.8 0.8 0.8" from="-6  8  8" />
+
+        <!-- Materiais nomeados -->
+        <make_named_material type="blinn" name="white_sq"  ambient="0.18 0.16 0.12" diffuse="0.88 0.82 0.70" specular="0.3 0.3 0.28" glossiness="32"/>
+        <make_named_material type="blinn" name="black_sq"  ambient="0.04 0.03 0.02" diffuse="0.14 0.10 0.07" specular="0.4 0.38 0.35" glossiness="64"/>
+        <make_named_material type="blinn" name="border"    ambient="0.1  0.06 0.02" diffuse="0.45 0.28 0.08" specular="0.5 0.42 0.25" glossiness="128"/>
+        <make_named_material type="blinn" name="w_piece"   ambient="0.2  0.2  0.2"  diffuse="0.92 0.90 0.86" specular="0.9 0.9  0.88" glossiness="512"/>
+        <make_named_material type="blinn" name="b_piece"   ambient="0.03 0.02 0.02" diffuse="0.10 0.08 0.08" specular="0.8 0.78 0.75" glossiness="256"/>
+        <make_named_material type="blinn" name="gold_piece" ambient="0.25 0.18 0.0" diffuse="0.95 0.72 0.08" specular="0.95 0.8 0.4" glossiness="512"/>
+
+        <!-- ===== BORDA DO TABULEIRO ===== -->
+        <named_material name="border"/>
+        <object type="cube" p1="-4.6 0 -0.6" p2="4.6 0.4 8.6" />
+
+        <!-- ===== SQUARES 8x8 ===== -->
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-4.0 0.4 0.0" p2="-3.0 0.8 1.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-3.0 0.4 0.0" p2="-2.0 0.8 1.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-2.0 0.4 0.0" p2="-1.0 0.8 1.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-1.0 0.4 0.0" p2="0.0 0.8 1.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="0.0 0.4 0.0" p2="1.0 0.8 1.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="1.0 0.4 0.0" p2="2.0 0.8 1.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="2.0 0.4 0.0" p2="3.0 0.8 1.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="3.0 0.4 0.0" p2="4.0 0.8 1.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-4.0 0.4 1.0" p2="-3.0 0.8 2.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-3.0 0.4 1.0" p2="-2.0 0.8 2.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-2.0 0.4 1.0" p2="-1.0 0.8 2.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-1.0 0.4 1.0" p2="0.0 0.8 2.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="0.0 0.4 1.0" p2="1.0 0.8 2.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="1.0 0.4 1.0" p2="2.0 0.8 2.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="2.0 0.4 1.0" p2="3.0 0.8 2.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="3.0 0.4 1.0" p2="4.0 0.8 2.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-4.0 0.4 2.0" p2="-3.0 0.8 3.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-3.0 0.4 2.0" p2="-2.0 0.8 3.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-2.0 0.4 2.0" p2="-1.0 0.8 3.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-1.0 0.4 2.0" p2="0.0 0.8 3.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="0.0 0.4 2.0" p2="1.0 0.8 3.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="1.0 0.4 2.0" p2="2.0 0.8 3.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="2.0 0.4 2.0" p2="3.0 0.8 3.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="3.0 0.4 2.0" p2="4.0 0.8 3.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-4.0 0.4 3.0" p2="-3.0 0.8 4.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-3.0 0.4 3.0" p2="-2.0 0.8 4.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-2.0 0.4 3.0" p2="-1.0 0.8 4.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-1.0 0.4 3.0" p2="0.0 0.8 4.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="0.0 0.4 3.0" p2="1.0 0.8 4.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="1.0 0.4 3.0" p2="2.0 0.8 4.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="2.0 0.4 3.0" p2="3.0 0.8 4.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="3.0 0.4 3.0" p2="4.0 0.8 4.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-4.0 0.4 4.0" p2="-3.0 0.8 5.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-3.0 0.4 4.0" p2="-2.0 0.8 5.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-2.0 0.4 4.0" p2="-1.0 0.8 5.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-1.0 0.4 4.0" p2="0.0 0.8 5.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="0.0 0.4 4.0" p2="1.0 0.8 5.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="1.0 0.4 4.0" p2="2.0 0.8 5.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="2.0 0.4 4.0" p2="3.0 0.8 5.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="3.0 0.4 4.0" p2="4.0 0.8 5.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-4.0 0.4 5.0" p2="-3.0 0.8 6.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-3.0 0.4 5.0" p2="-2.0 0.8 6.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-2.0 0.4 5.0" p2="-1.0 0.8 6.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-1.0 0.4 5.0" p2="0.0 0.8 6.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="0.0 0.4 5.0" p2="1.0 0.8 6.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="1.0 0.4 5.0" p2="2.0 0.8 6.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="2.0 0.4 5.0" p2="3.0 0.8 6.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="3.0 0.4 5.0" p2="4.0 0.8 6.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-4.0 0.4 6.0" p2="-3.0 0.8 7.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-3.0 0.4 6.0" p2="-2.0 0.8 7.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-2.0 0.4 6.0" p2="-1.0 0.8 7.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-1.0 0.4 6.0" p2="0.0 0.8 7.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="0.0 0.4 6.0" p2="1.0 0.8 7.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="1.0 0.4 6.0" p2="2.0 0.8 7.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="2.0 0.4 6.0" p2="3.0 0.8 7.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="3.0 0.4 6.0" p2="4.0 0.8 7.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-4.0 0.4 7.0" p2="-3.0 0.8 8.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-3.0 0.4 7.0" p2="-2.0 0.8 8.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="-2.0 0.4 7.0" p2="-1.0 0.8 8.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="-1.0 0.4 7.0" p2="0.0 0.8 8.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="0.0 0.4 7.0" p2="1.0 0.8 8.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="1.0 0.4 7.0" p2="2.0 0.8 8.0" />
+        <named_material name="black_sq"/>
+        <object type="cube" p1="2.0 0.4 7.0" p2="3.0 0.8 8.0" />
+        <named_material name="white_sq"/>
+        <object type="cube" p1="3.0 0.4 7.0" p2="4.0 0.8 8.0" />
+
+        <!-- ===== PEÇAS BRANCAS (fileira 1 e 2) ===== -->
+
+        <!-- Fileira traseira branca -->
+        <named_material name="w_piece"/>
+        <object type="cube" p1="-3.72 0.80 -3.72" p2="-3.28 1.80 -3.28" />
+        <object type="cube" p1="-3.78 1.80 -3.78" p2="-3.22 2.05 -3.22" />
+        <named_material name="w_piece"/>
+        <object type="cube" p1="-2.68 0.80 -3.68" p2="-2.32 1.50 -3.32" />
+        <object type="cube" p1="-2.68 1.50 -3.82" p2="-2.32 1.90 -3.40" />
+        <object type="sphere" center="-2.50 2.10 -3.65" radius="0.22" />
+        <named_material name="w_piece"/>
+        <object type="cube" p1="-1.68 0.80 -3.68" p2="-1.32 1.65 -3.32" />
+        <object type="sphere" center="-1.50 1.90 -3.50" radius="0.22" />
+        <named_material name="w_piece"/>
+        <object type="cube" p1="-0.72 0.80 -3.72" p2="-0.28 1.90 -3.28" />
+        <object type="sphere" center="-0.50 2.22 -3.50" radius="0.30" />
+        <named_material name="gold_piece"/>
+        <object type="cube" p1="0.28 0.80 -3.72" p2="0.72 2.00 -3.28" />
+        <object type="cube" p1="0.42 2.00 -3.75" p2="0.58 2.45 -3.25" />
+        <object type="cube" p1="0.25 2.15 -3.58" p2="0.75 2.35 -3.42" />
+        <named_material name="w_piece"/>
+        <object type="cube" p1="1.32 0.80 -3.68" p2="1.68 1.65 -3.32" />
+        <object type="sphere" center="1.50 1.90 -3.50" radius="0.22" />
+        <named_material name="w_piece"/>
+        <object type="cube" p1="2.32 0.80 -3.68" p2="2.68 1.50 -3.32" />
+        <object type="cube" p1="2.32 1.50 -3.82" p2="2.68 1.90 -3.40" />
+        <object type="sphere" center="2.50 2.10 -3.65" radius="0.22" />
+        <named_material name="w_piece"/>
+        <object type="cube" p1="3.28 0.80 -3.72" p2="3.72 1.80 -3.28" />
+        <object type="cube" p1="3.22 1.80 -3.78" p2="3.78 2.05 -3.22" />
+        <!-- Peões brancos -->
+        <named_material name="w_piece"/>
+        <object type="cube" p1="-3.65 0.80 -2.65" p2="-3.35 1.35 -2.35" />
+        <object type="sphere" center="-3.50 1.62 -2.50" radius="0.27" />
+        <named_material name="w_piece"/>
+        <object type="cube" p1="-2.65 0.80 -2.65" p2="-2.35 1.35 -2.35" />
+        <object type="sphere" center="-2.50 1.62 -2.50" radius="0.27" />
+        <named_material name="w_piece"/>
+        <object type="cube" p1="-1.65 0.80 -2.65" p2="-1.35 1.35 -2.35" />
+        <object type="sphere" center="-1.50 1.62 -2.50" radius="0.27" />
+        <named_material name="w_piece"/>
+        <object type="cube" p1="-0.65 0.80 -2.65" p2="-0.35 1.35 -2.35" />
+        <object type="sphere" center="-0.50 1.62 -2.50" radius="0.27" />
+        <named_material name="w_piece"/>
+        <object type="cube" p1="0.35 0.80 -2.65" p2="0.65 1.35 -2.35" />
+        <object type="sphere" center="0.50 1.62 -2.50" radius="0.27" />
+        <named_material name="w_piece"/>
+        <object type="cube" p1="1.35 0.80 -2.65" p2="1.65 1.35 -2.35" />
+        <object type="sphere" center="1.50 1.62 -2.50" radius="0.27" />
+        <named_material name="w_piece"/>
+        <object type="cube" p1="2.35 0.80 -2.65" p2="2.65 1.35 -2.35" />
+        <object type="sphere" center="2.50 1.62 -2.50" radius="0.27" />
+        <named_material name="w_piece"/>
+        <object type="cube" p1="3.35 0.80 -2.65" p2="3.65 1.35 -2.35" />
+        <object type="sphere" center="3.50 1.62 -2.50" radius="0.27" />
+        <!-- Fileira traseira preta -->
+        <named_material name="b_piece"/>
+        <object type="cube" p1="-3.72 0.80 3.28" p2="-3.28 1.80 3.72" />
+        <object type="cube" p1="-3.78 1.80 3.22" p2="-3.22 2.05 3.78" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="-2.68 0.80 3.32" p2="-2.32 1.50 3.68" />
+        <object type="cube" p1="-2.68 1.50 3.18" p2="-2.32 1.90 3.60" />
+        <object type="sphere" center="-2.50 2.10 3.35" radius="0.22" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="-1.68 0.80 3.32" p2="-1.32 1.65 3.68" />
+        <object type="sphere" center="-1.50 1.90 3.50" radius="0.22" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="-0.72 0.80 3.28" p2="-0.28 1.90 3.72" />
+        <object type="sphere" center="-0.50 2.22 3.50" radius="0.30" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="0.28 0.80 3.28" p2="0.72 2.00 3.72" />
+        <object type="cube" p1="0.42 2.00 3.25" p2="0.58 2.45 3.75" />
+        <object type="cube" p1="0.25 2.15 3.42" p2="0.75 2.35 3.58" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="1.32 0.80 3.32" p2="1.68 1.65 3.68" />
+        <object type="sphere" center="1.50 1.90 3.50" radius="0.22" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="2.32 0.80 3.32" p2="2.68 1.50 3.68" />
+        <object type="cube" p1="2.32 1.50 3.18" p2="2.68 1.90 3.60" />
+        <object type="sphere" center="2.50 2.10 3.35" radius="0.22" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="3.28 0.80 3.28" p2="3.72 1.80 3.72" />
+        <object type="cube" p1="3.22 1.80 3.22" p2="3.78 2.05 3.78" />
+        <!-- Peões pretos -->
+        <named_material name="b_piece"/>
+        <object type="cube" p1="-3.65 0.80 2.35" p2="-3.35 1.35 2.65" />
+        <object type="sphere" center="-3.50 1.62 2.50" radius="0.27" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="-2.65 0.80 2.35" p2="-2.35 1.35 2.65" />
+        <object type="sphere" center="-2.50 1.62 2.50" radius="0.27" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="-1.65 0.80 2.35" p2="-1.35 1.35 2.65" />
+        <object type="sphere" center="-1.50 1.62 2.50" radius="0.27" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="-0.65 0.80 2.35" p2="-0.35 1.35 2.65" />
+        <object type="sphere" center="-0.50 1.62 2.50" radius="0.27" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="0.35 0.80 2.35" p2="0.65 1.35 2.65" />
+        <object type="sphere" center="0.50 1.62 2.50" radius="0.27" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="1.35 0.80 2.35" p2="1.65 1.35 2.65" />
+        <object type="sphere" center="1.50 1.62 2.50" radius="0.27" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="2.35 0.80 2.35" p2="2.65 1.35 2.65" />
+        <object type="sphere" center="2.50 1.62 2.50" radius="0.27" />
+        <named_material name="b_piece"/>
+        <object type="cube" p1="3.35 0.80 2.35" p2="3.65 1.35 2.65" />
+        <object type="sphere" center="3.50 1.62 2.50" radius="0.27" />
+
+        <!-- ===== CHÃO SOB O TABULEIRO ===== -->
+        <make_named_material type="blinn" name="table_surface"
+            ambient="0.06 0.04 0.02"
+            diffuse="0.3 0.2 0.1"
+            specular="0.4 0.35 0.25"
+            glossiness="32"/>
+        <named_material name="table_surface"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+    <world_end/>
+</RT3>

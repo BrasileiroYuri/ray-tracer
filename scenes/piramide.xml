@@ -1,0 +1,155 @@
+<RT3>
+    <!-- Pirâmide Maia: câmera frontal levemente lateral -->
+    <lookat look_from="6 8 -20" look_at="0 5 5" up="0 1 0" />
+    <camera type="perspective" fovy="48" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1200" filename="piramide.png" img_type="png" gamma_corrected="true" />
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <!-- Céu tropical: laranja/vermelho de pôr do sol -->
+        <background type="colors" bl="220 110 30" tl="60 20 50" tr="60 20 50" br="220 110 30" />
+
+        <light_source type="ambient" I="0.2 0.14 0.06" scale="1 1 1" />
+        <light_source type="directional" I="1.0 0.62 0.18" scale="1.3 1.3 1.3" from="8 3 -5" to="0 0 1" />
+        <light_source type="point" I="0.4 0.28 0.5" scale="1.2 1.2 1.2" from="-10 12 3" />
+
+        <make_named_material type="blinn" name="stone_base"
+            ambient="0.12 0.1 0.06" diffuse="0.62 0.55 0.38" specular="0.1 0.09 0.07" glossiness="8"/>
+        <make_named_material type="blinn" name="stone_lit"
+            ambient="0.15 0.12 0.07" diffuse="0.75 0.65 0.45" specular="0.15 0.13 0.1" glossiness="16"/>
+        <make_named_material type="blinn" name="stone_dark"
+            ambient="0.06 0.05 0.03" diffuse="0.35 0.3 0.2" specular="0.05 0.05 0.04" glossiness="4"/>
+        <make_named_material type="blinn" name="jungle_ground"
+            ambient="0.06 0.1 0.03" diffuse="0.2 0.4 0.1" specular="0.04 0.06 0.02" glossiness="4"/>
+        <make_named_material type="blinn" name="gold_top"
+            ambient="0.28 0.2 0.0" diffuse="0.98 0.78 0.1" specular="0.95 0.8 0.4" glossiness="512"/>
+
+        <named_material name="jungle_ground"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <!-- ===== PIRÂMIDE ESCALONADA (12 degraus) ===== -->
+        <!-- Cada degrau reduz 0.8 em cada lado, tem 0.7 de altura -->
+        <named_material name="stone_lit"/>
+        <object type="cube" p1="-10.00 0.00 -10.00" p2="10.00 0.65 10.00" />
+        <named_material name="stone_base"/>
+        <object type="cube" p1="-9.25 0.65 -9.25" p2="9.25 1.30 9.25" />
+        <named_material name="stone_lit"/>
+        <object type="cube" p1="-8.50 1.30 -8.50" p2="8.50 1.95 8.50" />
+        <named_material name="stone_base"/>
+        <object type="cube" p1="-7.75 1.95 -7.75" p2="7.75 2.60 7.75" />
+        <named_material name="stone_lit"/>
+        <object type="cube" p1="-7.00 2.60 -7.00" p2="7.00 3.25 7.00" />
+        <named_material name="stone_base"/>
+        <object type="cube" p1="-6.25 3.25 -6.25" p2="6.25 3.90 6.25" />
+        <named_material name="stone_lit"/>
+        <object type="cube" p1="-5.50 3.90 -5.50" p2="5.50 4.55 5.50" />
+        <named_material name="stone_base"/>
+        <object type="cube" p1="-4.75 4.55 -4.75" p2="4.75 5.20 4.75" />
+        <named_material name="stone_lit"/>
+        <object type="cube" p1="-4.00 5.20 -4.00" p2="4.00 5.85 4.00" />
+        <named_material name="stone_base"/>
+        <object type="cube" p1="-3.25 5.85 -3.25" p2="3.25 6.50 3.25" />
+        <named_material name="stone_lit"/>
+        <object type="cube" p1="-2.50 6.50 -2.50" p2="2.50 7.15 2.50" />
+        <named_material name="stone_base"/>
+        <object type="cube" p1="-1.75 7.15 -1.75" p2="1.75 7.80 1.75" />
+
+        <!-- ===== TEMPLO NO TOPO ===== -->
+        <named_material name="stone_lit"/>
+        <!-- Base do templo -->
+        <object type="cube" p1="-1.30 7.80 -1.30" p2="1.30 8.30 1.30" />
+        <!-- Paredes do templo -->
+        <object type="cube" p1="-1.00 8.30 -1.00" p2="1.00 10.80 1.00" />
+        <!-- Porta do templo (vão escuro) -->
+        <named_material name="stone_dark"/>
+        <object type="cube" p1="-0.40 8.30 -1.10" p2="0.40 9.90 -0.80" />
+        <!-- Teto inclinado do templo (escada no topo) -->
+        <named_material name="stone_lit"/>
+        <object type="cube" p1="-1.00 10.80 -1.00" p2="1.00 11.15 1.00" />
+        <object type="cube" p1="-0.75 11.15 -0.75" p2="0.75 11.50 0.75" />
+        <object type="cube" p1="-0.50 11.50 -0.50" p2="0.50 11.85 0.50" />
+        <object type="cube" p1="-0.25 11.85 -0.25" p2="0.25 12.20 0.25" />
+
+        <!-- TOPO DOURADO -->
+        <named_material name="gold_top"/>
+        <object type="sphere" center="0 12.70 0" radius="0.55" />
+
+        <!-- ===== ESCADARIA CENTRAL (frente) ===== -->
+        <named_material name="stone_dark"/>
+        <object type="cube" p1="-0.90 0.00 -10.05" p2="0.90 0.71 -9.30" />
+        <object type="cube" p1="-0.90 0.65 -9.30" p2="0.90 1.36 -8.55" />
+        <object type="cube" p1="-0.90 1.30 -8.55" p2="0.90 2.01 -7.80" />
+        <object type="cube" p1="-0.90 1.95 -7.80" p2="0.90 2.66 -7.05" />
+        <object type="cube" p1="-0.90 2.60 -7.05" p2="0.90 3.31 -6.30" />
+        <object type="cube" p1="-0.90 3.25 -6.30" p2="0.90 3.96 -5.55" />
+        <object type="cube" p1="-0.90 3.90 -5.55" p2="0.90 4.61 -4.80" />
+        <object type="cube" p1="-0.90 4.55 -4.80" p2="0.90 5.26 -4.05" />
+        <object type="cube" p1="-0.90 5.20 -4.05" p2="0.90 5.91 -3.30" />
+        <object type="cube" p1="-0.90 5.85 -3.30" p2="0.90 6.56 -2.55" />
+        <object type="cube" p1="-0.90 6.50 -2.55" p2="0.90 7.21 -1.80" />
+        <object type="cube" p1="-0.90 7.15 -1.80" p2="0.90 7.86 -1.05" />
+
+        <!-- ===== ÁRVORES TROPICAIS (palmeiras simplificadas) ===== -->
+        <make_named_material type="blinn" name="palm_trunk"
+            ambient="0.08 0.06 0.03" diffuse="0.38 0.28 0.14" specular="0.05 0.04 0.02" glossiness="4"/>
+        <make_named_material type="blinn" name="palm_leaves"
+            ambient="0.04 0.14 0.03" diffuse="0.12 0.55 0.08" specular="0.08 0.2 0.05" glossiness="8"/>
+        <named_material name="palm_trunk"/>
+        <object type="cube" p1="-14.18 0 -3.18" p2="-13.82 6.0 -2.82" />
+        <named_material name="palm_leaves"/>
+        <object type="sphere" center="-14.00 7.20 -3.00" radius="1.4" />
+        <object type="sphere" center="-13.00 6.50 -3.00" radius="0.8" />
+        <object type="sphere" center="-15.00 6.50 -3.00" radius="0.8" />
+        <object type="sphere" center="-14.00 6.50 -2.00" radius="0.8" />
+        <named_material name="palm_trunk"/>
+        <object type="cube" p1="-16.18 0 1.82" p2="-15.82 5.0 2.18" />
+        <named_material name="palm_leaves"/>
+        <object type="sphere" center="-16.00 6.20 2.00" radius="1.4" />
+        <object type="sphere" center="-15.00 5.50 2.00" radius="0.8" />
+        <object type="sphere" center="-17.00 5.50 2.00" radius="0.8" />
+        <object type="sphere" center="-16.00 5.50 3.00" radius="0.8" />
+        <named_material name="palm_trunk"/>
+        <object type="cube" p1="13.82 0 -2.18" p2="14.18 7.0 -1.82" />
+        <named_material name="palm_leaves"/>
+        <object type="sphere" center="14.00 8.20 -2.00" radius="1.4" />
+        <object type="sphere" center="15.00 7.50 -2.00" radius="0.8" />
+        <object type="sphere" center="13.00 7.50 -2.00" radius="0.8" />
+        <object type="sphere" center="14.00 7.50 -1.00" radius="0.8" />
+        <named_material name="palm_trunk"/>
+        <object type="cube" p1="14.82 0 3.82" p2="15.18 5.5 4.18" />
+        <named_material name="palm_leaves"/>
+        <object type="sphere" center="15.00 6.70 4.00" radius="1.4" />
+        <object type="sphere" center="16.00 6.00 4.00" radius="0.8" />
+        <object type="sphere" center="14.00 6.00 4.00" radius="0.8" />
+        <object type="sphere" center="15.00 6.00 5.00" radius="0.8" />
+        <named_material name="palm_trunk"/>
+        <object type="cube" p1="-12.18 0 5.82" p2="-11.82 5.0 6.18" />
+        <named_material name="palm_leaves"/>
+        <object type="sphere" center="-12.00 6.20 6.00" radius="1.4" />
+        <object type="sphere" center="-11.00 5.50 6.00" radius="0.8" />
+        <object type="sphere" center="-13.00 5.50 6.00" radius="0.8" />
+        <object type="sphere" center="-12.00 5.50 7.00" radius="0.8" />
+        <named_material name="palm_trunk"/>
+        <object type="cube" p1="12.82 0 6.82" p2="13.18 6.0 7.18" />
+        <named_material name="palm_leaves"/>
+        <object type="sphere" center="13.00 7.20 7.00" radius="1.4" />
+        <object type="sphere" center="14.00 6.50 7.00" radius="0.8" />
+        <object type="sphere" center="12.00 6.50 7.00" radius="0.8" />
+        <object type="sphere" center="13.00 6.50 8.00" radius="0.8" />
+        <named_material name="palm_trunk"/>
+        <object type="cube" p1="-18.18 0 -1.18" p2="-17.82 8.0 -0.82" />
+        <named_material name="palm_leaves"/>
+        <object type="sphere" center="-18.00 9.20 -1.00" radius="1.4" />
+        <object type="sphere" center="-17.00 8.50 -1.00" radius="0.8" />
+        <object type="sphere" center="-19.00 8.50 -1.00" radius="0.8" />
+        <object type="sphere" center="-18.00 8.50 0.00" radius="0.8" />
+
+        <!-- ===== SOL NO HORIZONTE ===== -->
+        <material type="flat" color="255 160 40" />
+        <object type="sphere" center="20 3 30" radius="2.5" />
+        <material type="flat" color="255 100 10" />
+        <object type="sphere" center="20 3 30" radius="3.1" />
+
+    <world_end/>
+</RT3>

@@ -1,0 +1,105 @@
+<RT3>
+    <!-- Stonehenge: câmera baixa e próxima para sentir o tamanho dos monólitos -->
+    <lookat look_from="0 2.5 -12" look_at="0 3 5" up="0 1 0" />
+    <camera type="perspective" fovy="50" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1200" filename="stonehenge.png" img_type="png" gamma_corrected="true" />
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <!-- Pôr do sol dramático: laranja-vermelho no horizonte, roxo-escuro no topo -->
+        <background type="colors" bl="200 80 20" tl="40 10 45" tr="40 10 45" br="200 80 20" />
+
+        <!-- Ambient crepuscular -->
+        <light_source type="ambient" I="0.25 0.12 0.06" scale="1 1 1" />
+
+        <!-- Sol poente: luz rasante vinda da direita, muito quente -->
+        <light_source type="directional" I="1.0 0.55 0.15" scale="1.4 1.4 1.4" from="12 1.5 -4" to="0 0 1" />
+
+        <!-- Luz de preenchimento fria (céu roxo do lado oposto) -->
+        <light_source type="point" I="0.3 0.2 0.45" scale="1.2 1.2 1.2" from="-8 8 2" />
+
+        <!-- ===== CHÃO: pastagem antiga, verde-marrom ===== -->
+        <make_named_material type="blinn" name="old_grass"
+            ambient="0.08 0.1 0.04"
+            diffuse="0.28 0.35 0.12"
+            specular="0.05 0.06 0.03"
+            glossiness="4"/>
+        <named_material name="old_grass"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <!-- ===== MATERIAL DOS MONÓLITOS: arenito cinza-esverdeado ===== -->
+        <make_named_material type="blinn" name="sarsen_stone"
+            ambient="0.1 0.09 0.08"
+            diffuse="0.52 0.48 0.42"
+            specular="0.12 0.11 0.1"
+            glossiness="8"/>
+
+        <!-- ===== MONÓLITOS EM PÉ (círculo externo) ===== -->
+        <!-- Os pares de pedras visíveis do ângulo da câmera, dispostos em arco -->
+        <!-- Par central (no meio, mais proeminente) -->
+        <named_material name="sarsen_stone"/>
+        <object type="cube" p1="-1.2 0 3.5"  p2="-0.4 5.0 4.3"  />
+        <object type="cube" p1=" 0.4 0 3.5"  p2=" 1.2 5.0 4.3"  />
+        <!-- Lintel sobre o par central -->
+        <object type="cube" p1="-1.3 5.0 3.4" p2=" 1.3 5.8 4.4" />
+
+        <!-- Par esquerda-próximo -->
+        <object type="cube" p1="-4.0 0 2.0"  p2="-3.2 4.5 2.9"  />
+        <object type="cube" p1="-2.5 0 2.0"  p2="-1.7 4.5 2.9"  />
+        <!-- Lintel -->
+        <object type="cube" p1="-4.1 4.5 1.9" p2="-1.6 5.2 3.0" />
+
+        <!-- Par direita-próximo -->
+        <object type="cube" p1=" 1.7 0 2.0"  p2=" 2.5 4.5 2.9"  />
+        <object type="cube" p1=" 3.2 0 2.0"  p2=" 4.0 4.5 2.9"  />
+        <!-- Lintel -->
+        <object type="cube" p1=" 1.6 4.5 1.9" p2=" 4.1 5.2 3.0" />
+
+        <!-- Par esquerda-fundo -->
+        <object type="cube" p1="-6.5 0 5.5"  p2="-5.6 4.8 6.5"  />
+        <object type="cube" p1="-4.8 0 5.5"  p2="-3.9 4.8 6.5"  />
+        <!-- Lintel -->
+        <object type="cube" p1="-6.6 4.8 5.4" p2="-3.8 5.5 6.6" />
+
+        <!-- Par direita-fundo -->
+        <object type="cube" p1=" 3.9 0 5.5"  p2=" 4.8 4.8 6.5"  />
+        <object type="cube" p1=" 5.6 0 5.5"  p2=" 6.5 4.8 6.5"  />
+        <!-- Lintel -->
+        <object type="cube" p1=" 3.8 4.8 5.4" p2=" 6.6 5.5 6.6" />
+
+        <!-- ===== PEDRAS SOLITÁRIAS (círculo externo, sem lintel) ===== -->
+        <!-- Pedras mais distantes e menores, sem par nem lintel -->
+        <object type="cube" p1="-8.5 0 3.5" p2="-7.8 3.8 4.4" />
+        <object type="cube" p1=" 7.8 0 3.5" p2=" 8.5 3.8 4.4" />
+        <object type="cube" p1="-7.0 0 8.0" p2="-6.3 3.5 8.9" />
+        <object type="cube" p1=" 6.3 0 8.0" p2=" 7.0 3.5 8.9" />
+
+        <!-- ===== PEDRA ALTAR (no chão, horizontal, no centro) ===== -->
+        <make_named_material type="blinn" name="altar_stone"
+            ambient="0.08 0.07 0.06"
+            diffuse="0.42 0.38 0.32"
+            specular="0.08 0.07 0.06"
+            glossiness="4"/>
+        <named_material name="altar_stone"/>
+        <object type="cube" p1="-0.7 0 5.5" p2="0.7 0.35 7.5" />
+
+        <!-- ===== PEDRA DO CALCANHAR (Heel Stone) - isolada ao longe ===== -->
+        <named_material name="sarsen_stone"/>
+        <object type="cube" p1="-0.4 0 12" p2="0.4 3.2 12.9" />
+
+        <!-- ===== FRAGMENTOS / PEDRAS CAÍDAS ===== -->
+        <!-- Pedras que caíram ao longo dos milênios -->
+        <object type="cube" p1="-5.5 0 1.5" p2="-3.8 0.4 3.0"  />   <!-- caída no chão -->
+        <object type="cube" p1=" 3.0 0 1.5" p2=" 5.0 0.5 2.2"  />   <!-- inclinada -->
+        <object type="cube" p1="-2.0 0 9.5" p2=" 0.5 0.3 10.8" />   <!-- fragmento fundo -->
+
+        <!-- ===== SOL NO HORIZONTE (flat, emissivo) ===== -->
+        <material type="flat" color="255 160 30" />
+        <object type="sphere" center="16 1.5 20" radius="2.0" />
+        <!-- Halo do sol -->
+        <material type="flat" color="255 90 10" />
+        <object type="sphere" center="16 1.5 20" radius="2.5" />
+
+    <world_end/>
+</RT3>
