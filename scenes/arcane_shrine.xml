@@ -1,0 +1,73 @@
+<RT3>
+    <lookat look_from="0 9 -18" look_at="0 5 6" up="0 1 0" />
+    <camera type="perspective" fovy="40" />
+    <integrator type="blinn_phong" depth="2" />
+    <film type="image" w_res="1920" h_res="1200" filename="arcane_shrine.png" img_type="png" gamma_corrected="true" />
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <background type="colors" bl="8 10 20" tl="30 18 45" tr="15 18 35" br="8 10 20" />
+
+        <light_source type="ambient" I="0.06 0.06 0.08" scale="1 1 1" />
+        <light_source type="directional" I="0.9 0.85 0.75" scale="1 1 1" from="-3 8 -4" to="0 0 1" />
+        <light_source type="point" I="0.3 0.7 1.0" scale="2.5 2.5 2.5" from="-5 7 2" />
+        <light_source type="point" I="1.0 0.5 0.2" scale="2.0 2.0 2.0" from="5 6 10" />
+        <light_source type="spot" I="0.8 0.2 1.0" scale="2 2 2" from="0 11 -2" to="0 5 6" cutoff="24" falloff="12" />
+
+        <make_named_material type="blinn" name="stone"
+            ambient="0.06 0.06 0.08" diffuse="0.32 0.32 0.38" specular="0.65 0.65 0.7" glossiness="128"/>
+        <make_named_material type="blinn" name="gold"
+            ambient="0.2 0.16 0.04" diffuse="0.85 0.72 0.18" specular="0.95 0.85 0.45" glossiness="512"/>
+        <make_named_material type="blinn" name="obsidian"
+            ambient="0.02 0.02 0.03" diffuse="0.08 0.08 0.12" specular="0.9 0.9 0.95" glossiness="1024"/>
+        <make_named_material type="blinn" name="crystal"
+            ambient="0.03 0.05 0.08" diffuse="0.18 0.35 0.5" specular="0.95 0.98 1.0" glossiness="1024"/>
+
+        <named_material name="stone"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <!-- floor pattern -->
+        <named_material name="obsidian"/>
+        <object type="cube" p1="-8 0.001 -8" p2="-6.8 0.12 8"/>
+        <object type="cube" p1="-5.2 0.001 -8" p2="-4.0 0.12 8"/>
+        <object type="cube" p1="-2.4 0.001 -8" p2="-1.2 0.12 8"/>
+        <object type="cube" p1="0.4 0.001 -8" p2="1.6 0.12 8"/>
+        <object type="cube" p1="3.2 0.001 -8" p2="4.4 0.12 8"/>
+        <object type="cube" p1="6.0 0.001 -8" p2="7.2 0.12 8"/>
+
+        <!-- altar -->
+        <named_material name="stone"/>
+        <object type="cube" p1="-2.8 0.12 4.2" p2="2.8 1.2 7.2"/>
+        <object type="cube" p1="-2.2 1.2 4.5" p2="2.2 1.7 6.9"/>
+        <named_material name="gold"/>
+        <object type="sphere" center="0 2.4 5.8" radius="0.75"/>
+
+        <!-- side pillars -->
+        <named_material name="stone"/>
+        <object type="cube" p1="-7 0 -2" p2="-6 8  -1"/>
+        <object type="cube" p1="-7 0  1" p2="-6 9   2"/>
+        <object type="cube" p1="-7 0  4" p2="-6 8.5 5"/>
+        <object type="cube" p1=" 6 0 -2" p2=" 7 8  -1"/>
+        <object type="cube" p1=" 6 0  1" p2=" 7 9   2"/>
+        <object type="cube" p1=" 6 0  4" p2=" 7 8.5 5"/>
+
+        <!-- top lintel blocks -->
+        <object type="cube" p1="-7 8.2 -2" p2="-6 9.0 5"/>
+        <object type="cube" p1=" 6 8.2 -2" p2=" 7 9.0 5"/>
+
+        <!-- decorative crystals -->
+        <named_material name="crystal"/>
+        <object type="sphere" center="-4.2 1.2 1.2" radius="0.45"/>
+        <object type="sphere" center=" 4.2 1.2 1.2" radius="0.45"/>
+        <object type="sphere" center="-4.0 1.2 6.4" radius="0.35"/>
+        <object type="sphere" center=" 4.0 1.2 6.4" radius="0.35"/>
+
+        <!-- floating obelisk -->
+        <named_material name="obsidian"/>
+        <object type="cube" p1="-0.7 4.2 2.8" p2="0.7 10.5 4.0"/>
+        <named_material name="gold"/>
+        <object type="sphere" center="0 8.4 3.4" radius="0.55"/>
+        <object type="sphere" center="0 6.2 3.4" radius="0.35"/>
+
+    <world_end/>
+</RT3>

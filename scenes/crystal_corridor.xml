@@ -1,0 +1,86 @@
+<RT3>
+    <lookat look_from="0 6 -20" look_at="0 4 10" up="0 1 0" />
+    <camera type="perspective" fovy="45" />
+    <integrator type="blinn_phong" depth="2" />
+    <film type="image" w_res="1920" h_res="1080"
+          filename="crystal_corridor.png"
+          img_type="png"
+          gamma_corrected="true" />
+
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <background type="colors"
+            bl="5 5 20"
+            br="5 5 20"
+            tl="40 20 60"
+            tr="40 20 60" />
+
+        <!-- LIGHTS -->
+        <light_source type="ambient"
+            I="0.08 0.08 0.12"
+            scale="1 1 1"/>
+
+        <light_source type="directional"
+            I="0.8 0.8 1"
+            scale="1 1 1"
+            from="-1 4 -2"
+            to="0 0 1"/>
+
+        <light_source type="point"
+            I="0.2 0.8 1"
+            scale="3 3 3"
+            from="-4 4 5"/>
+
+        <light_source type="point"
+            I="1 0.2 0.8"
+            scale="3 3 3"
+            from="4 4 12"/>
+
+        <!-- MATERIALS -->
+        <make_named_material type="blinn"
+            name="floor"
+            ambient="0.05 0.05 0.05"
+            diffuse="0.15 0.15 0.18"
+            specular="0.9 0.9 0.95"
+            glossiness="512"/>
+
+        <make_named_material type="blinn"
+            name="pillar"
+            ambient="0.05 0.05 0.08"
+            diffuse="0.25 0.25 0.35"
+            specular="0.8 0.8 0.95"
+            glossiness="256"/>
+
+        <!-- FLOOR -->
+        <named_material name="floor"/>
+        <object type="plane"
+            point="0 0 0"
+            normal="0 1 0"/>
+
+        <!-- CORRIDOR PILLARS -->
+        <named_material name="pillar"/>
+
+        <object type="cube" p1="-6 0 -2" p2="-5 8 -1"/>
+        <object type="cube" p1="5 0 -2" p2="6 8 -1"/>
+
+        <object type="cube" p1="-6 0 4" p2="-5 8 5"/>
+        <object type="cube" p1="5 0 4" p2="6 8 5"/>
+
+        <object type="cube" p1="-6 0 10" p2="-5 8 11"/>
+        <object type="cube" p1="5 0 10" p2="6 8 11"/>
+
+        <object type="cube" p1="-6 0 16" p2="-5 8 17"/>
+        <object type="cube" p1="5 0 16" p2="6 8 17"/>
+
+        <!-- ENERGY ORBS -->
+        <named_material name="floor"/>
+        <object type="sphere" center="-2 3 3" radius="1"/>
+
+        <object type="sphere" center="2 3 9" radius="1"/>
+
+        <named_material name="pillar"/>
+        <object type="sphere" center="0 3 15" radius="1"/>
+
+    <world_end/>
+</RT3>
