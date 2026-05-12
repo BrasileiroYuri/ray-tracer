@@ -1,18 +1,62 @@
 <RT3>
     <lookat look_from="0 2 -5" look_at="0 0 10" up="0 1 0" />
     <camera type="perspective" fovy="45" />
-    
+
+    <integrator type="blinn_phong" depth="1" />
     <film type="image" w_res="800" h_res="600" filename="tres_esferas_90.png" img_type="png" />
 
     <world_begin/>
         <background type="colors" bl="153 204 255" tl="18 10 143" tr="18 10 143" br="153 204 255" />
-        
-        <material type="flat" color="255 0 0" />
 
+        <light_source type="directional" I="1.0 0.6 0.1" scale="1.5 1.5 1.5" from="1 0.2 1" to="0 0 0" />
+        <!-- Luz de preenchimento azul-frio do céu -->
+        <light_source type="directional" I="0.3 0.35 0.6" scale="0.5 0.5 0.5" from="0 1 0" to="0 0 1" />
+        <!-- Ambient quente -->
+        <light_source type="ambient" I="0.3 0.15 0.05" scale="0.8 0.8 0.8" />
+        <!-- Point light suave de "reflexo do sol no chão" -->
+        <light_source type="point" I="0.9 0.5 0.1" scale="0.6 0.6 0.6" from="0 0.5 0" />
+
+        <make_named_material type="blinn" name="polished_gold"
+            ambient="0.3 0.2 0.0"
+            diffuse ="1.0 0.75 0.1"
+            specular ="1.0 0.9 0.5"
+            glossiness ="512"/>
+
+        <make_named_material type="blinn" name="rose_gold"
+            ambient="0.3 0.1 0.1"
+            diffuse ="0.9 0.45 0.35"
+            specular ="1.0 0.8 0.7"
+            glossiness ="256"/>
+
+        <make_named_material type="blinn" name="dark_bronze"
+            ambient="0.15 0.08 0.0"
+            diffuse ="0.4 0.2 0.05"
+            specular ="0.7 0.5 0.2"
+            glossiness ="128"/>
+
+        <make_named_material type="blinn" name="copper"
+            ambient="0.2 0.08 0.02"
+            diffuse ="0.7 0.3 0.1"
+            specular ="0.9 0.6 0.3"
+            glossiness ="256"/>
+
+        <make_named_material type="blinn" name="warm_sand"
+            ambient="0.2 0.12 0.04"
+            diffuse ="0.65 0.5 0.25"
+            specular ="0.1 0.08 0.04"
+            glossiness ="4"/>
+
+        <!-- Chão: areia quente -->
+        <named_material name="warm_sand"/>
         <object type="sphere" radius="1.0" center="-1.5 0 5" z_min="-1.0" z_max="1.0" phi_max="90" />
-
+        <named_material name="polished_gold"/>
         <object type="sphere" radius="1.0" center="0 0 8"  z_min="-1.0" z_max="1.0" phi_max="90" />
-
+        <named_material name="rose_gold"/>
         <object type="sphere" radius="1.0" center="1.5 0 12" z_min="-1.0" z_max="1.0" phi_max="90" />
+        <named_material name="copper"/>
+        <object type="sphere" center="-2 0.5 4" radius="0.5" />
+        <named_material name="dark_bronze"/>
+        <object type="sphere" center="2.5 0.6 5" radius="0.6" />
+        <object type="sphere" center="-6 0.4 6" radius="0.4" />
     <world_end/>
 </RT3>

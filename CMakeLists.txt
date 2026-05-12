@@ -36,10 +36,10 @@ add_executable(${APP_NAME} ${SOURCES})
 
 if(NOT MSVC)
   target_compile_options(${APP_NAME} PRIVATE
-#-Wall
-#-Wextra
-#-Wshadow
-#-Wpedantic
+ -Wall
+ -Wextra
+ -Wshadow
+ -Wpedantic
 #-DDEBUG
   -g
  -O3

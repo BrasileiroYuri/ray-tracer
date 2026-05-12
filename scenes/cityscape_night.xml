@@ -1,0 +1,165 @@
+<RT3>
+    <!-- Skyline: câmera levantada, olhando para os prédios -->
+    <lookat look_from="0 5 -18" look_at="0 4 8" up="0 1 0" />
+    <camera type="perspective" fovy="50" />
+    <integrator type="blinn_phong" depth="2" />
+    <film type="image" w_res="1920" h_res="1200" filename="cityscape_night.png" img_type="png" gamma_corrected="true" />
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <!-- Céu noturno: azul escuro no topo, quase preto no horizonte -->
+        <background type="colors" bl="5 5 18" tl="2 3 14" tr="2 3 14" br="5 5 18" />
+
+        <!-- Ambient noturno mínimo, frio -->
+        <light_source type="ambient" I="0.4 0.4 0.8" scale="1 1 1" />
+
+        <!-- Lua: luz direcional fria e suave, vinda do alto-direito -->
+        <light_source type="directional" I="0.65 0.72 0.9" scale="0.6 0.6 0.6" from="5 10 -3" to="0 0 1" />
+
+        <!-- Lanternas de rua: pontos de luz quentes espalhados -->
+        <light_source type="point" I="1.0 0.8 0.4" scale="1.5 1.5 1.5" from="-6 3 2"  />
+        <light_source type="point" I="1.0 0.8 0.4" scale="1.5 1.5 1.5" from=" 0 3 2"  />
+        <light_source type="point" I="1.0 0.8 0.4" scale="1.5 1.5 1.5" from=" 6 3 2"  />
+        <light_source type="point" I="1.0 0.8 0.4" scale="1.0 1.0 1.0" from="-3 3 10" />
+        <light_source type="point" I="1.0 0.8 0.4" scale="1.0 1.0 1.0" from=" 3 3 10" />
+
+        <!-- Holofote topo do arranha-céu central -->
+        <light_source type="point" I="0.5 0.6 1.0" scale="2.0 2.0 2.0" from="0 16 3" />
+
+        <!-- ===== CHÃO: asfalto escuro levemente reflexivo ===== -->
+        <make_named_material type="blinn" name="asphalt"
+            ambient="0.03 0.03 0.04"
+            diffuse="0.10 0.10 0.12"
+            specular="0.35 0.35 0.4"
+            glossiness="32"/>
+        <named_material name="asphalt"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <!-- ===== ARRANHA-CÉU CENTRAL (principal, mais alto) ===== -->
+        <make_named_material type="blinn" name="glass_tower"
+            ambient="0.05 0.06 0.12"
+            diffuse="0.12 0.18 0.42"
+            specular="0.8 0.85 0.95"
+            glossiness="256"/>
+        <named_material name="glass_tower"/>
+        <object type="cube" p1="-1.5 0 1" p2="1.5 16 5" />
+
+        <!-- Antena do arranha-céu -->
+        <make_named_material type="blinn" name="antenna"
+            ambient="0.1 0.1 0.12"
+            diffuse="0.35 0.35 0.4"
+            specular="0.6 0.6 0.65"
+            glossiness="64"/>
+        <named_material name="antenna"/>
+        <object type="cube" p1="-0.1 16 2.7" p2="0.1 19 3.3" />
+
+        <!-- Luz de aviso no topo da antena -->
+        <material type="flat" color="255 60 60" />
+        <object type="sphere" center="0 19.2 3" radius="0.18" />
+
+        <!-- ===== PRÉDIO ESQUERDA ALTO ===== -->
+        <make_named_material type="blinn" name="concrete_dark"
+            ambient="0.05 0.05 0.06"
+            diffuse="0.2 0.2 0.22"
+            specular="0.25 0.25 0.28"
+            glossiness="16"/>
+        <named_material name="concrete_dark"/>
+        <object type="cube" p1="-7 0 4" p2="-4 10 8" />
+        <!-- Cobertura / terraço -->
+        <object type="cube" p1="-7.3 10 3.7" p2="-3.7 10.6 8.3" />
+        <!-- Caixa d'água no topo -->
+        <make_named_material type="blinn" name="water_tank"
+            ambient="0.08 0.06 0.04"
+            diffuse="0.45 0.35 0.25"
+            specular="0.2 0.18 0.15"
+            glossiness="8"/>
+        <named_material name="water_tank"/>
+        <object type="cube" p1="-6.5 10.6 5" p2="-5.5 12 6" />
+
+        <!-- ===== PRÉDIO DIREITA MÉDIO ===== -->
+        <make_named_material type="blinn" name="office_building"
+            ambient="0.06 0.05 0.04"
+            diffuse="0.25 0.22 0.18"
+            specular="0.4 0.38 0.35"
+            glossiness="32"/>
+        <named_material name="office_building"/>
+        <object type="cube" p1="4 0 2" p2="8 8 6" />
+        <object type="cube" p1="3.8 8 1.8" p2="8.2 8.5 6.2" />
+
+        <!-- ===== PRÉDIO FUNDO-ESQUERDA (mais distante) ===== -->
+        <make_named_material type="blinn" name="far_building_l"
+            ambient="0.04 0.04 0.07"
+            diffuse="0.12 0.12 0.25"
+            specular="0.5 0.5 0.6"
+            glossiness="64"/>
+        <named_material name="far_building_l"/>
+        <object type="cube" p1="-11 0 8" p2="-7  12 13" />
+        <object type="cube" p1="-10 0 14" p2="-8 7 18" />
+
+        <!-- ===== PRÉDIO FUNDO-DIREITA ===== -->
+        <make_named_material type="blinn" name="far_building_r"
+            ambient="0.06 0.04 0.04"
+            diffuse="0.22 0.14 0.12"
+            specular="0.3 0.25 0.22"
+            glossiness="16"/>
+        <named_material name="far_building_r"/>
+        <object type="cube" p1="7 0 9" p2="12 9 14" />
+        <!-- Domo no topo -->
+        <make_named_material type="blinn" name="dome"
+            ambient="0.06 0.06 0.1"
+            diffuse="0.18 0.18 0.35"
+            specular="0.65 0.65 0.75"
+            glossiness="128"/>
+        <named_material name="dome"/>
+        <object type="sphere" center="9.5 9 11.5" radius="1.5" />
+
+        <!-- ===== CALÇADAS E PASSEIOS ===== -->
+        <make_named_material type="blinn" name="sidewalk"
+            ambient="0.05 0.05 0.06"
+            diffuse="0.22 0.22 0.24"
+            specular="0.1 0.1 0.12"
+            glossiness="4"/>
+        <named_material name="sidewalk"/>
+        <object type="cube" p1="-14 0  -2" p2="14 0.12 0" />
+        <object type="cube" p1="-14 0  10" p2="14 0.12 12" />
+
+        <!-- ===== POSTES DE LUZ ===== -->
+        <make_named_material type="blinn" name="lamppost"
+            ambient="0.08 0.08 0.08"
+            diffuse="0.35 0.35 0.35"
+            specular="0.5 0.5 0.5"
+            glossiness="64"/>
+        <named_material name="lamppost"/>
+        <!-- Poste esquerdo -->
+        <object type="cube" p1="-6.1 0 1.8" p2="-5.9 3.5 2.0" />
+        <object type="cube" p1="-6.5 3.4 1.7" p2="-5.5 3.6 2.1" />
+        <!-- Poste central -->
+        <object type="cube" p1="-0.1 0 1.8" p2=" 0.1 3.5 2.0" />
+        <object type="cube" p1="-0.5 3.4 1.7" p2=" 0.5 3.6 2.1" />
+        <!-- Poste direito -->
+        <object type="cube" p1=" 5.9 0 1.8" p2=" 6.1 3.5 2.0" />
+        <object type="cube" p1=" 5.5 3.4 1.7" p2=" 6.5 3.6 2.1" />
+
+        <!-- Cabeçotes dos postes (flat, emissivos) -->
+        <material type="flat" color="255 220 140" />
+        <object type="sphere" center="-6 3.7 1.9" radius="0.22" />
+        <object type="sphere" center=" 0 3.7 1.9" radius="0.22" />
+        <object type="sphere" center=" 6 3.7 1.9" radius="0.22" />
+
+        <!-- ===== LUA ===== -->
+        <material type="flat" color="230 238 255" />
+        <object type="sphere" center="12 22 15" radius="1.8" />
+
+        <!-- ===== ESTRELAS (algumas) ===== -->
+        <material type="flat" color="255 255 255" />
+        <object type="sphere" center="-8 18 25"  radius="0.06" />
+        <object type="sphere" center=" 3 20 30"  radius="0.05" />
+        <object type="sphere" center=" 9 15 28"  radius="0.06" />
+        <object type="sphere" center="-2 22 22"  radius="0.04" />
+        <object type="sphere" center=" 6 19 35"  radius="0.05" />
+        <material type="flat" color="180 200 255" />
+        <object type="sphere" center="-5 16 26"  radius="0.05" />
+        <object type="sphere" center=" 1 24 32"  radius="0.04" />
+
+    <world_end/>
+</RT3>

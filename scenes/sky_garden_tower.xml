@@ -1,0 +1,70 @@
+<RT3>
+    <lookat look_from="4 11 -20" look_at="0 6 6" up="0 1 0" />
+    <camera type="perspective" fovy="36" />
+    <integrator type="blinn_phong" depth="2" />
+    <film type="image" w_res="1920" h_res="1200" filename="sky_garden_tower.png" img_type="png" gamma_corrected="true" />
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <background type="colors" bl="12 18 30" tl="40 60 90" tr="28 36 60" br="12 18 30" />
+
+        <light_source type="ambient" I="0.07 0.08 0.1" scale="1 1 1" />
+        <light_source type="directional" I="0.95 0.95 0.85" scale="1 1 1" from="-2 9 -3" to="0 0 1" />
+        <light_source type="point" I="0.3 1.0 0.7" scale="2.5 2.5 2.5" from="-6 12 2" />
+        <light_source type="point" I="1.0 0.5 0.2" scale="2 2 2" from="6 9 12" />
+        <light_source type="point" I="0.3 0.4 1.0" scale="1.8 1.8 1.8" from="0 15 8" />
+
+        <make_named_material type="blinn" name="white_stone"
+            ambient="0.07 0.07 0.08" diffuse="0.72 0.74 0.78" specular="0.55 0.58 0.62" glossiness="192"/>
+        <make_named_material type="blinn" name="green_glass"
+            ambient="0.04 0.08 0.04" diffuse="0.2 0.45 0.22" specular="0.9 0.95 0.9" glossiness="1024"/>
+        <make_named_material type="blinn" name="bronze"
+            ambient="0.12 0.08 0.03" diffuse="0.7 0.42 0.16" specular="0.85 0.7 0.35" glossiness="512"/>
+        <make_named_material type="blinn" name="dark_trim"
+            ambient="0.03 0.03 0.04" diffuse="0.1 0.11 0.14" specular="0.7 0.72 0.78" glossiness="256"/>
+
+        <named_material name="white_stone"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <!-- tower base -->
+        <object type="cube" p1="-2.5 0 4" p2="2.5 1.0 9"/>
+        <object type="cube" p1="-2.0 1.0 4.5" p2="2.0 3.0 8.5"/>
+        <object type="cube" p1="-1.5 3.0 5.0" p2="1.5 5.0 8.0"/>
+        <object type="cube" p1="-1.0 5.0 5.5" p2="1.0 8.0 7.5"/>
+
+        <!-- crown -->
+        <named_material name="bronze"/>
+        <object type="cube" p1="-1.8 8.0 5.2" p2="1.8 8.7 7.8"/>
+        <object type="cube" p1="-0.4 8.7 6.1" p2="0.4 11.2 6.9"/>
+
+        <!-- side terraces -->
+        <named_material name="white_stone"/>
+        <object type="cube" p1="-6.5 0.0 2.0" p2="-3.5 0.6 6.0"/>
+        <object type="cube" p1="3.5 0.0 2.0" p2="6.5 0.6 6.0"/>
+        <object type="cube" p1="-6.0 0.6 2.8" p2="-4.0 1.6 5.2"/>
+        <object type="cube" p1="4.0 0.6 2.8" p2="6.0 1.6 5.2"/>
+
+        <!-- hanging spheres / lamps -->
+        <named_material name="green_glass"/>
+        <object type="sphere" center="-4.8 2.5 4.0" radius="0.55"/>
+        <object type="sphere" center=" 4.8 2.5 4.0" radius="0.55"/>
+        <object type="sphere" center="-3.8 5.6 6.4" radius="0.45"/>
+        <object type="sphere" center=" 3.8 5.6 6.4" radius="0.45"/>
+
+        <!-- orbiting orbs around the crown -->
+        <named_material name="green_glass"/>
+        <object type="sphere" center="0 10.2 6.2" radius="0.35"/>
+        <object type="sphere" center="-1.0 9.8 7.0" radius="0.25"/>
+        <object type="sphere" center="1.0 9.8 7.0" radius="0.25"/>
+        <object type="sphere" center="-1.4 10.4 6.0" radius="0.22"/>
+        <object type="sphere" center="1.4 10.4 6.0" radius="0.22"/>
+
+        <!-- garden pillars -->
+        <named_material name="dark_trim"/>
+        <object type="cube" p1="-8 0 9" p2="-7 7 10"/>
+        <object type="cube" p1="7 0 9" p2="8 7 10"/>
+        <object type="cube" p1="-8 0 -1" p2="-7 6 0"/>
+        <object type="cube" p1="7 0 -1" p2="8 6 0"/>
+
+    <world_end/>
+</RT3>

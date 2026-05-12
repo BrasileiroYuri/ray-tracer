@@ -1,0 +1,66 @@
+<RT3>
+    <lookat look_from="-6 8 -22" look_at="0 4 6" up="0 1 0" />
+    <camera type="perspective" fovy="44" />
+    <integrator type="blinn_phong" depth="2" />
+    <film type="image" w_res="1920" h_res="1200" filename="desert_mech_ruins.png" img_type="png" gamma_corrected="true" />
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <background type="colors" bl="25 16 8" tl="70 40 18" tr="80 45 20" br="25 16 8" />
+
+        <light_source type="ambient" I="0.08 0.06 0.04" scale="1 1 1" />
+        <light_source type="directional" I="1.0 0.92 0.75" scale="1 1 1" from="-4 10 -2" to="0 0 1" />
+        <light_source type="point" I="1.0 0.4 0.15" scale="2.8 2.8 2.8" from="-10 8 4" />
+        <light_source type="point" I="0.2 0.6 1.0" scale="1.6 1.6 1.6" from="8 7 14" />
+
+        <make_named_material type="blinn" name="sandstone"
+            ambient="0.12 0.09 0.05" diffuse="0.62 0.48 0.25" specular="0.32 0.26 0.18" glossiness="64"/>
+        <make_named_material type="blinn" name="rust"
+            ambient="0.12 0.05 0.03" diffuse="0.55 0.22 0.12" specular="0.45 0.24 0.18" glossiness="96"/>
+        <make_named_material type="blinn" name="black_metal"
+            ambient="0.03 0.03 0.04" diffuse="0.08 0.08 0.1" specular="0.88 0.9 0.95" glossiness="512"/>
+        <make_named_material type="blinn" name="glass_blue"
+            ambient="0.03 0.05 0.08" diffuse="0.12 0.22 0.4" specular="0.95 0.98 1.0" glossiness="1024"/>
+
+        <named_material name="sandstone"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <!-- dunes made of low cubes -->
+        <named_material name="sandstone"/>
+        <object type="cube" p1="-14 0.0 -2" p2="-10 0.45 5"/>
+        <object type="cube" p1="-11 0.0 3" p2="-7 0.8 12"/>
+        <object type="cube" p1="-7 0.0 -1" p2="-2 0.55 7"/>
+        <object type="cube" p1="-2 0.0 2" p2="3 0.95 14"/>
+        <object type="cube" p1="2 0.0 -3" p2="7 0.6 6"/>
+        <object type="cube" p1="6 0.0 4" p2="12 0.5 16"/>
+
+        <!-- ruined monoliths -->
+        <named_material name="black_metal"/>
+        <object type="cube" p1="-8 0.0 7" p2="-6.8 8.5 8.2"/>
+        <object type="cube" p1="-1.0 0.0 10" p2="1.0 11.0 11.2"/>
+        <object type="cube" p1="5.8 0.0 6" p2="7.2 7.4 7.4"/>
+
+        <!-- broken mech parts -->
+        <named_material name="rust"/>
+        <object type="cube" p1="-4.6 0.4 4.0" p2="-2.0 2.0 6.4"/>
+        <object type="cube" p1="-4.9 2.0 4.6" p2="-3.6 4.4 5.8"/>
+        <object type="cube" p1="-2.5 1.6 5.0" p2="-1.5 3.2 6.0"/>
+        <object type="cube" p1="2.3 0.4 8.2" p2="4.8 2.4 10.4"/>
+
+        <!-- exposed cores -->
+        <named_material name="glass_blue"/>
+        <object type="sphere" center="-3.1 2.0 5.5" radius="0.55"/>
+        <object type="sphere" center="3.7 2.0 9.3" radius="0.45"/>
+        <object type="sphere" center="0.0 5.5 10.5" radius="0.65"/>
+
+        <!-- buried antenna -->
+        <named_material name="black_metal"/>
+        <object type="cube" p1="8.5 0.0 2.0" p2="8.8 6.5 2.3"/>
+        <object type="cube" p1="7.7 6.1 2.05" p2="9.6 6.4 2.25"/>
+
+        <!-- giant half-buried sphere -->
+        <named_material name="sandstone"/>
+        <object type="sphere" center="9 0.2 11" radius="3.5"/>
+
+    <world_end/>
+</RT3>
