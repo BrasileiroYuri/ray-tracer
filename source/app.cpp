@@ -4,6 +4,7 @@
 #include "blinnphong_integrator.hpp"
 #include "blinnphong_material.hpp"
 #include "cube.hpp"
+#include "pyramid.hpp"
 #include "direcional_light.hpp"
 #include "flat_material.hpp"
 #include "geometric_primitive.hpp"
@@ -215,6 +216,8 @@ void App::object(const ParamSet &ps) {
     plane(ps);
   } else if (type == "cube") {
     cube(ps);
+  } else if (type == "pyramid") {
+    pyramid(ps);
   } else {
     std::cout << "Objeto " << (type.empty() ? "vazio" : type) << "inválido.\n";
   }
@@ -288,6 +291,7 @@ void App::integratorConfig(const std::string &type) {
 }
 
 void App::plane(const ParamSet &ps) {
+
   point3 point = ps.retrieve<point3>("point", {0, 0, 0});
   vec3 normal = ps.retrieve<vec3>("normal", {0, 1, 0});
   auto shape = std::make_unique<Plane>(point, normal);
@@ -297,10 +301,22 @@ void App::plane(const ParamSet &ps) {
 }
 
 void App::cube(const ParamSet &ps) {
+
   auto p1 = ps.retrieve<point3>("p1");
   auto p2 = ps.retrieve<point3>("p2");
   auto shape = std::make_unique<Cube>(p1, p2);
   auto geoPrim =
+      std::make_shared<GeometricPrimitive>(std::move(shape), currMaterial);
+  sceneConfig.aggrPrim->addObject(std::move(geoPrim));
+}
+
+void App::pyramid(const ParamSet &ps) {
+
+  point3 center = ps.retrieve<point3>("center", {0, 0, 0});
+  float width = ps.retrieve<float>("width", 1.0f);
+  float height = ps.retrieve<float>("height", 1.0f);
+  auto shape = std::make_unique<Pyramid>(center, width, height);
+  auto geoPrim = 
       std::make_shared<GeometricPrimitive>(std::move(shape), currMaterial);
   sceneConfig.aggrPrim->addObject(std::move(geoPrim));
 }

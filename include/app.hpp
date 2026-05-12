@@ -32,6 +32,7 @@ private:
   static void plane(const ParamSet &);
   static void sphere(const ParamSet &);
   static void cube(const ParamSet &);
+  static void pyramid(const ParamSet &); // 
 
   static void integratorConfig(const std::string &type);
   static std::unique_ptr<Integrator> integrator_;

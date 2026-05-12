@@ -1,0 +1,70 @@
+<RT3>
+    <lookat look_from="-8 18 -40" look_at="0 5 8" up="0 1 0" />
+    <camera type="perspective" fovy="44" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1080" filename="glass_city_pyramids.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <!-- Céu urbano ao amanhecer: cinza-azulado com laranja no horizonte -->
+        <background type="4_colors" bl="60 35 15" tl="100 120 170" tr="160 185 210" br="80 50 25" />
+
+        <!-- Luz ambiente fria -->
+        <light_source type="ambient" I="0.12 0.14 0.18" />
+        <!-- Sol nascente baixo à direita -->
+        <light_source type="directional" I="1.00 0.72 0.38" from="4 1 -3" to="0 0 0" world_radius="120" />
+        <!-- Holofote frio azul da esquerda (LED urbano) -->
+        <light_source type="point" I="0.25 0.35 0.60" from="-25 20 -8" />
+        <!-- Holofote quente âmbar da direita (farol de rua) -->
+        <light_source type="point" I="0.45 0.30 0.10" from="22 12 -4" />
+        <!-- Luz de neón ciano no nível do chão -->
+        <light_source type="point" I="0.05 0.35 0.32" from="0 1 -5" />
+
+        <!-- Materiais -->
+        <make_named_material type="blinn" name="concrete"      ambient="0.14 0.14 0.15" diffuse="0.45 0.45 0.48" specular="0.20 0.20 0.22" glossiness="16"/>
+        <make_named_material type="blinn" name="glass_blue"    ambient="0.06 0.10 0.20" diffuse="0.25 0.45 0.80" specular="0.95 0.97 1.00" glossiness="1024"/>
+        <make_named_material type="blinn" name="glass_orange"  ambient="0.20 0.10 0.04" diffuse="0.85 0.45 0.10" specular="1.00 0.90 0.70" glossiness="1024"/>
+        <make_named_material type="blinn" name="steel"         ambient="0.12 0.12 0.13" diffuse="0.50 0.52 0.55" specular="0.85 0.86 0.88" glossiness="512"/>
+        <make_named_material type="blinn" name="dark_glass"    ambient="0.04 0.05 0.06" diffuse="0.10 0.14 0.18" specular="0.75 0.80 0.90" glossiness="768"/>
+        <make_named_material type="blinn" name="neon_cyan"     ambient="0.05 0.40 0.38" diffuse="0.10 0.85 0.80" specular="0.80 1.00 0.98" glossiness="512"/>
+        <make_named_material type="blinn" name="chrome"        ambient="0.15 0.15 0.15" diffuse="0.60 0.60 0.60" specular="1.00 1.00 1.00" glossiness="2048"/>
+
+        <!-- Piso de concreto polido -->
+        <named_material name="concrete"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <!-- Torre pirâmide central de vidro azul (principal) -->
+        <named_material name="glass_blue"/>
+        <object type="pyramid" center="0 0 8" width="14" height="20" />
+
+        <!-- Torre pirâmide de vidro laranja à esquerda -->
+        <named_material name="glass_orange"/>
+        <object type="pyramid" center="-16 0 5" width="9" height="13" />
+
+        <!-- Torre pirâmide de vidro escuro à direita -->
+        <named_material name="dark_glass"/>
+        <object type="pyramid" center="15 0 4" width="10" height="15" />
+
+        <!-- Estrutura de aço à frente esquerda -->
+        <named_material name="steel"/>
+        <object type="pyramid" center="-7 0 -2" width="5" height="7" />
+
+        <!-- Estrutura de aço à frente direita -->
+        <named_material name="steel"/>
+        <object type="pyramid" center="8 0 -3" width="4" height="6" />
+
+        <!-- Pirâmides de cromo pequenas (decorativas, chão) -->
+        <named_material name="chrome"/>
+        <object type="pyramid" center="-3 0 1" width="1.5" height="2.5" />
+        <object type="pyramid" center="3 0 0" width="1.5" height="2.5" />
+        <object type="pyramid" center="0 0 -1" width="1.2" height="2.0" />
+
+        <!-- Detalhes de néon ciano nas bases -->
+        <named_material name="neon_cyan"/>
+        <object type="pyramid" center="-0.5 0 8" width="0.8" height="0.4" />
+        <object type="pyramid" center="0.5 0 8" width="0.8" height="0.4" />
+
+    <world_end/>
+</RT3>

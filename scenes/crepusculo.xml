@@ -1,0 +1,179 @@
+<RT3>
+
+    <!-- ============================================================
+         CENA: "Relíquias do Crepúsculo" — v2 (iluminação corrigida)
+         Materiais: RGB 0.0–1.0 (compatível com sunset_stones.xml)
+         Luzes point com intensidade reduzida para evitar overexposure
+    ============================================================ -->
+
+    <lookat look_from="0 10 -25" look_at="0 3 5" up="0 1 0" />
+    <camera type="perspective" fovy="40" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1080" filename="reliquias_crepusculo.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <!-- Background: pôr do sol laranja-avermelhado -->
+        <background type="4_colors"
+            bl="80  30  10"
+            tl="200 90  30"
+            tr="240 130 50"
+            br="120 50  15" />
+
+        <!-- ====================================================
+             LUZES — intensidades calibradas para 0.0–1.0
+        ==================================================== -->
+
+        <!-- Ambiente quente e fraco -->
+        <light_source type="ambient"
+            I="0.12 0.08 0.04" />
+
+        <!-- Sol rasante no horizonte (direcional, principal) -->
+        <light_source type="directional"
+            I="0.80 0.55 0.22"
+            from="8 3 -10"
+            to="0 0 0"
+            world_radius="100" />
+
+        <!-- Ponto dourado sobre a pirâmide central — bem atenuado -->
+        <light_source type="point"
+            I="0.40 0.28 0.08"
+            from="0 18 5" />
+
+        <!-- Ponto azul-frio na esfera de cristal — sutil -->
+        <light_source type="point"
+            I="0.10 0.18 0.45"
+            from="-8 8 -2" />
+
+        <!-- Ponto alaranjado para os cubos da direita — sutil -->
+        <light_source type="point"
+            I="0.30 0.18 0.05"
+            from="12 6 2" />
+
+        <!-- ====================================================
+             MATERIAIS — RGB 0.0–1.0
+        ==================================================== -->
+
+        <make_named_material type="blinn" name="sand"
+            ambient="0.20 0.16 0.10"
+            diffuse="0.70 0.58 0.32"
+            specular="0.10 0.08 0.05"
+            glossiness="6"/>
+
+        <make_named_material type="blinn" name="sandstone"
+            ambient="0.20 0.14 0.08"
+            diffuse="0.78 0.60 0.36"
+            specular="0.20 0.16 0.10"
+            glossiness="18"/>
+
+        <make_named_material type="blinn" name="gold"
+            ambient="0.30 0.22 0.05"
+            diffuse="1.00 0.70 0.10"
+            specular="1.00 0.90 0.50"
+            glossiness="512"/>
+
+        <make_named_material type="blinn" name="dark_stone"
+            ambient="0.08 0.07 0.06"
+            diffuse="0.35 0.31 0.25"
+            specular="0.47 0.43 0.37"
+            glossiness="32"/>
+
+        <make_named_material type="blinn" name="mossy_stone"
+            ambient="0.07 0.10 0.06"
+            diffuse="0.27 0.35 0.22"
+            specular="0.31 0.39 0.25"
+            glossiness="20"/>
+
+        <make_named_material type="blinn" name="crystal_blue"
+            ambient="0.05 0.10 0.25"
+            diffuse="0.20 0.45 0.90"
+            specular="0.95 0.97 1.00"
+            glossiness="512"/>
+
+        <make_named_material type="blinn" name="aged_bronze"
+            ambient="0.10 0.07 0.03"
+            diffuse="0.43 0.32 0.16"
+            specular="0.70 0.55 0.27"
+            glossiness="128"/>
+
+        <make_named_material type="blinn" name="marble"
+            ambient="0.15 0.14 0.13"
+            diffuse="0.78 0.75 0.71"
+            specular="0.90 0.88 0.84"
+            glossiness="96"/>
+
+        <!-- ====================================================
+             CHÃO
+        ==================================================== -->
+        <named_material name="sand"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <!-- ====================================================
+             PIRÂMIDES
+        ==================================================== -->
+        <named_material name="sandstone"/>
+        <object type="pyramid" center="0 0 5" width="12" height="9" />
+
+        <named_material name="gold"/>
+        <object type="pyramid" center="0 8.8 5" width="1.4" height="1.2" />
+
+        <named_material name="sandstone"/>
+        <object type="pyramid" center="-15 0 4" width="8" height="6" />
+
+        <named_material name="sandstone"/>
+        <object type="pyramid" center="14 0 0" width="5" height="4" />
+
+        <!-- ====================================================
+             BLOCOS DE RUÍNA (Cubos)
+        ==================================================== -->
+        <named_material name="dark_stone"/>
+        <object type="cube" p1="-10 0 -1" p2="-7 2 2" />
+
+        <named_material name="dark_stone"/>
+        <object type="cube" p1="-9.5 2 -0.5" p2="-7.5 3.5 1.5" />
+
+        <named_material name="mossy_stone"/>
+        <object type="cube" p1="-9.2 3.5 -0.2" p2="-7.8 4.5 1.2" />
+
+        <named_material name="mossy_stone"/>
+        <object type="cube" p1="-12 0 0" p2="-10.2 1.2 2.5" />
+
+        <named_material name="dark_stone"/>
+        <object type="cube" p1="-6.5 0 0.5" p2="-5.5 5 1.5" />
+
+        <!-- Degraus de entrada da pirâmide central -->
+        <named_material name="dark_stone"/>
+        <object type="cube" p1="-3 0 -1.5" p2="3 0.4 -0.5" />
+
+        <named_material name="dark_stone"/>
+        <object type="cube" p1="-2.2 0.4 -1.0" p2="2.2 0.8 -0.2" />
+
+        <!-- ====================================================
+             ALTAR + ESFERA DE CRISTAL
+        ==================================================== -->
+        <named_material name="dark_stone"/>
+        <object type="cube" p1="-1.0 0 8" p2="1.0 1.2 10" />
+
+        <named_material name="crystal_blue"/>
+        <object type="sphere" center="0 2.2 9" radius="1.0" />
+
+        <!-- ====================================================
+             ESFERAS DECORATIVAS
+        ==================================================== -->
+        <named_material name="aged_bronze"/>
+        <object type="sphere" center="-5.5 1.0 -1" radius="1.0" />
+        <object type="sphere" center="5.5 1.0 -1" radius="1.0" />
+
+        <named_material name="marble"/>
+        <object type="sphere" center="-3 0.7 12" radius="0.7" />
+        <object type="sphere" center="4 0.7 13" radius="0.7" />
+        <object type="sphere" center="8 0.6 8" radius="0.6" />
+
+        <named_material name="gold"/>
+        <object type="sphere" center="-15 6.2 4" radius="0.5" />
+
+    <world_end/>
+
+</RT3>

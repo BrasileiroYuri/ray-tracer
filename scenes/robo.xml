@@ -1,0 +1,197 @@
+<RT3>
+    <!-- Robô Retro: câmera levemente lateral e elevada -->
+    <lookat look_from="5 10 -16" look_at="0 5 2" up="0 1 0" />
+    <camera type="perspective" fovy="42" />
+    <integrator type="blinn_phong" depth="2" />
+    <film type="image" w_res="1920" h_res="1200" filename="robo.png" img_type="png" gamma_corrected="true" />
+    <aggregator type="list"/>
+    <world_begin/>
+
+        <background type="colors" bl="30 30 45" tl="10 12 28" tr="10 12 28" br="30 30 45" />
+
+        <light_source type="spot" I="1.0 0.1 0.9" scale="1 1 1" from="0 7 0" to="0 0 0" cutoff="25" falloff="15" />
+        <light_source type="ambient" I="0.08 0.08 0.12" scale="1 1 1" />
+        <light_source type="directional" I="0.85 0.88 0.95" scale="1.0 1.0 1.0" from="-4 8 -3" to="0 0 1" />
+        <light_source type="point" I="0.4 0.6 1.0" scale="2.0 2.0 2.0" from="0 9 1" />
+        <light_source type="point" I="0.9 0.6 0.2" scale="1.2 1.2 1.2" from="6 6 -2" />
+        <light_source type="point" I="0.2 0.8 0.4" scale="0.8 0.8 0.8" from="-5 4 4" />
+
+        <!-- Materiais -->
+        <make_named_material type="blinn" name="robot_body"
+            ambient="0.08 0.08 0.12" diffuse="0.3 0.32 0.42" specular="0.85 0.88 0.95" glossiness="512"/>
+        <make_named_material type="blinn" name="robot_dark"
+            ambient="0.04 0.04 0.06" diffuse="0.12 0.12 0.18" specular="0.6 0.6 0.7" glossiness="256"/>
+        <make_named_material type="blinn" name="robot_gold"
+            ambient="0.22 0.16 0.0" diffuse="0.9 0.7 0.08" specular="0.95 0.8 0.4" glossiness="512"/>
+        <make_named_material type="blinn" name="robot_red"
+            ambient="0.2 0.02 0.02" diffuse="0.88 0.06 0.06" specular="0.95 0.8 0.8" glossiness="256"/>
+        <make_named_material type="blinn" name="floor_metal"
+            ambient="0.04 0.04 0.06" diffuse="0.12 0.12 0.15" specular="0.7 0.7 0.75" glossiness="256"/>
+
+        <named_material name="floor_metal"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <!-- Grade do chão -->
+        <named_material name="robot_dark"/>
+        <object type="cube" p1="-6.04 0.001 -5" p2="-5.96 0.04 12" />
+        <object type="cube" p1="-5.04 0.001 -5" p2="-4.96 0.04 12" />
+        <object type="cube" p1="-4.04 0.001 -5" p2="-3.96 0.04 12" />
+        <object type="cube" p1="-3.04 0.001 -5" p2="-2.96 0.04 12" />
+        <object type="cube" p1="-2.04 0.001 -5" p2="-1.96 0.04 12" />
+        <object type="cube" p1="-1.04 0.001 -5" p2="-0.96 0.04 12" />
+        <object type="cube" p1="-0.04 0.001 -5" p2="0.04 0.04 12" />
+        <object type="cube" p1="0.96 0.001 -5" p2="1.04 0.04 12" />
+        <object type="cube" p1="1.96 0.001 -5" p2="2.04 0.04 12" />
+        <object type="cube" p1="2.96 0.001 -5" p2="3.04 0.04 12" />
+        <object type="cube" p1="3.96 0.001 -5" p2="4.04 0.04 12" />
+        <object type="cube" p1="4.96 0.001 -5" p2="5.04 0.04 12" />
+        <object type="cube" p1="5.96 0.001 -5" p2="6.04 0.04 12" />
+        <object type="cube" p1="-6 0.001 -1.04" p2="6 0.04 -0.96" />
+        <object type="cube" p1="-6 0.001 -0.04" p2="6 0.04 0.04" />
+        <object type="cube" p1="-6 0.001 0.96" p2="6 0.04 1.04" />
+        <object type="cube" p1="-6 0.001 1.96" p2="6 0.04 2.04" />
+        <object type="cube" p1="-6 0.001 2.96" p2="6 0.04 3.04" />
+        <object type="cube" p1="-6 0.001 3.96" p2="6 0.04 4.04" />
+        <object type="cube" p1="-6 0.001 4.96" p2="6 0.04 5.04" />
+        <object type="cube" p1="-6 0.001 5.96" p2="6 0.04 6.04" />
+        <object type="cube" p1="-6 0.001 6.96" p2="6 0.04 7.04" />
+
+        <!-- ============================== -->
+        <!-- ROBÔ CENTRAL                   -->
+        <!-- ============================== -->
+
+        <!-- PERNAS -->
+        <named_material name="robot_body"/>
+        <object type="cube" p1="-1.2 0 -0.5" p2="-0.3 3.5 0.5" />
+        <object type="cube" p1=" 0.3 0 -0.5" p2=" 1.2 3.5 0.5" />
+        <!-- Pés -->
+        <named_material name="robot_dark"/>
+        <object type="cube" p1="-1.4 0 -0.8" p2="-0.1 0.5 0.9" />
+        <object type="cube" p1=" 0.1 0 -0.8" p2=" 1.4 0.5 0.9" />
+        <!-- Joelhos -->
+        <named_material name="robot_gold"/>
+        <object type="sphere" center="-0.75 2.0 0" radius="0.32" />
+        <object type="sphere" center=" 0.75 2.0 0" radius="0.32" />
+
+        <!-- CINTURA / QUADRIL -->
+        <named_material name="robot_body"/>
+        <object type="cube" p1="-1.5 3.2 -0.6" p2="1.5 4.0 0.6" />
+        <named_material name="robot_gold"/>
+        <object type="cube" p1="-1.6 3.5 -0.55" p2="1.6 3.75 0.55" />
+
+        <!-- TORSO -->
+        <named_material name="robot_body"/>
+        <object type="cube" p1="-1.8 4.0 -0.8" p2="1.8 8.0 0.8" />
+        <!-- Painel do peito -->
+        <named_material name="robot_dark"/>
+        <object type="cube" p1="-1.2 5.0 -0.85" p2="1.2 7.5 -0.65" />
+        <!-- Botões do painel -->
+        <material type="flat" color="255 60 60" />
+        <object type="sphere" center="-0.7 7.0 -0.9" radius="0.15" />
+        <material type="flat" color="60 255 60" />
+        <object type="sphere" center=" 0.0 7.0 -0.9" radius="0.15" />
+        <material type="flat" color="60 120 255" />
+        <object type="sphere" center=" 0.7 7.0 -0.9" radius="0.15" />
+        <!-- Grades de ventilação -->
+        <named_material name="robot_gold"/>
+        <object type="cube" p1="-1.1 5.2 -0.87" p2="1.1 5.35 -0.66" />
+        <object type="cube" p1="-1.1 5.6 -0.87" p2="1.1 5.75 -0.66" />
+        <object type="cube" p1="-1.1 6.0 -0.87" p2="1.1 6.15 -0.66" />
+        <object type="cube" p1="-1.1 6.4 -0.87" p2="1.1 6.55 -0.66" />
+        <!-- Emblema central -->
+        <material type="flat" color="255 200 50" />
+        <object type="sphere" center="0 5.8 -0.88" radius="0.28" />
+
+        <!-- OMBROS / PAULDRONS -->
+        <named_material name="robot_body"/>
+        <object type="cube" p1="-3.0 7.0 -0.7" p2="-1.8 8.2 0.7" />
+        <object type="cube" p1=" 1.8 7.0 -0.7" p2=" 3.0 8.2 0.7" />
+        <named_material name="robot_gold"/>
+        <object type="sphere" center="-2.4 8.2 0" radius="0.45" />
+        <object type="sphere" center=" 2.4 8.2 0" radius="0.45" />
+
+        <!-- BRAÇOS -->
+        <named_material name="robot_body"/>
+        <object type="cube" p1="-3.2 4.5 -0.45" p2="-2.0 7.2 0.45" />
+        <object type="cube" p1=" 2.0 4.5 -0.45" p2=" 3.2 7.2 0.45" />
+        <!-- Cotovelos -->
+        <named_material name="robot_gold"/>
+        <object type="sphere" center="-2.6 4.8 0" radius="0.35" />
+        <object type="sphere" center=" 2.6 4.8 0" radius="0.35" />
+        <!-- Antebraços -->
+        <named_material name="robot_body"/>
+        <object type="cube" p1="-3.4 2.2 -0.4" p2="-1.8 5.0 0.4" />
+        <object type="cube" p1=" 1.8 2.2 -0.4" p2=" 3.4 5.0 0.4" />
+        <!-- Pulsos -->
+        <named_material name="robot_dark"/>
+        <object type="cube" p1="-3.3 1.8 -0.38" p2="-1.9 2.3 0.38" />
+        <object type="cube" p1=" 1.9 1.8 -0.38" p2=" 3.3 2.3 0.38" />
+        <!-- Mãos / Garras -->
+        <named_material name="robot_gold"/>
+        <object type="cube" p1="-3.5 0.8 -0.5" p2="-1.7 1.9 0.5" />
+        <object type="cube" p1=" 1.7 0.8 -0.5" p2=" 3.5 1.9 0.5" />
+        <!-- Dedos -->
+        <named_material name="robot_dark"/>
+        <object type="cube" p1="-3.60 0.2 -0.5" p2="-1.60 0.85 -0.25" />
+        <object type="cube" p1="-3.60 0.2 -0.1" p2="-1.60 0.85 0.15" />
+        <object type="cube" p1="-3.60 0.2 0.3" p2="-1.60 0.85 0.55" />
+        <object type="cube" p1="1.60 0.2 -0.5" p2="3.60 0.85 -0.25" />
+        <object type="cube" p1="1.60 0.2 -0.1" p2="3.60 0.85 0.15" />
+        <object type="cube" p1="1.60 0.2 0.3" p2="3.60 0.85 0.55" />
+
+        <!-- PESCOÇO -->
+        <named_material name="robot_dark"/>
+        <object type="cube" p1="-0.5 8.0 -0.4" p2="0.5 8.8 0.4" />
+        <named_material name="robot_gold"/>
+        <object type="cube" p1="-0.55 8.3 -0.44" p2="0.55 8.55 0.44" />
+
+        <!-- CABEÇA -->
+        <named_material name="robot_body"/>
+        <object type="cube" p1="-1.5 8.8 -1.0" p2="1.5 11.5 1.0" />
+        <!-- Viseira -->
+        <named_material name="robot_dark"/>
+        <object type="cube" p1="-1.3 9.5 -1.05" p2="1.3 10.8 -0.7" />
+        <!-- OLHOS (emissivos, brilhantes) -->
+        <material type="flat" color="80 200 255" />
+        <object type="sphere" center="-0.55 10.1 -1.05" radius="0.32" />
+        <object type="sphere" center=" 0.55 10.1 -1.05" radius="0.32" />
+        <!-- Pupila dos olhos -->
+        <material type="flat" color="0 80 180" />
+        <object type="sphere" center="-0.55 10.1 -1.08" radius="0.18" />
+        <object type="sphere" center=" 0.55 10.1 -1.08" radius="0.18" />
+        <!-- Boca / grade -->
+        <named_material name="robot_dark"/>
+        <object type="cube" p1="-0.8 9.0 -1.04" p2="0.8 9.4 -0.72" />
+        <named_material name="robot_gold"/>
+        <object type="cube" p1="-0.6 9.02 -1.06" p2="-0.45 9.38 -0.7" />
+        <object type="cube" p1="-0.2 9.02 -1.06" p2="-0.05 9.38 -0.7" />
+        <object type="cube" p1="0.2 9.02 -1.06" p2="0.35 9.38 -0.7" />
+        <object type="cube" p1="0.6 9.02 -1.06" p2="0.75 9.38 -0.7" />
+        <!-- Orelhas / antenas de comunicação -->
+        <named_material name="robot_body"/>
+        <object type="cube" p1="-1.85 9.8 -0.3" p2="-1.5 10.8 0.3" />
+        <object type="cube" p1=" 1.5  9.8 -0.3" p2=" 1.85 10.8 0.3" />
+        <!-- Antenas -->
+        <named_material name="robot_dark"/>
+        <object type="cube" p1="-0.85 11.5 -0.1" p2="-0.65 13.5 0.1" />
+        <object type="cube" p1=" 0.65 11.5 -0.1" p2=" 0.85 13.8 0.1" />
+        <!-- Pontas das antenas (emissivas) -->
+        <material type="flat" color="255 50 50" />
+        <object type="sphere" center="-0.75 13.6 0" radius="0.2" />
+        <material type="flat" color="50 255 100" />
+        <object type="sphere" center=" 0.75 13.9 0" radius="0.2" />
+
+        <!-- ===== ROBÔ 2 ao fundo (menor, distante) ===== -->
+        <!-- Robozinho de fundo -->
+        <named_material name="robot_dark"/>
+        <object type="cube" p1="4.42 0 5.70" p2="6.58 2.10 6.30" />
+        <named_material name="robot_body"/>
+        <object type="cube" p1="4.42 1.92 5.52" p2="6.58 4.80 6.48" />
+        <object type="cube" p1="4.60 5.28 5.40" p2="6.40 6.90 6.60" />
+        <object type="cube" p1="5.20 4.80 5.76" p2="5.80 5.28 6.24" />
+        <material type="flat" color="255 100 50" />
+        <object type="sphere" center="5.17 6.06 5.37" radius="0.19" />
+        <object type="sphere" center="5.83 6.06 5.37" radius="0.19" />
+
+    <world_end/>
+</RT3>

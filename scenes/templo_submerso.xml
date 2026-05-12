@@ -1,0 +1,193 @@
+<RT3>
+
+    <!-- ============================================================
+         CENA: "Templo Submerso"
+         Ruínas de um templo antigo no fundo do oceano.
+         Luz filtrada pela água, esferas de coral e colunas afundadas.
+    ============================================================ -->
+
+    <lookat look_from="0 12 -28" look_at="0 3 5" up="0 1 0" />
+    <camera type="perspective" fovy="42" />
+    <integrator type="blinn_phong" depth="1" />
+    <film type="image" w_res="1920" h_res="1080" filename="templo_submerso.png" img_type="png" gamma_corrected="false" />
+
+    <aggregator type="list"/>
+
+    <world_begin/>
+
+        <!-- Água profunda: verde-azulado escuro no fundo, ciano filtrado no topo -->
+        <background type="4_colors"
+            bl="2  18  22"
+            tl="8  55  70"
+            tr="15 80  90"
+            br="3  22  28" />
+
+        <!-- Luz ambiente aquática fraca e fria -->
+        <light_source type="ambient" I="0.06 0.14 0.18" />
+
+        <!-- Luz solar filtrada pela superfície da água (de cima, levemente inclinada) -->
+        <light_source type="directional"
+            I="0.30 0.70 0.75"
+            from="2 10 -3"
+            to="0 0 0"
+            world_radius="100" />
+
+        <!-- Raio de luz concentrado vindo de cima (god ray central) -->
+        <light_source type="point"
+            I="0.20 0.55 0.60"
+            from="0 40 5" />
+
+        <!-- Bioluminescência esverdeada à esquerda -->
+        <light_source type="point"
+            I="0.05 0.40 0.25"
+            from="-12 3 6" />
+
+        <!-- Bioluminescência azul à direita -->
+        <light_source type="point"
+            I="0.05 0.25 0.50"
+            from="12 4 8" />
+
+        <!-- ====================================================
+             MATERIAIS
+        ==================================================== -->
+
+        <!-- Rocha submersa coberta de limo -->
+        <make_named_material type="blinn" name="sea_rock"
+            ambient="0.05 0.08 0.07"
+            diffuse="0.22 0.32 0.28"
+            specular="0.15 0.20 0.18"
+            glossiness="12"/>
+
+        <!-- Mármore antigo desgastado -->
+        <make_named_material type="blinn" name="ancient_marble"
+            ambient="0.10 0.13 0.14"
+            diffuse="0.45 0.55 0.58"
+            specular="0.40 0.48 0.50"
+            glossiness="64"/>
+
+        <!-- Coral vermelho-alaranjado -->
+        <make_named_material type="blinn" name="coral"
+            ambient="0.18 0.06 0.04"
+            diffuse="0.75 0.22 0.12"
+            specular="0.40 0.15 0.10"
+            glossiness="24"/>
+
+        <!-- Coral amarelo -->
+        <make_named_material type="blinn" name="coral_yellow"
+            ambient="0.18 0.15 0.02"
+            diffuse="0.80 0.68 0.10"
+            specular="0.50 0.42 0.12"
+            glossiness="20"/>
+
+        <!-- Cristal bioluminescente verde -->
+        <make_named_material type="blinn" name="bio_green"
+            ambient="0.05 0.25 0.12"
+            diffuse="0.12 0.72 0.38"
+            specular="0.60 1.00 0.70"
+            glossiness="256"/>
+
+        <!-- Cristal bioluminescente azul -->
+        <make_named_material type="blinn" name="bio_blue"
+            ambient="0.05 0.12 0.30"
+            diffuse="0.10 0.38 0.88"
+            specular="0.70 0.88 1.00"
+            glossiness="256"/>
+
+        <!-- Areia do fundo do mar -->
+        <make_named_material type="blinn" name="sea_floor"
+            ambient="0.06 0.09 0.10"
+            diffuse="0.28 0.38 0.40"
+            specular="0.08 0.10 0.11"
+            glossiness="4"/>
+
+        <!-- Ouro verde-escurecido (artefato submerso) -->
+        <make_named_material type="blinn" name="tarnished_gold"
+            ambient="0.12 0.14 0.05"
+            diffuse="0.55 0.58 0.18"
+            specular="0.70 0.72 0.30"
+            glossiness="128"/>
+
+        <!-- ====================================================
+             CHÃO DO MAR
+        ==================================================== -->
+        <named_material name="sea_floor"/>
+        <object type="plane" point="0 0 0" normal="0 1 0" />
+
+        <!-- ====================================================
+             PIRÂMIDE CENTRAL DO TEMPLO (afundada, parcialmente soterrada)
+        ==================================================== -->
+        <named_material name="ancient_marble"/>
+        <object type="pyramid" center="0 0 6" width="11" height="7" />
+
+        <!-- Topo com artefato dourado -->
+        <named_material name="tarnished_gold"/>
+        <object type="pyramid" center="0 6.8 6" width="1.2" height="1.0" />
+
+        <!-- Pirâmide menor à esquerda, tombada/inclinada -->
+        <named_material name="sea_rock"/>
+        <object type="pyramid" center="-13 0 4" width="6" height="4" />
+
+        <!-- Pirâmide menor à direita -->
+        <named_material name="sea_rock"/>
+        <object type="pyramid" center="12 0 3" width="5" height="3.5" />
+
+        <!-- ====================================================
+             COLUNAS (cubos verticais) — ruínas do templo
+        ==================================================== -->
+        <named_material name="ancient_marble"/>
+        <object type="cube" p1="-5.5 0 -1" p2="-4.5 6 0" />
+        <object type="cube" p1="4.5 0 -1"  p2="5.5 6 0" />
+
+        <!-- Coluna quebrada (mais baixa) -->
+        <named_material name="sea_rock"/>
+        <object type="cube" p1="-8 0 1" p2="-7 3.5 2" />
+        <object type="cube" p1="7 0 1"  p2="8 4 2" />
+
+        <!-- Blocos caídos no chão -->
+        <named_material name="ancient_marble"/>
+        <object type="cube" p1="-7 0 3"   p2="-5 1.2 5" />
+        <object type="cube" p1="5 0 4"    p2="7.5 1.0 6" />
+        <object type="cube" p1="-2 0 -2"  p2="2 0.8 -1" />
+
+        <!-- Base do altar (cubo plano central) -->
+        <named_material name="ancient_marble"/>
+        <object type="cube" p1="-2 0 8" p2="2 1.0 11" />
+
+        <!-- ====================================================
+             ESFERAS DE CORAL E BIOLUMINESCÊNCIA
+        ==================================================== -->
+
+        <!-- Coral vermelho em torno das colunas -->
+        <named_material name="coral"/>
+        <object type="sphere" center="-5.0 1.0 -0.5" radius="0.6" />
+        <object type="sphere" center="5.0 0.8 -0.5"  radius="0.5" />
+        <object type="sphere" center="-7.5 0.6 1.5"  radius="0.4" />
+        <object type="sphere" center="-3 0.5 12"      radius="0.5" />
+
+        <!-- Coral amarelo espalhado -->
+        <named_material name="coral_yellow"/>
+        <object type="sphere" center="8 0.7 5"    radius="0.5" />
+        <object type="sphere" center="-9 0.6 7"   radius="0.4" />
+        <object type="sphere" center="3 0.5 13"   radius="0.4" />
+
+        <!-- Cristais bioluminescentes verdes -->
+        <named_material name="bio_green"/>
+        <object type="sphere" center="-11 1.2 8"  radius="0.7" />
+        <object type="sphere" center="-4 1.0 14"  radius="0.5" />
+        <object type="pyramid" center="-11 0 9"   width="0.8" height="2.5" />
+        <object type="pyramid" center="-9 0 11"   width="0.6" height="2.0" />
+
+        <!-- Cristais bioluminescentes azuis -->
+        <named_material name="bio_blue"/>
+        <object type="sphere" center="11 1.4 9"   radius="0.8" />
+        <object type="sphere" center="5 1.0 15"   radius="0.5" />
+        <object type="pyramid" center="10 0 8"    width="0.9" height="3.0" />
+        <object type="pyramid" center="12 0 11"   width="0.6" height="2.0" />
+
+        <!-- Esfera de artefato dourado sobre o altar -->
+        <named_material name="tarnished_gold"/>
+        <object type="sphere" center="0 2.0 9.5" radius="0.8" />
+
+    <world_end/>
+
+</RT3>

@@ -81,6 +81,8 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
       {"p1", convert<point3, float, 3>},
       {"p2", convert<point3, float, 3>},
       {"glossiness", convert<float>},
+      {"width", convert<float>},
+      {"height", convert<float>},
   };
 }
 RGBColor parse_color_format(const std::string &str) {
