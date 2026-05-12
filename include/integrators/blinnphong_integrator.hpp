@@ -51,7 +51,7 @@ public:
       auto dir = ray.direction_ - n * 2 * dot(ray.direction_, n);
       Ray reflected_ray(offset_p, normalize(dir), ray.min_t_, ray.max_t_);
       L_total += surfel.mat_->getMirror() *
-                 li(reflected_ray, sc, depth + 1).value_or({0, 0, 0});
+                 li(reflected_ray, sc, depth + 1).value_or((RGBColor){0, 0, 0});
     }
     return std::make_optional(L_total);
   }
