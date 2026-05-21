@@ -7,6 +7,9 @@
 
 typedef struct vec2 {
   float i_, j_;
+
+  vec2(const std::array<float, 3> &arr) : i_{arr[0]}, j_{arr[1]} {}
+
   vec2(float i = 0, float j = 0) : i_{i}, j_{j} {}
   inline vec2 operator+(const vec2 &v) const { return {i_ + v.i_, j_ + v.j_}; }
   inline vec2 operator-(const vec2 &v) const { return {i_ - v.i_, j_ - v.j_}; }

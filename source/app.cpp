@@ -207,6 +207,31 @@ void App::integrator(const ParamSet &ps) {
   generalConfig.depth = (std::size_t)ps.retrieve<int>("depth");
 }
 
+void triangleMesh(const ParamSet &ps) {
+
+	std::vector<point3> vertices = ps.retrieve<std::vector<point3>>("vertices");
+
+	std::vector<point3> indices = ps.retrieve<std::vector<point3>>("indices");
+
+	std::vector<point3> normals = ps.retrieve<std::vector<point3>>("normals");
+
+	std::vector<point2> uv = ps.retrieve<std::vector<point2>>("uv");
+	std::cout << "IMPRIMINDO VERTICES:\n";
+	for (auto &e : vertices) 
+		std::cout << e.str() << "\n";
+
+	std::cout << "IMPRIMINDO INDICES:\n";
+	for (auto &e : indices) 
+		std::cout << e.str() << "\n";
+
+	std::cout << "IMPRIMINDO NORMALS:\n";
+	for (auto &e : normals) 
+		std::cout << e.str() << "\n";
+
+	std::cout << "IMPRIMINDO UV\n";
+	for (auto &e : uv) 
+		std::cout << e.str() << "\n";
+}
 void App::object(const ParamSet &ps) {
   std::string type = ps.retrieve<std::string>("type");
 
@@ -218,10 +243,13 @@ void App::object(const ParamSet &ps) {
     cube(ps);
   } else if (type == "pyramid") {
     pyramid(ps);
+  } else if (type == "trianglemesh") {
+	    triangleMesh(ps);
   } else {
     std::cout << "Objeto " << (type.empty() ? "vazio" : type) << "inválido.\n";
   }
 }
+
 
 // Implementação do método que cria a esfera a partir do XML
 void App::sphere(const ParamSet &ps) {

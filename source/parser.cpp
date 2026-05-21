@@ -25,6 +25,30 @@ static void convert(const std::string &name, const std::string &value,
   ps->add(name, val);
 }
 
+/* 
+ * Iniciei assim para dar adiantamento ao projeto. Futuramente, a ideia é diminuir a quantidade de funções conversoras. 
+ * Um possível solução seria: uma única função conversora que todo valor é um vetor de algo. 
+ * Dessa forma, a solução atual tem intenção de ser  provisória. Isso pois, se eu tivesse tentado implementar essa função agora, teria que adaptar várias funções de 'App'.
+ *
+ */
+template <typename T, typename K, typename  A>
+static void convert(const std::string &name, const std::string &value,
+                    ParamSet *ps) {
+	std::vector<T> vec; /* A ideia aqui é um pouco da dita acima, um vetor de algo (no caso T). */
+	std::istringstream ss{value};
+	std::array<K, 3> arr;
+	while(!ss.eof()) { /* Enquanto tiver o que ser extraido  */
+	  for (unsigned long i = 0; i < 3; i++) /* @note: Veja que fixamos em 3. No momento, isso está causando erro no parse de uv. */
+	    ss >> arr[i];
+	T element{arr}; /* Instanciando o tipo, e abaixo adicionando. */
+	vec.push_back(element);
+	}
+
+/* Ao final, adicionamos todo o vetor de elementos T no paramset. */
+  ps->add(name, vec);
+}
+
+
 //!< Def:
 Parser::Parser(const std::string &filename) : filename_(filename) {
   elements_ = {
@@ -52,11 +76,13 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
       {"cutoff", convert<int>},
       {"depth", convert<int>},
       {"falloff", convert<int>},
+      {"ntriangles", convert<int>},
       {"type", convert<std::string>},
       {"name", convert<std::string>},
       {"filename", convert<std::string>},
       {"img_type", convert<std::string>},
       {"mapping", convert<std::string>},
+      {"material", convert<std::string>},
       {"bl", convert<RGBColor, int, 3>},
       {"br", convert<RGBColor, int, 3>},
       {"tl", convert<RGBColor, int, 3>},
@@ -83,6 +109,10 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
       {"glossiness", convert<float>},
       {"width", convert<float>},
       {"height", convert<float>},
+      {"vertices", convert<point3, float, float>},
+      {"indices", convert<point3, float, float>},
+      {"normals", convert<point3, float, float>},
+      {"uv", convert<point2, float, float>}
   };
 }
 RGBColor parse_color_format(const std::string &str) {
