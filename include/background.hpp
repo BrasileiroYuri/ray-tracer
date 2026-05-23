@@ -1,43 +1,48 @@
 #ifndef BACKGROUND_HPP
 #define BACKGROUND_HPP
 
+#include <algorithm>
 #include <array>
 #include <sstream>
 #include <string>
-#include <algorithm> 
 
 struct RGBColor {
-  
+
   float r = 0, g = 0, b = 0, a = 1.0f;
 
   RGBColor(const std::array<int, 3> &arr)
-      : r{arr[0]/255.0f}, g{arr[1]/255.0f}, b{arr[2]/255.0f} {}
+      : r{arr[0] / 255.0f}, g{arr[1] / 255.0f}, b{arr[2] / 255.0f} {}
 
   // contrutor para float
   RGBColor(const std::array<float, 3> &arr)
       : r{arr[0]}, g{arr[1]}, b{arr[2]}, a{1.0f} {}
 
   // Construtor direto
-  RGBColor(float r_, float g_, float b_, float a_ = 1.0f) 
+  RGBColor(float r_, float g_, float b_, float a_ = 1.0f)
       : r{r_}, g{g_}, b{b_}, a{a_} {}
 
   RGBColor() = default;
 
   // Operadores necessários para as fórmulas: L = Ia*ka + Id*kd + Is*ks
-  RGBColor operator*(const RGBColor& other) const { return {r * other.r, g * other.g, b * other.b, a * other.a}; }
+  RGBColor operator*(const RGBColor &other) const {
+    return {r * other.r, g * other.g, b * other.b, a * other.a};
+  }
   RGBColor operator*(float s) const { return {r * s, g * s, b * s, a}; }
-  RGBColor operator+(const RGBColor& other) const { return {r + other.r, g + other.g, b + other.b, a}; }
-  
-  RGBColor& operator+=(const RGBColor& other) { 
-    r += other.r; g += other.g; b += other.b; 
-    return *this; 
+  RGBColor operator+(const RGBColor &other) const {
+    return {r + other.r, g + other.g, b + other.b, a};
+  }
+
+  RGBColor &operator+=(const RGBColor &other) {
+    r += other.r;
+    g += other.g;
+    b += other.b;
+    return *this;
   }
 
   std::string str() const {
     std::stringstream ss;
     // Converte os valores de 0.0-1.0 para inteiros 0-255 para exibição no log
-    ss << "{" << static_cast<int>(r * 255) 
-       << ", " << static_cast<int>(g * 255) 
+    ss << "{" << static_cast<int>(r * 255) << ", " << static_cast<int>(g * 255)
        << ", " << static_cast<int>(b * 255) << "}";
     return ss.str();
   }
@@ -45,6 +50,25 @@ struct RGBColor {
   // Método auxiliar para o Integrator obter a cor base em materiais não-Blinn
   RGBColor getColor() const { return *this; }
 };
+inline std::istream &operator>>(std::istream &is, RGBColor &color) {
+  float r, g, b;
+  if (!(is >> r >> g >> b)) {
+    is.setstate(std::ios::failbit);
+    return is;
+  }
+
+  // Heurística: qualquer valor > 1 indica escala 0-255
+  if (r > 1.f || g > 1.f || b > 1.f) {
+    r /= 255.f;
+    g /= 255.f;
+    b /= 255.f;
+  }
+
+  color.r = r;
+  color.g = g;
+  color.b = b;
+  return is;
+}
 
 class BackGroundColor {
 public:

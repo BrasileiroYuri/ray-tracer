@@ -25,9 +25,9 @@ static void convert(const std::string &name, const std::string &value,
   ps->add(name, val);
 }
 
-/* 
- * Iniciei assim para dar adiantamento ao projeto. Futuramente, a ideia é diminuir a quantidade de funções conversoras. 
- * Um possível solução seria: uma única função conversora que todo valor é um vetor de algo. 
+/*
+ * Iniciei assim para dar adiantamento ao projeto. Futuramente, a ideia é diminuir a quantidade de funções conversoras.
+ * Um possível solução seria: uma única função conversora que todo valor é um vetor de algo.
  * Dessa forma, a solução atual tem intenção de ser  provisória. Isso pois, se eu tivesse tentado implementar essa função agora, teria que adaptar várias funções de 'App'.
  *
  */
@@ -83,25 +83,25 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
       {"img_type", convert<std::string>},
       {"mapping", convert<std::string>},
       {"material", convert<std::string>},
-      {"bl", convert<RGBColor, int, 3>},
-      {"br", convert<RGBColor, int, 3>},
-      {"tl", convert<RGBColor, int, 3>},
-      {"tr", convert<RGBColor, int, 3>},
-      {"single_color", convert<RGBColor, int, 3>},
-      {"color", convert<RGBColor, int, 3>},
+      {"bl", convert<RGBColor>},
+      {"br", convert<RGBColor>},
+      {"tl", convert<RGBColor>},
+      {"tr", convert<RGBColor>},
+      {"single_color", convert<RGBColor>},
+      {"color", convert<RGBColor>},
       {"look_from", convert<point3, float, 3>},
       {"look_at", convert<point3, float, 3>},
       {"plane", convert<point3, float, 3>},
       {"center", convert<point3, float, 3>},
-      {"mirror", convert<RGBColor, float, 3>},
+      {"mirror", convert<RGBColor>},
       {"normal", convert<vec3, float, 3>},
       {"up", convert<vec3, float, 3>},
       {"screen_window", convert<ScreenWindow, float, 4>},
-      {"ambient", convert<RGBColor, float, 3>},
-      {"diffuse", convert<RGBColor, float, 3>},
-      {"specular", convert<RGBColor, float, 3>},
-      {"I", convert<RGBColor, float, 3>},
-      {"scale", convert<RGBColor, float, 3>},
+      {"ambient", convert<RGBColor>},
+      {"diffuse", convert<RGBColor>},
+      {"specular", convert<RGBColor>},
+      {"I", convert<RGBColor>},
+      {"scale", convert<RGBColor>},
       {"from", convert<point3, float, 3>},
       {"to", convert<point3, float, 3>},
       {"p1", convert<point3, float, 3>},
@@ -235,15 +235,6 @@ void Parser::parse() const {
     for (auto attr = it->FirstAttribute(); attr; attr = attr->Next()) {
       std::string attr_name = attr->Name();
       std::string attr_val = attr->Value();
-
-      //@TODO: Refazer, não escala.
-      // 1. Processamento de Cores e intensidades
-      if (attr_name == "color" || attr_name == "bl" || attr_name == "tl" ||
-          attr_name == "tr" || attr_name == "br" || attr_name == "ambient" ||
-          attr_name == "diffuse" || attr_name == "specular" ||
-          attr_name == "I" || attr_name == "scale") {
-        ps.add(attr_name, parse_color_format(attr_val));
-      }
 
       if (conversor_.find(attr_name) == conversor_.end()) {
         std::cerr << "Atribute: '" << attr_name << "' invalid.\n";
