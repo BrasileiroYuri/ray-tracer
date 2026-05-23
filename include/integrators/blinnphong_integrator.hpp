@@ -21,7 +21,7 @@ public:
       return {};
     }
 
-    RGBColor L_total(0, 0, 0);
+    RGBColor L_total;
 
     vec3 wo = normalize(ray.direction_ * -1.0f);
     vec3 n = normalize(surfel.n);

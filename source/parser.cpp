@@ -9,45 +9,13 @@ template <typename T>
 static void convert(const std::string &name, const std::string &value,
                     ParamSet *ps) {
   std::istringstream ss{value};
+  std::vector<T> vec;
   T val{};
-  ss >> val;
-  ps->add(name, val);
-}
+  while (ss >> val)
+    vec.push_back(val);
 
-template <typename T, typename K, std::size_t size>
-static void convert(const std::string &name, const std::string &value,
-                    ParamSet *ps) {
-  std::istringstream ss{value};
-  std::array<K, size> arr;
-  for (unsigned long i = 0; i < size; i++)
-    ss >> arr[i];
-  T val{arr};
-  ps->add(name, val);
-}
-
-/*
- * Iniciei assim para dar adiantamento ao projeto. Futuramente, a ideia é diminuir a quantidade de funções conversoras.
- * Um possível solução seria: uma única função conversora que todo valor é um vetor de algo.
- * Dessa forma, a solução atual tem intenção de ser  provisória. Isso pois, se eu tivesse tentado implementar essa função agora, teria que adaptar várias funções de 'App'.
- *
- */
-template <typename T, typename K, typename  A>
-static void convert(const std::string &name, const std::string &value,
-                    ParamSet *ps) {
-	std::vector<T> vec; /* A ideia aqui é um pouco da dita acima, um vetor de algo (no caso T). */
-	std::istringstream ss{value};
-	std::array<K, 3> arr;
-	while(!ss.eof()) { /* Enquanto tiver o que ser extraido  */
-	  for (unsigned long i = 0; i < 3; i++) /* @note: Veja que fixamos em 3. No momento, isso está causando erro no parse de uv. */
-	    ss >> arr[i];
-	T element{arr}; /* Instanciando o tipo, e abaixo adicionando. */
-	vec.push_back(element);
-	}
-
-/* Ao final, adicionamos todo o vetor de elementos T no paramset. */
   ps->add(name, vec);
 }
-
 
 //!< Def:
 Parser::Parser(const std::string &filename) : filename_(filename) {
@@ -64,81 +32,54 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
       {"light_source", App::light_source},
   };
 
-  conversor_ = {
-      {"frame_aspect_ratio", convert<float>},
-      {"radius", convert<float>},
-      {"z_min", convert<float>},
-      {"z_max", convert<float>},
-      {"phi_max", convert<float>},
-      {"w_res", convert<int>},
-      {"h_res", convert<int>},
-      {"fovy", convert<int>},
-      {"cutoff", convert<int>},
-      {"depth", convert<int>},
-      {"falloff", convert<int>},
-      {"ntriangles", convert<int>},
-      {"type", convert<std::string>},
-      {"name", convert<std::string>},
-      {"filename", convert<std::string>},
-      {"img_type", convert<std::string>},
-      {"mapping", convert<std::string>},
-      {"material", convert<std::string>},
-      {"bl", convert<RGBColor>},
-      {"br", convert<RGBColor>},
-      {"tl", convert<RGBColor>},
-      {"tr", convert<RGBColor>},
-      {"single_color", convert<RGBColor>},
-      {"color", convert<RGBColor>},
-      {"look_from", convert<point3, float, 3>},
-      {"look_at", convert<point3, float, 3>},
-      {"plane", convert<point3, float, 3>},
-      {"center", convert<point3, float, 3>},
-      {"mirror", convert<RGBColor>},
-      {"normal", convert<vec3, float, 3>},
-      {"up", convert<vec3, float, 3>},
-      {"screen_window", convert<ScreenWindow, float, 4>},
-      {"ambient", convert<RGBColor>},
-      {"diffuse", convert<RGBColor>},
-      {"specular", convert<RGBColor>},
-      {"I", convert<RGBColor>},
-      {"scale", convert<RGBColor>},
-      {"from", convert<point3, float, 3>},
-      {"to", convert<point3, float, 3>},
-      {"p1", convert<point3, float, 3>},
-      {"p2", convert<point3, float, 3>},
-      {"glossiness", convert<float>},
-      {"width", convert<float>},
-      {"height", convert<float>},
-      {"vertices", convert<point3, float, float>},
-      {"indices", convert<point3, float, float>},
-      {"normals", convert<point3, float, float>},
-      {"uv", convert<point2, float, float>}
-  };
-}
-RGBColor parse_color_format(const std::string &str) {
-  std::stringstream ss(str);
-  std::vector<float> v;
-  float val;
-  while (ss >> val)
-    v.push_back(val);
-
-  if (v.size() < 3)
-    return RGBColor(0, 0, 0);
-
-  // Verifica se o usuário está usando a escala 0-255
-  bool is_255_scale = false;
-  for (float c : v) {
-    if (c > 1.0f) {
-      is_255_scale = true;
-      break;
-    }
-  }
-
-  // Converte para float 0.0-1.0 se necessário e retorna o RGBColor
-  if (is_255_scale) {
-    return RGBColor(v[0] / 255.0f, v[1] / 255.0f, v[2] / 255.0f);
-  }
-  return RGBColor(v[0], v[1], v[2]);
+  conversor_ = {{"frame_aspect_ratio", convert<float>},
+                {"radius", convert<float>},
+                {"z_min", convert<float>},
+                {"z_max", convert<float>},
+                {"phi_max", convert<float>},
+                {"w_res", convert<int>},
+                {"h_res", convert<int>},
+                {"fovy", convert<int>},
+                {"cutoff", convert<int>},
+                {"depth", convert<int>},
+                {"falloff", convert<int>},
+                {"ntriangles", convert<int>},
+                {"type", convert<std::string>},
+                {"name", convert<std::string>},
+                {"filename", convert<std::string>},
+                {"img_type", convert<std::string>},
+                {"mapping", convert<std::string>},
+                {"material", convert<std::string>},
+                {"bl", convert<RGBColor>},
+                {"br", convert<RGBColor>},
+                {"tl", convert<RGBColor>},
+                {"tr", convert<RGBColor>},
+                {"single_color", convert<RGBColor>},
+                {"color", convert<RGBColor>},
+                {"look_from", convert<point3>},
+                {"look_at", convert<point3>},
+                {"plane", convert<point3>},
+                {"center", convert<point3>},
+                {"mirror", convert<RGBColor>},
+                {"normal", convert<vec3>},
+                {"up", convert<vec3>},
+                {"screen_window", convert<ScreenWindow>},
+                {"ambient", convert<RGBColor>},
+                {"diffuse", convert<RGBColor>},
+                {"specular", convert<RGBColor>},
+                {"I", convert<RGBColor>},
+                {"scale", convert<vec3>},
+                {"from", convert<point3>},
+                {"to", convert<point3>},
+                {"p1", convert<point3>},
+                {"p2", convert<point3>},
+                {"glossiness", convert<float>},
+                {"width", convert<float>},
+                {"height", convert<float>},
+                {"vertices", convert<point3>},
+                {"indices", convert<point3>},
+                {"normals", convert<point3>},
+                {"uv", convert<point2>}};
 }
 
 void Parser::include(const std::string &filename) const {
@@ -168,15 +109,6 @@ void Parser::include(const std::string &filename) const {
     for (auto attr = it->FirstAttribute(); attr; attr = attr->Next()) {
       std::string attr_name = attr->Name();
       std::string attr_val = attr->Value();
-
-      //@TODO: Refazer, não escala.
-      // 1. Processamento de Cores e intensidades
-      if (attr_name == "color" || attr_name == "bl" || attr_name == "tl" ||
-          attr_name == "tr" || attr_name == "br" || attr_name == "ambient" ||
-          attr_name == "diffuse" || attr_name == "specular" ||
-          attr_name == "I" || attr_name == "scale") {
-        ps.add(attr_name, parse_color_format(attr_val));
-      }
 
       if (conversor_.find(attr_name) == conversor_.end()) {
         std::cerr << "Atribute: '" << attr_name << "' invalid.\n";

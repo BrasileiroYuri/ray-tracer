@@ -3,17 +3,20 @@
 
 #include "integrator.hpp"
 #include "param_set.hpp"
+#include <istream>
 #include <memory>
 #include <string>
 
 struct ScreenWindow {
-  ScreenWindow(float l, float r, float b, float t)
-      : l_(l), r_(r), b_(b), t_(t) {}
-  ScreenWindow(const std::array<float, 4> &arr)
-      : l_{arr[0]}, r_{arr[1]}, b_{arr[2]}, t_{arr[3]} {}
+  ScreenWindow() = default;
   float l_, r_, b_, t_;
 };
 
+inline std::istream &operator>>(std::istream &is, ScreenWindow &sc) {
+  if (!(is >> sc.l_ >> sc.r_ >> sc.b_ >> sc.t_))
+    is.setstate(std::ios::failbit);
+  return is;
+}
 class App {
 public:
   static void render();
@@ -32,7 +35,7 @@ private:
   static void plane(const ParamSet &);
   static void sphere(const ParamSet &);
   static void cube(const ParamSet &);
-  static void pyramid(const ParamSet &); // 
+  static void pyramid(const ParamSet &); //
 
   static void integratorConfig(const std::string &type);
   static std::unique_ptr<Integrator> integrator_;

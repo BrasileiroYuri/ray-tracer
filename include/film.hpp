@@ -2,9 +2,9 @@
 #define FILM_HPP
 
 #include "background.hpp"
+#include <algorithm> // std::clamp
 #include <cstddef>
 #include <vector>
-#include <algorithm> // std::clamp
 
 class Film {
 public:
@@ -19,10 +19,14 @@ public:
 
     // Conversão de float [0.0, 1.0+] para unsigned char [0, 255]
     // O std::clamp impede que brilhos especulares > 1.0 causem estouro de bits
-    data_[base + 0] = static_cast<unsigned char>(std::clamp(color.r, 0.0f, 1.0f) * 255.0f);
-    data_[base + 1] = static_cast<unsigned char>(std::clamp(color.g, 0.0f, 1.0f) * 255.0f);
-    data_[base + 2] = static_cast<unsigned char>(std::clamp(color.b, 0.0f, 1.0f) * 255.0f);
-    data_[base + 3] = static_cast<unsigned char>(std::clamp(color.a, 0.0f, 1.0f) * 255.0f);
+    data_[base + 0] =
+        static_cast<unsigned char>(std::clamp(color.r_, 0.0f, 1.0f) * 255.0f);
+    data_[base + 1] =
+        static_cast<unsigned char>(std::clamp(color.g_, 0.0f, 1.0f) * 255.0f);
+    data_[base + 2] =
+        static_cast<unsigned char>(std::clamp(color.b_, 0.0f, 1.0f) * 255.0f);
+    data_[base + 3] =
+        static_cast<unsigned char>(std::clamp(color.a_, 0.0f, 1.0f) * 255.0f);
   }
 
   const std::vector<unsigned char> &data() const { return data_; }

@@ -71,4 +71,14 @@ float size(const vec2 &);
 float size(const vec3 &);
 vec3 cross(const vec3 &v1, const vec3 &v2);
 
+inline std::istream &operator>>(std::istream &is, vec3 &v) {
+  if (!(is >> v.i_ >> v.j_ >> v.k_))
+    is.setstate(std::ios::failbit);
+  return is;
+}
+inline std::istream &operator>>(std::istream &is, vec2 &v) {
+  if (!(is >> v.i_ >> v.j_))
+    is.setstate(std::ios::failbit);
+  return is;
+}
 #endif // !MATH_HPP
