@@ -3,18 +3,17 @@
 #include "tinyxml2.h"
 #include <iostream>
 #include <sstream>
-#include <vector>
 
+/* Método de conversão feito para ser simples. */
 template <typename T>
 static void convert(const std::string &name, const std::string &value,
                     ParamSet *ps) {
-  std::istringstream ss{value};
-  std::vector<T> vec;
-  T val{};
-  while (ss >> val)
-    vec.push_back(val);
 
-  ps->add(name, vec);
+  std::istringstream ss{value};
+  T val{};
+
+  while (ss >> val)
+    ps->add(name, val);
 }
 
 //!< Def:

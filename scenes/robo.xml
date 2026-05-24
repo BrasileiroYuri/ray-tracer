@@ -6,7 +6,14 @@
     <film type="image" w_res="1920" h_res="1200" filename="robo.png" img_type="png" gamma_corrected="true" />
     <aggregator type="list"/>
     <world_begin/>
-
+<object type="trianglemesh" material="grey" ntriangles="2" indices="0 1 2   0 2 3"
+		vertices="-3 -0.5 -3   3 -0.5 -3   3 -0.5 3  -3 -0.5 3"
+		normals="0 1 0   0 1 0   0 1 0   0 1 0"
+		uv="0 0   1 0   0 1   1 1"
+		reverse_vertex_order="false"
+		compute_normals="false"
+		backface_cull="true"/>
+        <!-- other scene stuff comes here -->
         <background type="colors" bl="30 30 45" tl="10 12 28" tr="10 12 28" br="30 30 45" />
 
         <light_source type="spot" I="1.0 0.1 0.9" scale="1 1 1" from="0 7 0" to="0 0 0" cutoff="25" falloff="15" />
