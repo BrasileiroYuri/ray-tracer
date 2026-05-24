@@ -66,7 +66,7 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
                 {"ambient", convert<RGBColor>},
                 {"diffuse", convert<RGBColor>},
                 {"specular", convert<RGBColor>},
-                {"I", convert<RGBColor>},
+                {"I", convert<vec3>},
                 {"scale", convert<vec3>},
                 {"from", convert<point3>},
                 {"to", convert<point3>},

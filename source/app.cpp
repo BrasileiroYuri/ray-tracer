@@ -278,7 +278,7 @@ void App::sphere(const ParamSet &ps) {
 void App::light_source(const ParamSet &ps) {
   auto type = ps.retrieve<std::string>("type");
   auto intensity = ps.retrieve<RGBColor>("I", {1, 1, 1});
-  auto scale = ps.retrieve<RGBColor>("scale", {1, 1, 1});
+  auto scale = ps.retrieve<vec3>("scale", {1, 1, 1});
 
   if (type == "ambient") {
     sceneConfig.lights.push_back(

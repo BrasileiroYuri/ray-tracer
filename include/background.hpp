@@ -1,6 +1,7 @@
 #ifndef BACKGROUND_HPP
 #define BACKGROUND_HPP
 
+#include "math.hpp"
 #include <array>
 #include <sstream>
 #include <string>
@@ -16,11 +17,19 @@ struct RGBColor {
   RGBColor() = default;
 
   // Operadores necessários para as fórmulas: L = Ia*ka + Id*kd + Is*ks
-  RGBColor operator*(const RGBColor &other) const {
+  inline RGBColor operator*(const RGBColor &other) const {
     return {r_ * other.r_, g_ * other.g_, b_ * other.b_, a_ * other.a_};
   }
-  RGBColor operator*(float s) const { return {r_ * s, g_ * s, b_ * s, a_}; }
-  RGBColor operator+(const RGBColor &other) const {
+
+  inline RGBColor operator*(const vec3 &v) const {
+    return {r_ * v.i_, g_ * v.j_, b_ * v.k_};
+  }
+
+  inline RGBColor operator*(float s) const {
+    return {r_ * s, g_ * s, b_ * s, a_};
+  }
+
+  inline RGBColor operator+(const RGBColor &other) const {
     return {r_ + other.r_, g_ + other.g_, b_ + other.b_, a_};
   }
 
@@ -43,6 +52,7 @@ struct RGBColor {
   // Método auxiliar para o Integrator obter a cor base em materiais não-Blinn
   RGBColor getColor() const { return *this; }
 };
+
 inline std::istream &operator>>(std::istream &is, RGBColor &color) {
   float r, g, b;
   if (!(is >> r >> g >> b)) {
@@ -50,7 +60,7 @@ inline std::istream &operator>>(std::istream &is, RGBColor &color) {
     return is;
   }
 
-  // Heurística: qualquer valor > 1 indica escala 0-255
+  /// Qualquer valor > 1 indica escala 0-255
   if (r > 1.f || g > 1.f || b > 1.f) {
     r /= 255.f;
     g /= 255.f;

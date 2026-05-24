@@ -5,7 +5,7 @@
 #include <cmath>
 
 struct SpotLight : public Light {
-  SpotLight(const RGBColor &i, const RGBColor &s, const point3 &from,
+  SpotLight(const RGBColor &i, const vec3 &s, const point3 &from,
             const point3 &to, std::size_t c, std::size_t f)
       : Light(LightFlag::Spot, i, s),
         cutoff(std::cos(c * M_PI / 180.f)), // cos(30°) = 0.866
