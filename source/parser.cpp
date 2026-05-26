@@ -49,6 +49,8 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
                 {"img_type", convert<std::string>},
                 {"mapping", convert<std::string>},
                 {"material", convert<std::string>},
+                {"compute_normals", convert<std::string>},
+                {"backface_cull", convert<std::string>},
                 {"bl", convert<RGBColor>},
                 {"br", convert<RGBColor>},
                 {"tl", convert<RGBColor>},
