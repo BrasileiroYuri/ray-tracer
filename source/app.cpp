@@ -19,6 +19,7 @@
 #include "scene.hpp"
 #include "sphere.hpp"
 #include "spot_light.hpp"
+#include "triangle_mesh.hpp"
 #include <algorithm>
 #include <array>
 #include <cstddef>
@@ -211,29 +212,26 @@ void App::integrator(const ParamSet &ps) {
 
 void triangleMesh(const ParamSet &ps) {
 
-  std::vector<point3> vertices = ps.get<point3>("vertices");
+  auto mesh = std::make_shared<TriangleMesh>();
 
-  std::vector<point3> indices = ps.get<point3>("indices");
+  /// Copia bruta de vertices, normais e uvs.
+  mesh->vertices_ = ps.get<point3>("vertices");
+  mesh->normals_ = ps.get<vec3>("normals");
+  mesh->uvcoords_ = ps.get<point2>("uv");
 
-  std::vector<point3> normals = ps.get<point3>("normals");
-
-  std::vector<point2> uv = ps.get<point2>("uv");
-  std::cout << "IMPRIMINDO VERTICES:\n";
-  for (auto &e : vertices)
+  std::cout << ">>> Vertices:\n";
+  for (auto &e : mesh->vertices_)
     std::cout << e.str() << "\n";
 
-  std::cout << "IMPRIMINDO INDICES:\n";
-  for (auto &e : indices)
+  std::cout << ">>> Normais:\n";
+  for (auto &e : mesh->normals_)
     std::cout << e.str() << "\n";
 
-  std::cout << "IMPRIMINDO NORMALS:\n";
-  for (auto &e : normals)
-    std::cout << e.str() << "\n";
-
-  std::cout << "IMPRIMINDO UV\n";
-  for (auto &e : uv)
+  std::cout << ">>> Coodernadas uv:\n";
+  for (auto &e : mesh->uvcoords_)
     std::cout << e.str() << "\n";
 }
+
 void App::object(const ParamSet &ps) {
   std::string type = ps.retrieve<std::string>("type");
 
