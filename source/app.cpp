@@ -10,6 +10,7 @@
 #include "light.hpp"
 #include "material.hpp"
 #include "math.hpp"
+#include "objloader.hpp"
 #include "param_set.hpp"
 #include "plane.hpp"
 #include "point_light.hpp"
@@ -27,16 +28,6 @@
 #include <memory>
 #include <string>
 #include <utility> //
-
-template <typename T> using vec = std::vector<T>;
-
-// Acessando as opções do main.cpp
-namespace Global {
-extern std::string outfile;
-extern bool quick;
-extern int crop[4];
-extern bool has_crop;
-} // namespace Global
 
 std::unique_ptr<Integrator> App::integrator_;
 
@@ -63,13 +54,13 @@ std::shared_ptr<Material> currMaterial = nullptr;
 void App::make_named_material(const ParamSet &ps) {
   auto name = ps.retrieve<std::string>("name");
 
-  /* Se o material nomeado não tem nome, não salvamos. */
+  /// Se o material nomeado não tem nome, não salvamos.
   if (name.empty()) {
     std::cerr << ">>> Material nomeado sem nome! Não será salvo.\n";
     return;
   }
 
-  /* Usamos como base o FlatMaterial */
+  /// Usamos como base o FlatMaterial
   auto type = ps.retrieve<std::string>("type", "flat");
   auto color = ps.retrieve<RGBColor>("color", {0, 0, 0});
 
@@ -80,12 +71,12 @@ void App::make_named_material(const ParamSet &ps) {
   }
 
   if (type == "blinn") {
-    // Extrai os coeficientes de cor (que o parser já converteu para float 0-1)
+    /// Extrai os coeficientes de cor (que o parser já converteu para float 0-1)
     auto ka = ps.retrieve<RGBColor>("ambient", {0.1f, 0.1f, 0.1f});
     auto kd = ps.retrieve<RGBColor>("diffuse", {0.5f, 0.5f, 0.5f});
     auto ks = ps.retrieve<RGBColor>("specular", {0.5f, 0.5f, 0.5f});
 
-    // Extrai o expoente de brilho (glossiness)
+    /// Extrai o expoente de brilho (glossiness)
     auto gloss = ps.retrieve<float>("glossiness", 10.0f);
     auto mirror = ps.retrieve<RGBColor>("mirror", {0, 0, 0});
 
@@ -162,18 +153,10 @@ void App::backGround(const ParamSet &ps) {
 }
 
 void App::film(const ParamSet &ps) {
-  std::string xml_file = ps.retrieve<std::string>("filename");
+  generalConfig.filename_ = ps.retrieve<std::string>("filename", "result");
 
   cameraConfig.w_res = ps.retrieve<int>("w_res");
   cameraConfig.h_res = ps.retrieve<int>("h_res");
-
-  generalConfig.filename_ =
-      Global::outfile.empty() ? xml_file : Global::outfile;
-
-  if (Global::quick) {
-    cameraConfig.w_res /= 4;
-    cameraConfig.h_res /= 4;
-  }
 
   std::cout << ">>> Largura do 'Film': " << cameraConfig.w_res << "\n";
   std::cout << ">>> Altura do 'Film': " << cameraConfig.h_res << "\n";
@@ -184,7 +167,7 @@ void App::film(const ParamSet &ps) {
 void App::camera(const ParamSet &ps) {
   cameraConfig.type = ps.retrieve<std::string>("type");
 
-  /* Se houver 'screen_window_', damos preferência. */
+  /// Se houver 'screen_window_', damos preferência.
   if (ps.has_elem("screen_window")) {
     auto sw = ps.retrieve<ScreenWindow>("screen_window", {0.0, 0.0, 0.0, 0.0});
     cameraConfig.l_ = sw.l_;
@@ -194,7 +177,7 @@ void App::camera(const ParamSet &ps) {
     return;
   }
 
-  /* Se não, trabalhamos com 'fovy', 'frame_aspect_ratio' ou w_res/h_res. */
+  /// Se não, trabalhamos com 'fovy', 'frame_aspect_ratio' ou w_res/h_res.
   cameraConfig.fovy = ps.retrieve<int>("fovy", 0);
   cameraConfig.aspec = ps.retrieve<float>("frame_aspect_ratio", 0.0);
 }
@@ -213,6 +196,18 @@ void App::integrator(const ParamSet &ps) {
 void triangleMesh(const ParamSet &ps) {
 
   auto mesh = std::make_shared<TriangleMesh>();
+
+  auto filename = ps.retrieve<std::string>("filename", "");
+
+  if (ps.has_elem("filename")) {
+    if (filename.empty()) {
+      std::cerr << ">>> Arquivo Obj vazio. Encerrando\n";
+      exit(0);
+    }
+
+    ObjLoader::load(filename, mesh);
+    return;
+  }
 
   /// Copia bruta de vertices, normais e uvs.
   mesh->vertices_ = ps.get<point3>("vertices");
@@ -250,7 +245,7 @@ void App::object(const ParamSet &ps) {
   }
 }
 
-// Implementação do método que cria a esfera a partir do XML
+/// Implementação do método que cria a esfera a partir do XML
 void App::sphere(const ParamSet &ps) {
   point3 center = ps.retrieve<point3>("center", {0, 0, 0});
   float radius = ps.retrieve<float>("radius", 1.0f);
@@ -262,10 +257,10 @@ void App::sphere(const ParamSet &ps) {
   float z_max = ps.retrieve<float>("z_max", radius);
   float phi_max = ps.retrieve<float>("phi_max", 360.0f);
 
-  /* Instanciando um 'Shape' de Owner único (unique_ptr). */
+  /// Instanciando um 'Shape' de Owner único (unique_ptr).
   auto shape = std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max);
 
-  /* Instanciando um 'Material' de Owner compartilhado (shared_ptr). */
+  /// Instanciando um 'Material' de Owner compartilhado (shared_ptr).
   std::shared_ptr<Material> mat = currMaterial;
 
   auto geoPrim = std::make_shared<GeometricPrimitive>(std::move(shape), mat);
@@ -351,12 +346,12 @@ void App::pyramid(const ParamSet &ps) {
 void App::render() {
 
   integratorConfig(generalConfig.integratorType);
-  //  garante que as luzes cheguem ao integrador
+  ///  garante que as luzes cheguem ao integrador
   Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim),
            sceneConfig.lights);
   integrator_->render(sc, generalConfig.depth);
   integrator_->write_image(generalConfig.filename_, generalConfig.ppm_);
   sceneConfig.aggrPrim = std::make_unique<PrimList>();
   sceneConfig.lights
-      .clear(); // evita que luzes de um render acumulem no próximo
+      .clear(); /// evita que luzes de um render acumulem no próximo
 }

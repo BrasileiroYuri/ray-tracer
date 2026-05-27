@@ -17,6 +17,7 @@ include_directories(
     include/lights
     libs/lodepng
     libs/tinyxml2
+    libs/tinyobj
     libs/math
 )
 
@@ -28,6 +29,7 @@ set(SOURCES
     libs/math/math.cpp
     libs/lodepng/lodepng.cpp
     libs/tinyxml2/tinyxml2.cpp
+    libs/tinyobj/tiny_obj_loader.cc
 )
 
 
