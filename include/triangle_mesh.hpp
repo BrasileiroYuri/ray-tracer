@@ -13,9 +13,9 @@ struct TriangleMesh {
   std::vector<int> normals_idx_; //!
   std::vector<int> uv_idxs_;     //!
 
-  std::vector<point3> vertices_; //! Conjunto de todos os vértices.
-  std::vector<vec3> normals_;    //! Conjunto de todos os vetores normais.
-  std::vector<point2> uvcoords_; //! Coodernadas das texturas.
+  std::vector<float> vertices_; //! Conjunto de todos os vértices.
+  std::vector<float> normals_;  //! Conjunto de todos os vetores normais.
+  std::vector<float> uvcoords_; //! Coodernadas das texturas.
 };
 
 #endif //! TRIANGLE_MESH_HPP

@@ -205,15 +205,18 @@ void triangleMesh(const ParamSet &ps) {
       exit(0);
     }
 
-    ObjLoader::load(filename, mesh);
+    ld::load(filename, mesh);
     return;
   }
 
   /// Copia bruta de vertices, normais e uvs.
+  /*
   mesh->vertices_ = ps.get<point3>("vertices");
   mesh->normals_ = ps.get<vec3>("normals");
   mesh->uvcoords_ = ps.get<point2>("uv");
+  */
 
+  /*
   std::cout << ">>> Vertices:\n";
   for (auto &e : mesh->vertices_)
     std::cout << e.str() << "\n";
@@ -225,6 +228,7 @@ void triangleMesh(const ParamSet &ps) {
   std::cout << ">>> Coodernadas uv:\n";
   for (auto &e : mesh->uvcoords_)
     std::cout << e.str() << "\n";
+    */
 }
 
 void App::object(const ParamSet &ps) {
