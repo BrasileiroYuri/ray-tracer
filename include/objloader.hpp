@@ -1,34 +1,85 @@
 #ifndef OBJLOADER_HPP
 #define OBJLOADER_HPP
 
-#include "math.hpp"
 #include "tiny_obj_loader.h"
+#include "triangle.hpp"
 #include "triangle_mesh.hpp"
+#include <cstddef>
+#include <iostream>
 #include <memory>
 #include <string>
 
-class ObjLoader {
-public:
-  static void load(const std::string &filename,
-                   std::shared_ptr<TriangleMesh> &mesh) {
+namespace ld {
 
-    tinyobj::ObjReader obj;
-    obj.ParseFromFile(filename);
+void load(const std::string &filename, std::shared_ptr<TriangleMesh> &tmesh) {
 
-    const auto &vert = obj.GetAttrib().vertices;
-    const auto &norms = obj.GetAttrib().normals;
-    const auto &uvs = obj.GetAttrib().texcoords;
+  tinyobj::ObjReader obj;
+  tinyobj::ObjReaderConfig objConfig;
+  objConfig.triangulate = true; /// Superficie triangular
 
-    /// Para o TinyObj, as coordenadas estão em floats.
-    /// Vertices
-    for (auto i = 0; i < vert.size(); i += 3)
-      mesh->vertices_.push_back({vec[i], vec[i + 1], vec[i + 2]});
-
-    /// Normais
-    for (auto i = 0; i < vec.size(); i += 3)
-      mesh->normais.push_back({vec[i], vec[i + 1], vec[i + 2]});
-    /// UVs
+  if (!obj.ParseFromFile(filename, objConfig)) {
+    if (!obj.Error().empty())
+      std::cerr << ">>> TinyObjLoader: " << obj.Error() << "\n";
+    exit(0);
   }
-};
+
+  if (!obj.Warning().empty()) {
+    std::cout << ">>> TinyObjReader: " << obj.Warning();
+  }
+
+  /// Para o TinyObj, as coordenadas são trios de floats.
+  /// Por eficiência, eu uso move (O(1)) e converto para Point de forma "Lazy",
+  /// ao invés de já converter (O(N)).
+  tmesh->vertices_ = std::move(obj.GetAttrib().vertices);
+  tmesh->normals_ = std::move(obj.GetAttrib().normals);
+  tmesh->uvcoords_ = std::move(obj.GetAttrib().texcoords);
+
+  /// Todos os shapes (no .obg, g ou o).
+  const auto &shapes = obj.GetShapes();
+
+  std::vector<Triangle> tr;
+
+  int t_idx = 0;
+
+  /// Para cade Shape (ou malha nomeada).
+  for (const auto &shape : shapes) {
+    auto mesh = shape.mesh; /// A malha propriamente dita
+
+    auto idx_off = 0;
+    /// Percorremos um conjunto de faces, ou polígonos 2d.
+    /// Supondo que uma malha tenha 4 triangulos, teriamos [3,3,3,3]
+    for (size_t i = 0; i < mesh.num_face_vertices.size(); i++) {
+
+      Triangle t(tmesh,
+                 t_idx++); /// Id * 3 aponta para cada conjunto de indices.
+
+      auto f =
+          (int)mesh.num_face_vertices[i]; /// Qtd de vértices do poligono 2d.
+
+      if (f > 3) {    /// Apenas triangulos. Mas gera buracos... How to fix?
+        idx_off += f; /// Para avançar idx_off adequadamente.
+        continue;
+      }
+
+      /// Percorremos f vezes pois cada vez nos gera um index_t, que dá
+      /// acesso ao indice de vertice, normal e textura (ou uv).
+      for (auto k = 0; k < f; k++) {
+        tinyobj::index_t index =
+            mesh.indices[idx_off++]; /// Note que em faces consecutivas de uma
+                                     /// malha (e dentro da própria face) os
+                                     /// index_t são consecutivos.
+
+        /// Adiciono na mesma ordem do TinyObjLoader, apenas salvo o Triangle
+        /// como o primeiro. No caso, o triangle_idx.
+        tmesh->vrts_idx_.push_back(index.vertex_index);
+        tmesh->normals_idx_.push_back(index.normal_index);
+        tmesh->uv_idxs_.push_back(index.texcoord_index);
+      }
+
+      tr.push_back(t);
+    }
+  }
+}
+} // namespace ld
 
 #endif // !OBJLOADER_HPP
