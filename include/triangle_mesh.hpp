@@ -1,7 +1,7 @@
 #ifndef TRIANGLE_MESH_HPP
 #define TRIANGLE_MESH_HPP
 
-#include "math.hpp"
+#include <vector>
 
 struct TriangleMesh {
   std::size_t ntriangles; //! Número de triangles da superficie.

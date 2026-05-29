@@ -16,7 +16,7 @@ public:
 
   BlinnPhongMaterial(const RGBColor &a, const RGBColor &d, const RGBColor &s,
                      float g, RGBColor mirror = {0, 0, 0})
-      : ka_(a), kd_(d), ks_(s), glossiness_(g), mirror_(mirror) {}
+      : ka_(a), kd_(d), ks_(s), mirror_(mirror), glossiness_(g) {}
 
   RGBColor getColor() const override { return ka_; }
   RGBColor getMirror() const override { return mirror_; }
