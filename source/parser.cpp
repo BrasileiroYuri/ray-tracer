@@ -77,10 +77,12 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
                 {"glossiness", convert<float>},
                 {"width", convert<float>},
                 {"height", convert<float>},
-                {"vertices", convert<point3>},
-                {"indices", convert<point3>},
-                {"normals", convert<point3>},
-                {"uv", convert<point2>}};
+                {"vertices", convert<float>},
+                {"vertex_indices", convert<float>},
+                {"normals", convert<float>},
+                {"normal_indices", convert<float>},
+                {"uvs", convert<float>},
+                {"uv_indices", convert<float>}};
 }
 
 void Parser::parse() const {

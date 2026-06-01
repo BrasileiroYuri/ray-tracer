@@ -38,19 +38,44 @@ public:
     auto *n_ = &tmesh_->normals_idx_[id_ * 3];
     auto *uv_ = &tmesh_->uv_idxs_[id_ * 3];
 
-    const auto v1 = calculate_p3(tmesh_->vertices_, v_[0]);
-    const auto v2 = calculate_p3(tmesh_->vertices_, v_[1]);
-    const auto v3 = calculate_p3(tmesh_->vertices_, v_[2]);
+    const auto &v1 = calculate_p3(tmesh_->vertices_, v_[0]);
+    const auto &v2 = calculate_p3(tmesh_->vertices_, v_[1]);
+    const auto &v3 = calculate_p3(tmesh_->vertices_, v_[2]);
 
-    const auto n1 = calculate_p3(tmesh_->normals_, n_[0]);
-    const auto n2 = calculate_p3(tmesh_->normals_, n_[1]);
-    const auto n3 = calculate_p3(tmesh_->normals_, n_[2]);
+    const auto &n1 = calculate_p3(tmesh_->normals_, n_[0]);
+    const auto &n2 = calculate_p3(tmesh_->normals_, n_[1]);
+    const auto &n3 = calculate_p3(tmesh_->normals_, n_[2]);
 
-    const auto uv1 = calculate_p2(tmesh_->uvcoords_, uv_[0]);
-    const auto uv2 = calculate_p2(tmesh_->uvcoords_, uv_[1]);
-    const auto uv3 = calculate_p2(tmesh_->uvcoords_, uv_[2]);
+    const auto &uv1 = calculate_p2(tmesh_->uvcoords_, uv_[0]);
+    const auto &uv2 = calculate_p2(tmesh_->uvcoords_, uv_[1]);
+    const auto &uv3 = calculate_p2(tmesh_->uvcoords_, uv_[2]);
 
-    //@ TODO
+    /// Achando vetores que compartilham v1 como origem.
+    auto vec1 = v2 - v1;
+    auto vec2 = v3 - v1;
+
+    auto cr = cross(r.direction_, vec2);
+    auto det = dot(vec1, cr);
+
+    std::cout << "DET: " << det << "\n";
+    if (det > -0.0001 && det < 0.0001)
+      return false;
+
+    auto inv_det = 1.0 / det;
+
+    auto dist = r.origin_ - v1;
+
+    auto u = dot(dist, cr) * inv_det;
+    if (u < 0.0 || u > 1.0)
+      return false;
+
+    auto vec4 = cross(dist, vec1);
+    auto v = dot(r.direction_, vec4) * inv_det;
+    if (v < 0.0 || v > 1.0)
+      return false;
+
+    s.t_hit = dot(vec2, vec4) * inv_det;
+
     return true;
   }
 };

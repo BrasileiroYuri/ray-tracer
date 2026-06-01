@@ -205,30 +205,58 @@ void triangleMesh(const ParamSet &ps) {
       exit(0);
     }
 
-    ld::load(filename, mesh);
+    auto tvec = ld::load(filename, mesh);
+
+    /// Para cada Triangle de mesh, instanciamos e adicionando como objeto
+    /// único.
+    for (auto &t : tvec) {
+      auto shape = std::make_unique<Triangle>(t);
+
+      /// Instanciando um 'Material' de Owner compartilhado (shared_ptr).
+      std::shared_ptr<Material> mat = currMaterial;
+
+      auto geoPrim =
+          std::make_shared<GeometricPrimitive>(std::move(shape), mat);
+
+      sceneConfig.aggrPrim->addObject(std::move(geoPrim));
+    }
+
     return;
   }
 
   /// Copia bruta de vertices, normais e uvs.
-  /*
-  mesh->vertices_ = ps.get<point3>("vertices");
-  mesh->normals_ = ps.get<vec3>("normals");
-  mesh->uvcoords_ = ps.get<point2>("uv");
-  */
+  mesh->vertices_ = ps.get<float>("vertices");
+  mesh->normals_ = ps.get<float>("normals");
+  mesh->uvcoords_ = ps.get<float>("uvs");
 
-  /*
+  /// Cópia bruta de indices.
+  mesh->vrts_idx_ = ps.get<int>("vertex_indices");
+  mesh->normals_idx_ = ps.get<int>("normal_indices");
+  mesh->uv_idxs_ = ps.get<int>("uv_indices");
+
+  int size = mesh->vrts_idx_.size() / 3;
+  for (int i = 0; i < size; i++) {
+    auto shape = std::make_unique<Triangle>(mesh, i);
+
+    /// Instanciando um 'Material' de Owner compartilhado (shared_ptr).
+    std::shared_ptr<Material> mat = currMaterial;
+
+    auto geoPrim = std::make_shared<GeometricPrimitive>(std::move(shape), mat);
+
+    sceneConfig.aggrPrim->addObject(std::move(geoPrim));
+  }
+
   std::cout << ">>> Vertices:\n";
   for (auto &e : mesh->vertices_)
-    std::cout << e.str() << "\n";
+    std::cout << e << "\n";
 
   std::cout << ">>> Normais:\n";
   for (auto &e : mesh->normals_)
-    std::cout << e.str() << "\n";
+    std::cout << e << "\n";
 
   std::cout << ">>> Coodernadas uv:\n";
   for (auto &e : mesh->uvcoords_)
-    std::cout << e.str() << "\n";
-    */
+    std::cout << e << "\n";
 }
 
 void App::object(const ParamSet &ps) {

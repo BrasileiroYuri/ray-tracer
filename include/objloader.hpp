@@ -8,10 +8,12 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace ld {
 
-void load(const std::string &filename, std::shared_ptr<TriangleMesh> &tmesh) {
+std::vector<Triangle> load(const std::string &filename,
+                           std::shared_ptr<TriangleMesh> &tmesh) {
 
   tinyobj::ObjReader obj;
   tinyobj::ObjReaderConfig objConfig;
@@ -79,6 +81,7 @@ void load(const std::string &filename, std::shared_ptr<TriangleMesh> &tmesh) {
       tr.push_back(t);
     }
   }
+  return tr;
 }
 } // namespace ld
 
