@@ -330,14 +330,14 @@ void App::light_source(const ParamSet &ps) {
 
 void App::integratorConfig(const std::string &type) {
   if (type == "flat") {
-    std::cout << ">>> Usando 'RayCastIntegrator'.\n";
+    std::cout << ">>> Usando integrator 'RayCast'.\n";
     integrator_ = std::make_unique<RayCastIntegrator>();
   } else if (type == "blinn" || type == "blinn_phong") {
-    std::cout << ">>> Usando 'BlinnPhongIntegrator'.\n";
+    std::cout << ">>> Usando integrador 'BlinnPhong'.\n";
     integrator_ = std::make_unique<BlinnPhongIntegrator>();
   } else {
     std::cerr << ">>> Tipo do Integrator não identificado. Usando "
-                 "'RayCastIntegrator'.\n";
+                 "'RayCast'.\n";
     integrator_ = std::make_unique<RayCastIntegrator>();
   }
 
