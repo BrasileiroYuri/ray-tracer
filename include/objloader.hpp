@@ -52,9 +52,6 @@ std::vector<Triangle> load(const std::string &filename,
     /// Supondo que uma malha tenha 4 triangulos, teriamos [3,3,3,3]
     for (size_t i = 0; i < mesh.num_face_vertices.size(); i++) {
 
-      Triangle t(tmesh,
-                 t_idx++); /// Id * 3 aponta para cada conjunto de indices.
-
       auto f =
           (int)mesh.num_face_vertices[i]; /// Qtd de vértices do poligono 2d.
 
@@ -78,7 +75,7 @@ std::vector<Triangle> load(const std::string &filename,
         tmesh->uv_idxs_.push_back(index.texcoord_index);
       }
 
-      tr.push_back(t);
+      tr.push_back({tmesh, t_idx++});
     }
   }
   return tr;

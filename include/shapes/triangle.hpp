@@ -5,14 +5,14 @@
 #include "primitive.hpp"
 #include "shape.hpp"
 #include "triangle_mesh.hpp"
+#include <iostream>
 #include <memory>
 #include <vector>
 
 class Triangle : public Shape {
 private:
-  int *v_;
-  int *n_;
-  int *uv_;
+  int id_; //! Id da intância do Triangle nos vetores de vértices, normais e
+           //! uvs.
 
   std::shared_ptr<TriangleMesh> tmesh_; //! Owner de uma superfície única.
 
@@ -30,19 +30,13 @@ private:
 
 public:
   Triangle(std::shared_ptr<TriangleMesh> &mesh, int id, bool bfc = true)
-      : tmesh_{mesh}, backface_{bfc} {
-    for (int i = 0; i < 3; i++) {
-      int *test = &tmesh_->vrts_idx_[id * 3];
-      std::cout << "T[" << i << "]: " << test[i] << "\n";
-    }
-
-    exit(1);
-    v_ = &tmesh_->vrts_idx_[id * 3];
-    n_ = &tmesh_->normals_idx_[id * 3];
-    uv_ = &tmesh_->uv_idxs_[id * 3];
-  }
+      : id_{id}, tmesh_{mesh}, backface_{bfc} {}
 
   bool intersect(const Ray &r, Surfel &s) const override {
+
+    auto v_ = &tmesh_->vrts_idx_[id_ * 3];
+    auto n_ = &tmesh_->normals_idx_[id_ * 3];
+    // auto uv_ = &tmesh_->uv_idxs_[id_ * 3];
 
     const auto &v1 = calculate_p3(tmesh_->vertices_, v_[0]);
     const auto &v2 = calculate_p3(tmesh_->vertices_, v_[1]);
@@ -52,9 +46,11 @@ public:
     const auto &n2 = calculate_p3(tmesh_->normals_, n_[1]);
     const auto &n3 = calculate_p3(tmesh_->normals_, n_[2]);
 
+    /*
     const auto &uv1 = calculate_p2(tmesh_->uvcoords_, uv_[0]);
     const auto &uv2 = calculate_p2(tmesh_->uvcoords_, uv_[1]);
     const auto &uv3 = calculate_p2(tmesh_->uvcoords_, uv_[2]);
+    */
 
     /// Achando vetores que compartilham v1 como origem.
     auto e1 = v2 - v1;
