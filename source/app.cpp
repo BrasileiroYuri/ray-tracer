@@ -199,25 +199,28 @@ void triangleMesh(const ParamSet &ps) {
 
   auto filename = ps.retrieve<std::string>("filename", "");
 
+  /// Lê o flag de backface culling uma única vez; padrão = true.
+  bool bfc = (ps.retrieve<std::string>("backface_cull", "true") == "true");
+
   if (ps.has_elem("filename")) {
     if (filename.empty()) {
       std::cerr << ">>> Arquivo Obj vazio. Encerrando\n";
       exit(0);
     }
 
-    auto tvec = ld::load(filename, mesh);
+    /// ld::load preenche o mesh; não usamos o vetor de Triangle retornado
+    /// pois ele criaria todos os objetos com bfc=true hardcoded.
+    ld::load(filename, mesh);
 
-    /// Para cada Triangle de mesh, instanciamos e adicionando como objeto
-    /// único.
-    for (auto &t : tvec) {
-      auto shape = std::make_unique<Triangle>(t);
+    int ntri = static_cast<int>(mesh->vrts_idx_.size() / 3);
+    mesh->ntriangles = ntri;
 
-      /// Instanciando um 'Material' de Owner compartilhado (shared_ptr).
+    for (int i = 0; i < ntri; i++) {
+      auto shape = std::make_unique<Triangle>(mesh, i, bfc);
+
       std::shared_ptr<Material> mat = currMaterial;
-
       auto geoPrim =
           std::make_shared<GeometricPrimitive>(std::move(shape), mat);
-
       sceneConfig.aggrPrim->addObject(std::move(geoPrim));
     }
 
@@ -234,15 +237,14 @@ void triangleMesh(const ParamSet &ps) {
   mesh->normals_idx_ = ps.get<int>("normal_indices");
   mesh->uv_idxs_ = ps.get<int>("uv_indices");
 
-  int size = mesh->vrts_idx_.size() / 3;
+  int size = static_cast<int>(mesh->vrts_idx_.size() / 3);
+  mesh->ntriangles = size;
+
   for (int i = 0; i < size; i++) {
-    auto shape = std::make_unique<Triangle>(mesh, i);
+    auto shape = std::make_unique<Triangle>(mesh, i, bfc);
 
-    /// Instanciando um 'Material' de Owner compartilhado (shared_ptr).
     std::shared_ptr<Material> mat = currMaterial;
-
     auto geoPrim = std::make_shared<GeometricPrimitive>(std::move(shape), mat);
-
     sceneConfig.aggrPrim->addObject(std::move(geoPrim));
   }
 

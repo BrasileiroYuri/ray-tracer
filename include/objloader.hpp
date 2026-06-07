@@ -12,8 +12,8 @@
 
 namespace ld {
 
-std::vector<Triangle> load(const std::string &filename,
-                           std::shared_ptr<TriangleMesh> &tmesh) {
+inline std::vector<Triangle> load(const std::string &filename,
+                                  std::shared_ptr<TriangleMesh> &tmesh) {
 
   tinyobj::ObjReader obj;
   tinyobj::ObjReaderConfig objConfig;
@@ -26,7 +26,7 @@ std::vector<Triangle> load(const std::string &filename,
   }
 
   if (!obj.Warning().empty()) {
-    std::cout << ">>> TinyObjReader: " << obj.Warning();
+    std::cout << ">>> TinyObjReader:\n" << obj.Warning();
   }
 
   /// Para o TinyObj, as coordenadas são trios de floats.
@@ -54,11 +54,6 @@ std::vector<Triangle> load(const std::string &filename,
 
       auto f =
           (int)mesh.num_face_vertices[i]; /// Qtd de vértices do poligono 2d.
-
-      if (f > 3) {    /// Apenas triangulos. Mas gera buracos... How to fix?
-        idx_off += f; /// Para avançar idx_off adequadamente.
-        continue;
-      }
 
       /// Percorremos f vezes pois cada vez nos gera um index_t, que dá
       /// acesso ao indice de vertice, normal e textura (ou uv).

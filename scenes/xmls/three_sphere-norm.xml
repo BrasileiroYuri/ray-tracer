@@ -1,0 +1,97 @@
+<RT3>
+
+    <!-- ===================== CÂMERA ===================== -->
+    <!-- Posicionada acima e à frente da cena, olhando para baixo -->
+    <lookat look_from="0 -25 18" look_at="0 3 2" up="0 1 0" />
+    <camera type="perspective" fovy="35" />
+
+    <!-- ===================== INTEGRADOR ===================== -->
+    <!-- CORREÇÃO: era "flat" (sem luz), agora é "blinn_phong" (iluminação 3D real) -->
+    <integrator type="blinn_phong" depth="3" />
+
+    <!-- ===================== IMAGEM ===================== -->
+    <film type="image" w_res="800" h_res="600" filename="three_sphere.png" img_type="png" gamma_corrected="no" />
+
+    <world_begin/>
+
+    <!-- ===================== FUNDO ===================== -->
+    <!-- Gradiente de céu: azul claro na base, azul escuro no topo -->
+    <background type="colors"
+        bl="0.62 0.78 1.0"
+        tl="0.06 0.10 0.46"
+        tr="0.06 0.10 0.46"
+        br="0.62 0.78 1.0" />
+
+    <!-- ===================== LUZES ===================== -->
+    <!-- CORREÇÃO: antes não havia luzes direcionais, só cor plana -->
+
+    <!-- Luz ambiente fraca para evitar sombras totalmente pretas -->
+    <light_source type="ambient" I="0.18 0.18 0.18" scale="1 1 1" />
+
+    <!-- Luz principal: vem de cima e ligeiramente à frente-esquerda -->
+    <!-- wi = normalize(from - to) = normalize(-8, -15, 26) ≈ (-0.26, -0.49, 0.83) -->
+    <!-- Ilumina o topo e a face frontal das esferas -->
+    <light_source type="directional" I="0.90 0.86 0.80" scale="1 1 1"
+        from="-8 -15 26" to="0 0 0" />
+
+    <!-- Luz de preenchimento: vem de cima e à direita, mais fraca e azulada -->
+    <!-- Suaviza as sombras e adiciona variação de cor -->
+    <light_source type="directional" I="0.22 0.26 0.42" scale="1 1 1"
+        from="12 -4 18" to="0 0 0" />
+
+    <!-- ===================== MATERIAIS ===================== -->
+    <!-- CORREÇÃO: antes os materiais tinham kd e ks quase zero (muito escuros) -->
+
+    <!-- Chão verde fosco -->
+    <make_named_material type="blinn" name="chao_verde"
+        ambient="0.16 0.40 0.12"
+        diffuse="0.18 0.65 0.14"
+        specular="0.08 0.20 0.08"
+        mirror="0.0 0.0 0.0"
+        glossiness="8"/>
+
+    <!-- Esfera vermelha brilhante -->
+    <make_named_material type="blinn" name="esfera_vermelha"
+        ambient="0.32 0.04 0.04"
+        diffuse="0.82 0.10 0.07"
+        specular="1.0  0.90 0.90"
+        mirror="0.04 0.0  0.0"
+        glossiness="120"/>
+
+    <!-- Esfera azul brilhante -->
+    <make_named_material type="blinn" name="esfera_azul"
+        ambient="0.04 0.05 0.36"
+        diffuse="0.06 0.12 0.88"
+        specular="0.85 0.90 1.0"
+        mirror="0.0  0.0  0.06"
+        glossiness="120"/>
+
+    <!-- Esfera dourada altamente polida -->
+    <make_named_material type="blinn" name="esfera_dourada"
+        ambient="0.28 0.18 0.00"
+        diffuse="0.90 0.68 0.00"
+        specular="1.0  0.95 0.50"
+        mirror="0.14 0.10 0.00"
+        glossiness="256"/>
+
+    <!-- ===================== OBJETOS ===================== -->
+
+    <!-- Chão: plano infinito em z=0, normal apontando para cima -->
+    <named_material name="chao_verde"/>
+    <object type="plane" normal="0 0 1"/>
+
+    <!-- Esfera 1: Vermelha — posição esquerda (y=3, próxima à câmera) -->
+    <named_material name="esfera_vermelha"/>
+    <object type="sphere" center="-6 3 3" radius="3"/>
+
+    <!-- Esfera 2: Azul — posição direita (y=3, próxima à câmera) -->
+    <named_material name="esfera_azul"/>
+    <object type="sphere" center="6 3 3" radius="3"/>
+
+    <!-- Esfera 3: Dourada — posição central ao fundo (y=9, mais distante) -->
+    <named_material name="esfera_dourada"/>
+    <object type="sphere" center="0 9 3" radius="3"/>
+
+    <world_end/>
+
+</RT3>

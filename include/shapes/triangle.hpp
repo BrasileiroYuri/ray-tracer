@@ -33,10 +33,9 @@ public:
       : id_{id}, tmesh_{mesh}, backface_{bfc} {}
 
   bool intersect(const Ray &r, Surfel &s) const override {
-
+    // 1. Mapeamento de índices e extração de dados brutos
     auto v_ = &tmesh_->vrts_idx_[id_ * 3];
     auto n_ = &tmesh_->normals_idx_[id_ * 3];
-    // auto uv_ = &tmesh_->uv_idxs_[id_ * 3];
 
     const auto &v1 = calculate_p3(tmesh_->vertices_, v_[0]);
     const auto &v2 = calculate_p3(tmesh_->vertices_, v_[1]);
@@ -46,37 +45,53 @@ public:
     const auto &n2 = calculate_p3(tmesh_->normals_, n_[1]);
     const auto &n3 = calculate_p3(tmesh_->normals_, n_[2]);
 
-    /*
-    const auto &uv1 = calculate_p2(tmesh_->uvcoords_, uv_[0]);
-    const auto &uv2 = calculate_p2(tmesh_->uvcoords_, uv_[1]);
-    const auto &uv3 = calculate_p2(tmesh_->uvcoords_, uv_[2]);
-    */
-
-    /// Achando vetores que compartilham v1 como origem.
+    // 2. Arestas do triângulo
     auto e1 = v2 - v1;
     auto e2 = v3 - v1;
 
-    /// Aqui seria a interpolação das normais?
-    vec3 triangle_normal = cross(e1, e2);
-
-    if (dot(triangle_normal, r.direction_) <= 0)
-      return false; /// Paralelo ao plano que contém o triangle.
-
-    auto t = r.origin_ - v1;
+    // 3. Início do algoritmo Möller-Trumbore
     auto p = cross(r.direction_, e2);
-    auto q = cross(t, e1);
+    float det = dot(p, e1); // Equivalente ao produto triplo escalar
 
-    auto fct = 1 / dot(p, e1);
-
-    s.t_hit = dot(q, e2) * fct;
-    auto u = dot(p, t) * fct;
-    auto v = dot(q, r.direction_) * fct;
-
-    if (u < 0 || v < 0 || s.t_hit <= 0)
+    // Aplicação do Backface Culling (Sistema Left-Handed: det < 0 é frontal)
+    if (backface_ && det >= 0.0f)
       return false;
 
+    // Verifica se o raio é paralelo ao triângulo (evita divisão por zero)
+    if (det == 0.0f)
+      return false;
+
+    float fct = 1.0f / det;
+
+    auto tvec = r.origin_ - v1;
+    auto q = cross(tvec, e1);
+
+    // 4. Cálculo das coordenadas baricêntricas (u, v) e distância t
+    float u = dot(p, tvec) * fct;
+    float v = dot(q, r.direction_) * fct;
+    s.t_hit = dot(q, e2) * fct;
+
+    // 5. Validação rigorosa dos limites de intersecção
+    // w = 1.0 - u - v, portanto u + v > 1.0 significa w < 0.0 (fora do
+    // triângulo)
+    // CORRETO: tolerância mínima nas bordas
+    const float eps = 1e-5f;
+    if (u < -eps || v < -eps || u + v > 1.0f + eps || s.t_hit < r.min_t_ ||
+        s.t_hit > r.max_t_)
+      return false;
+    // Interpolação baricêntrica das normais dos vértices
+    s.n = (1.0f - u - v) * n1 + u * n2 + v * n3;
+
+    // Normalização crucial para não quebrar a equação especular de Blinn-Phong
+    s.n = normalize(s.n);
+
+    // Inversão da normal ao atingir a face traseira (quando o culling está
+    // desligado)
+    if (!backface_ && det > 0.0f) {
+      s.n = -1 * s.n;
+    }
+    // O "Pulo do Gato": Adiciona um epsilon empurrando o ponto para fora
     s.p = r(s.t_hit);
-    s.n = (1 - u - v) * n1 + u * n2 + v * n3;
     return true;
   }
 };

@@ -39,7 +39,7 @@ public:
         continue;
       }
 
-      Ray shadow(offset_p, wi, 0, dist);
+      Ray shadow(offset_p, wi, 0.01, dist);
       Surfel s;
 
       if (sc.aggregate_->intersect(shadow, s))
