@@ -4,21 +4,23 @@
 #include "blinnphong_integrator.hpp"
 #include "blinnphong_material.hpp"
 #include "cube.hpp"
-#include "pyramid.hpp"
 #include "direcional_light.hpp"
 #include "flat_material.hpp"
 #include "geometric_primitive.hpp"
 #include "light.hpp"
 #include "material.hpp"
 #include "math.hpp"
+#include "objloader.hpp"
 #include "param_set.hpp"
 #include "plane.hpp"
 #include "point_light.hpp"
 #include "prim_list.hpp"
+#include "pyramid.hpp"
 #include "raycast_integrator.hpp"
 #include "scene.hpp"
 #include "sphere.hpp"
 #include "spot_light.hpp"
+#include "triangle_mesh.hpp"
 #include <algorithm>
 #include <array>
 #include <cstddef>
@@ -26,14 +28,6 @@
 #include <memory>
 #include <string>
 #include <utility> //
-
-// Acessando as opções do main.cpp
-namespace Global {
-extern std::string outfile;
-extern bool quick;
-extern int crop[4];
-extern bool has_crop;
-} // namespace Global
 
 std::unique_ptr<Integrator> App::integrator_;
 
@@ -60,13 +54,13 @@ std::shared_ptr<Material> currMaterial = nullptr;
 void App::make_named_material(const ParamSet &ps) {
   auto name = ps.retrieve<std::string>("name");
 
-  /* Se o material nomeado não tem nome, não salvamos. */
+  /// Se o material nomeado não tem nome, não salvamos.
   if (name.empty()) {
     std::cerr << ">>> Material nomeado sem nome! Não será salvo.\n";
     return;
   }
 
-  /* Usamos como base o FlatMaterial */
+  /// Usamos como base o FlatMaterial
   auto type = ps.retrieve<std::string>("type", "flat");
   auto color = ps.retrieve<RGBColor>("color", {0, 0, 0});
 
@@ -77,14 +71,14 @@ void App::make_named_material(const ParamSet &ps) {
   }
 
   if (type == "blinn") {
-    // Extrai os coeficientes de cor (que o parser já converteu para float 0-1)
+    /// Extrai os coeficientes de cor (que o parser já converteu para float 0-1)
     auto ka = ps.retrieve<RGBColor>("ambient", {0.1f, 0.1f, 0.1f});
     auto kd = ps.retrieve<RGBColor>("diffuse", {0.5f, 0.5f, 0.5f});
     auto ks = ps.retrieve<RGBColor>("specular", {0.5f, 0.5f, 0.5f});
 
-    // Extrai o expoente de brilho (glossiness)
+    /// Extrai o expoente de brilho (glossiness)
     auto gloss = ps.retrieve<float>("glossiness", 10.0f);
-    auto mirror = ps.retrieve<RGBColor>("mirror");
+    auto mirror = ps.retrieve<RGBColor>("mirror", {0, 0, 0});
 
     std::cout << ">>> Criando material Blinn: '" << name << "'\n";
     materials[name] =
@@ -111,13 +105,13 @@ void App::material(const ParamSet &ps) {
 
   if (type.empty()) {
     std::cout << ">>> Material de tipo inválido, usando 'FlatMaterial\n'";
-    auto color = ps.retrieve<RGBColor>("color", {0, 0, 0});
+    auto color = ps.retrieve<RGBColor>("color");
     currMaterial = std::make_shared<FlatMaterial>(color);
     return;
   }
 
   if (type == "flat") {
-    auto color = ps.retrieve<RGBColor>("color", {0, 0, 0});
+    auto color = ps.retrieve<RGBColor>("color");
     currMaterial = std::make_shared<FlatMaterial>(color);
   }
 
@@ -146,7 +140,7 @@ void App::backGround(const ParamSet &ps) {
     std::cout << "* BR: " << sceneConfig.arr[3].str() << "\n";
 
   } else if (key == "single_color") {
-    RGBColor color = ps.retrieve<RGBColor>("color", {0, 0, 0});
+    RGBColor color = ps.retrieve<RGBColor>("color");
     std::fill(sceneConfig.arr.begin(), sceneConfig.arr.end(), color);
 
     std::cout << ">>> Usando 'single_color': " << color.str() << "\n";
@@ -159,18 +153,15 @@ void App::backGround(const ParamSet &ps) {
 }
 
 void App::film(const ParamSet &ps) {
-  std::string xml_file = ps.retrieve<std::string>("filename");
+
+  generalConfig.filename_ = ps.retrieve<std::string>("filename", "result");
+
+  auto gc = ps.retrieve<std::string>("gamma_corrected", "true");
+
+  cameraConfig.gamma_corrected = (gc == "true" ? true : false);
 
   cameraConfig.w_res = ps.retrieve<int>("w_res");
   cameraConfig.h_res = ps.retrieve<int>("h_res");
-
-  generalConfig.filename_ =
-      Global::outfile.empty() ? xml_file : Global::outfile;
-
-  if (Global::quick) {
-    cameraConfig.w_res /= 4;
-    cameraConfig.h_res /= 4;
-  }
 
   std::cout << ">>> Largura do 'Film': " << cameraConfig.w_res << "\n";
   std::cout << ">>> Altura do 'Film': " << cameraConfig.h_res << "\n";
@@ -181,7 +172,7 @@ void App::film(const ParamSet &ps) {
 void App::camera(const ParamSet &ps) {
   cameraConfig.type = ps.retrieve<std::string>("type");
 
-  /* Se houver 'screen_window_', damos preferência. */
+  /// Se houver 'screen_window_', damos preferência.
   if (ps.has_elem("screen_window")) {
     auto sw = ps.retrieve<ScreenWindow>("screen_window", {0.0, 0.0, 0.0, 0.0});
     cameraConfig.l_ = sw.l_;
@@ -191,7 +182,7 @@ void App::camera(const ParamSet &ps) {
     return;
   }
 
-  /* Se não, trabalhamos com 'fovy', 'frame_aspect_ratio' ou w_res/h_res. */
+  /// Se não, trabalhamos com 'fovy', 'frame_aspect_ratio' ou w_res/h_res.
   cameraConfig.fovy = ps.retrieve<int>("fovy", 0);
   cameraConfig.aspec = ps.retrieve<float>("frame_aspect_ratio", 0.0);
 }
@@ -207,6 +198,74 @@ void App::integrator(const ParamSet &ps) {
   generalConfig.depth = (std::size_t)ps.retrieve<int>("depth");
 }
 
+void triangleMesh(const ParamSet &ps) {
+
+  auto mesh = std::make_shared<TriangleMesh>();
+
+  auto filename = ps.retrieve<std::string>("filename", "");
+
+  /// Lê o flag de backface culling uma única vez; padrão = true.
+  bool bfc = (ps.retrieve<std::string>("backface_cull", "true") == "true");
+
+  if (ps.has_elem("filename")) {
+    if (filename.empty()) {
+      std::cerr << ">>> Arquivo Obj vazio. Encerrando\n";
+      exit(0);
+    }
+
+    /// ld::load preenche o mesh; não usamos o vetor de Triangle retornado
+    /// pois ele criaria todos os objetos com bfc=true hardcoded.
+    ld::load(filename, mesh);
+
+    int ntri = static_cast<int>(mesh->vrts_idx_.size() / 3);
+    mesh->ntriangles = ntri;
+
+    for (int i = 0; i < ntri; i++) {
+      auto shape = std::make_unique<Triangle>(mesh, i, bfc);
+
+      std::shared_ptr<Material> mat = currMaterial;
+      auto geoPrim =
+          std::make_shared<GeometricPrimitive>(std::move(shape), mat);
+      sceneConfig.aggrPrim->addObject(std::move(geoPrim));
+    }
+
+    return;
+  }
+
+  /// Copia bruta de vertices, normais e uvs.
+  mesh->vertices_ = ps.get<float>("vertices");
+  mesh->normals_ = ps.get<float>("normals");
+  mesh->uvcoords_ = ps.get<float>("uvs");
+
+  /// Cópia bruta de indices.
+  mesh->vrts_idx_ = ps.get<int>("vertex_indices");
+  mesh->normals_idx_ = ps.get<int>("normal_indices");
+  mesh->uv_idxs_ = ps.get<int>("uv_indices");
+
+  int size = static_cast<int>(mesh->vrts_idx_.size() / 3);
+  mesh->ntriangles = size;
+
+  for (int i = 0; i < size; i++) {
+    auto shape = std::make_unique<Triangle>(mesh, i, bfc);
+
+    std::shared_ptr<Material> mat = currMaterial;
+    auto geoPrim = std::make_shared<GeometricPrimitive>(std::move(shape), mat);
+    sceneConfig.aggrPrim->addObject(std::move(geoPrim));
+  }
+
+  std::cout << ">>> Vertices:\n";
+  for (auto &e : mesh->vertices_)
+    std::cout << e << "\n";
+
+  std::cout << ">>> Normais:\n";
+  for (auto &e : mesh->normals_)
+    std::cout << e << "\n";
+
+  std::cout << ">>> Coodernadas uv:\n";
+  for (auto &e : mesh->uvcoords_)
+    std::cout << e << "\n";
+}
+
 void App::object(const ParamSet &ps) {
   std::string type = ps.retrieve<std::string>("type");
 
@@ -218,12 +277,14 @@ void App::object(const ParamSet &ps) {
     cube(ps);
   } else if (type == "pyramid") {
     pyramid(ps);
+  } else if (type == "trianglemesh") {
+    triangleMesh(ps);
   } else {
     std::cout << "Objeto " << (type.empty() ? "vazio" : type) << "inválido.\n";
   }
 }
 
-// Implementação do método que cria a esfera a partir do XML
+/// Implementação do método que cria a esfera a partir do XML
 void App::sphere(const ParamSet &ps) {
   point3 center = ps.retrieve<point3>("center", {0, 0, 0});
   float radius = ps.retrieve<float>("radius", 1.0f);
@@ -235,10 +296,10 @@ void App::sphere(const ParamSet &ps) {
   float z_max = ps.retrieve<float>("z_max", radius);
   float phi_max = ps.retrieve<float>("phi_max", 360.0f);
 
-  /* Instanciando um 'Shape' de Owner único (unique_ptr). */
+  /// Instanciando um 'Shape' de Owner único (unique_ptr).
   auto shape = std::make_unique<Sphere>(center, radius, z_min, z_max, phi_max);
 
-  /* Instanciando um 'Material' de Owner compartilhado (shared_ptr). */
+  /// Instanciando um 'Material' de Owner compartilhado (shared_ptr).
   std::shared_ptr<Material> mat = currMaterial;
 
   auto geoPrim = std::make_shared<GeometricPrimitive>(std::move(shape), mat);
@@ -249,7 +310,7 @@ void App::sphere(const ParamSet &ps) {
 void App::light_source(const ParamSet &ps) {
   auto type = ps.retrieve<std::string>("type");
   auto intensity = ps.retrieve<RGBColor>("I", {1, 1, 1});
-  auto scale = ps.retrieve<RGBColor>("scale", {1, 1, 1});
+  auto scale = ps.retrieve<vec3>("scale", {1, 1, 1});
 
   if (type == "ambient") {
     sceneConfig.lights.push_back(
@@ -276,14 +337,14 @@ void App::light_source(const ParamSet &ps) {
 
 void App::integratorConfig(const std::string &type) {
   if (type == "flat") {
-    std::cout << ">>> Usando 'RayCastIntegrator'.\n";
+    std::cout << ">>> Usando integrator 'RayCast'.\n";
     integrator_ = std::make_unique<RayCastIntegrator>();
   } else if (type == "blinn" || type == "blinn_phong") {
-    std::cout << ">>> Usando 'BlinnPhongIntegrator'.\n";
+    std::cout << ">>> Usando integrador 'BlinnPhong'.\n";
     integrator_ = std::make_unique<BlinnPhongIntegrator>();
   } else {
     std::cerr << ">>> Tipo do Integrator não identificado. Usando "
-                 "'RayCastIntegrator'.\n";
+                 "'RayCast'.\n";
     integrator_ = std::make_unique<RayCastIntegrator>();
   }
 
@@ -292,7 +353,7 @@ void App::integratorConfig(const std::string &type) {
 
 void App::plane(const ParamSet &ps) {
 
-  point3 point = ps.retrieve<point3>("point", {0, 0, 0});
+  point3 point = ps.retrieve<point3>("point", {{0, 0, 0}});
   vec3 normal = ps.retrieve<vec3>("normal", {0, 1, 0});
   auto shape = std::make_unique<Plane>(point, normal);
   auto geoPrim =
@@ -316,7 +377,7 @@ void App::pyramid(const ParamSet &ps) {
   float width = ps.retrieve<float>("width", 1.0f);
   float height = ps.retrieve<float>("height", 1.0f);
   auto shape = std::make_unique<Pyramid>(center, width, height);
-  auto geoPrim = 
+  auto geoPrim =
       std::make_shared<GeometricPrimitive>(std::move(shape), currMaterial);
   sceneConfig.aggrPrim->addObject(std::move(geoPrim));
 }
@@ -324,12 +385,12 @@ void App::pyramid(const ParamSet &ps) {
 void App::render() {
 
   integratorConfig(generalConfig.integratorType);
-  //  garante que as luzes cheguem ao integrador
+  ///  garante que as luzes cheguem ao integrador
   Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim),
            sceneConfig.lights);
   integrator_->render(sc, generalConfig.depth);
   integrator_->write_image(generalConfig.filename_, generalConfig.ppm_);
   sceneConfig.aggrPrim = std::make_unique<PrimList>();
   sceneConfig.lights
-      .clear(); // evita que luzes de um render acumulem no próximo
+      .clear(); /// evita que luzes de um render acumulem no próximo
 }

@@ -7,6 +7,9 @@
 
 typedef struct vec2 {
   float i_, j_;
+
+  vec2(const std::array<float, 3> &arr) : i_{arr[0]}, j_{arr[1]} {}
+
   vec2(float i = 0, float j = 0) : i_{i}, j_{j} {}
   inline vec2 operator+(const vec2 &v) const { return {i_ + v.i_, j_ + v.j_}; }
   inline vec2 operator-(const vec2 &v) const { return {i_ - v.i_, j_ - v.j_}; }
@@ -68,4 +71,14 @@ float size(const vec2 &);
 float size(const vec3 &);
 vec3 cross(const vec3 &v1, const vec3 &v2);
 
+inline std::istream &operator>>(std::istream &is, vec3 &v) {
+  if (!(is >> v.i_ >> v.j_ >> v.k_))
+    is.setstate(std::ios::failbit);
+  return is;
+}
+inline std::istream &operator>>(std::istream &is, vec2 &v) {
+  if (!(is >> v.i_ >> v.j_))
+    is.setstate(std::ios::failbit);
+  return is;
+}
 #endif // !MATH_HPP

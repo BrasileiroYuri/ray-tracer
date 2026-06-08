@@ -7,7 +7,7 @@
     <world_begin/>
         <background type="colors" bl="10 15 20" tl="10 15 20" tr="10 15 20" br="10 15 20" />
         <light_source type="ambient" I="0.05 0.05 0.05" scale="1.0" />
-        <light_source type="point" I="1.0 1.0 1.0" scale="5.0" from="-2 8 -2" />
+        <light_source type="point" I="1.0 1.0 1.0" scale="1.0  1.0 1.0" from="-2 8 -2" />
 
         <make_named_material type="blinn" name="piso_fosco"
             ambient="0.05 0.05 0.05" diffuse="0.3 0.3 0.3" specular="0.1 0.1 0.1" glossiness="16"/>
