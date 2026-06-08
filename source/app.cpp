@@ -153,7 +153,12 @@ void App::backGround(const ParamSet &ps) {
 }
 
 void App::film(const ParamSet &ps) {
+
   generalConfig.filename_ = ps.retrieve<std::string>("filename", "result");
+
+  auto gc = ps.retrieve<std::string>("gamma_corrected", "true");
+
+  cameraConfig.gamma_corrected = (gc == "true" ? true : false);
 
   cameraConfig.w_res = ps.retrieve<int>("w_res");
   cameraConfig.h_res = ps.retrieve<int>("h_res");
@@ -199,36 +204,66 @@ void triangleMesh(const ParamSet &ps) {
 
   auto filename = ps.retrieve<std::string>("filename", "");
 
+  /// Lê o flag de backface culling uma única vez; padrão = true.
+  bool bfc = (ps.retrieve<std::string>("backface_cull", "true") == "true");
+
   if (ps.has_elem("filename")) {
     if (filename.empty()) {
       std::cerr << ">>> Arquivo Obj vazio. Encerrando\n";
       exit(0);
     }
 
+    /// ld::load preenche o mesh; não usamos o vetor de Triangle retornado
+    /// pois ele criaria todos os objetos com bfc=true hardcoded.
     ld::load(filename, mesh);
+
+    int ntri = static_cast<int>(mesh->vrts_idx_.size() / 3);
+    mesh->ntriangles = ntri;
+
+    for (int i = 0; i < ntri; i++) {
+      auto shape = std::make_unique<Triangle>(mesh, i, bfc);
+
+      std::shared_ptr<Material> mat = currMaterial;
+      auto geoPrim =
+          std::make_shared<GeometricPrimitive>(std::move(shape), mat);
+      sceneConfig.aggrPrim->addObject(std::move(geoPrim));
+    }
+
     return;
   }
 
   /// Copia bruta de vertices, normais e uvs.
-  /*
-  mesh->vertices_ = ps.get<point3>("vertices");
-  mesh->normals_ = ps.get<vec3>("normals");
-  mesh->uvcoords_ = ps.get<point2>("uv");
-  */
+  mesh->vertices_ = ps.get<float>("vertices");
+  mesh->normals_ = ps.get<float>("normals");
+  mesh->uvcoords_ = ps.get<float>("uvs");
 
-  /*
+  /// Cópia bruta de indices.
+  mesh->vrts_idx_ = ps.get<int>("vertex_indices");
+  mesh->normals_idx_ = ps.get<int>("normal_indices");
+  mesh->uv_idxs_ = ps.get<int>("uv_indices");
+
+  int size = static_cast<int>(mesh->vrts_idx_.size() / 3);
+  mesh->ntriangles = size;
+
+  for (int i = 0; i < size; i++) {
+    auto shape = std::make_unique<Triangle>(mesh, i, bfc);
+
+    std::shared_ptr<Material> mat = currMaterial;
+    auto geoPrim = std::make_shared<GeometricPrimitive>(std::move(shape), mat);
+    sceneConfig.aggrPrim->addObject(std::move(geoPrim));
+  }
+
   std::cout << ">>> Vertices:\n";
   for (auto &e : mesh->vertices_)
-    std::cout << e.str() << "\n";
+    std::cout << e << "\n";
 
   std::cout << ">>> Normais:\n";
   for (auto &e : mesh->normals_)
-    std::cout << e.str() << "\n";
+    std::cout << e << "\n";
 
   std::cout << ">>> Coodernadas uv:\n";
   for (auto &e : mesh->uvcoords_)
-    std::cout << e.str() << "\n";
-    */
+    std::cout << e << "\n";
 }
 
 void App::object(const ParamSet &ps) {
@@ -302,14 +337,14 @@ void App::light_source(const ParamSet &ps) {
 
 void App::integratorConfig(const std::string &type) {
   if (type == "flat") {
-    std::cout << ">>> Usando 'RayCastIntegrator'.\n";
+    std::cout << ">>> Usando integrator 'RayCast'.\n";
     integrator_ = std::make_unique<RayCastIntegrator>();
   } else if (type == "blinn" || type == "blinn_phong") {
-    std::cout << ">>> Usando 'BlinnPhongIntegrator'.\n";
+    std::cout << ">>> Usando integrador 'BlinnPhong'.\n";
     integrator_ = std::make_unique<BlinnPhongIntegrator>();
   } else {
     std::cerr << ">>> Tipo do Integrator não identificado. Usando "
-                 "'RayCastIntegrator'.\n";
+                 "'RayCast'.\n";
     integrator_ = std::make_unique<RayCastIntegrator>();
   }
 

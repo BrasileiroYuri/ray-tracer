@@ -44,6 +44,7 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
                 {"falloff", convert<int>},
                 {"ntriangles", convert<int>},
                 {"type", convert<std::string>},
+                {"gamma_corrected", convert<std::string>},
                 {"name", convert<std::string>},
                 {"filename", convert<std::string>},
                 {"img_type", convert<std::string>},
@@ -77,10 +78,12 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
                 {"glossiness", convert<float>},
                 {"width", convert<float>},
                 {"height", convert<float>},
-                {"vertices", convert<point3>},
-                {"indices", convert<point3>},
-                {"normals", convert<point3>},
-                {"uv", convert<point2>}};
+                {"vertices", convert<float>},
+                {"vertex_indices", convert<int>},
+                {"normals", convert<float>},
+                {"normal_indices", convert<int>},
+                {"uvs", convert<float>},
+                {"uv_indices", convert<int>}};
 }
 
 void Parser::parse() const {
