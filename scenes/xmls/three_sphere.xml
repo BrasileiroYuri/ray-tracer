@@ -39,6 +39,8 @@
             vertex_indices ="0 1 2  0 2 3"
             normals ="0 1 0"
             normal_indices ="0 0 0  0 0 0"
+            uvs="0 0   1 0   0 1   1 1"
+            uv_indices="0 1 2   0 2 3"
             reverse_vertex_order="false"
             backface_cull ="false"/>
    <world_end/>

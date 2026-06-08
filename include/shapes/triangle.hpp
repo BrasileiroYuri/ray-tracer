@@ -45,14 +45,9 @@ public:
 
     // 3. Möller-Trumbore
     auto p = cross(r.direction_, e2);
-    float det =
-        dot(p, e1); // det = -dot(d, cross(e1,e2)) = -dot(d, face_normal)
+    float det = dot(p, e1);
 
-    // Backface Culling (Left-Handed: det < 0 é face frontal)
-    if (backface_ && det >= 0.0f)
-      return false;
-
-    // Raio paralelo ao triângulo — fabs é mais robusto que == 0
+    // Raio paralelo ao triângulo
     if (std::fabs(det) < 1e-8f)
       return false;
 
@@ -65,51 +60,82 @@ public:
     float v = dot(q, r.direction_) * fct;
     s.t_hit = dot(q, e2) * fct;
 
-    // 5. Validação — tolerância nas bordas evita gaps entre triângulos
-    // adjacentes
+    // 5. Validação de interseção
     const float eps = 1e-5f;
     if (u < -eps || v < -eps || u + v > 1.0f + eps || s.t_hit < r.min_t_ ||
         s.t_hit > r.max_t_)
       return false;
 
-    // 6. Normal geométrica (constante no triângulo — confiável para shadow
-    // bias)
-    auto geom_n = normalize(cross(e1, e2));
-    // Left-hand: cross(e1,e2) aponta na mesma direção do raio para det<0 (face
-    // frontal) Para o bias precisamos da direção CONTRÁRIA ao raio (em direção
-    // à câmera)
-    s.geom_n = (det < 0.0f) ? geom_n * -1.0f : geom_n;
+    // ========================================================================
+    // 6. SOLUÇÃO DEFINITIVA: Winding Dinâmico e Culling Baseado em Normais
+    // ========================================================================
 
-    // 7. Normal de shading: interpolada por vértice se disponível
+    // Calculamos a normal geométrica bruta
+    auto geom_n = normalize(cross(e1, e2));
     bool has_normals =
         !tmesh_->normals_.empty() && !tmesh_->normals_idx_.empty();
+
     if (has_normals) {
       auto n_ = &tmesh_->normals_idx_[id_ * 3];
-      // Guard: TinyObjLoader seta -1 quando a face não possui normal
+      if (n_[0] >= 0) {
+        vec3 vertex_normal = calculate_p3(tmesh_->normals_, n_[0]);
+        // Se a normal geométrica calculada for oposta à normal fornecida pelo
+        // modelo (que sabemos apontar sempre para o exterior), o winding do
+        // triângulo é CW. Invertemos geom_n para que ela aponte confiavelmente
+        // para fora.
+        if (dot(geom_n, vertex_normal) < 0.0f) {
+          geom_n = geom_n * -1.0f;
+        }
+      }
+    } else {
+      // Fallback: Na regra da mão esquerda, malhas CCW comuns têm cross(e1,e2)
+      // apontando para dentro do volume. Invertemos para apontar para fora.
+      geom_n = geom_n * -1.0f;
+    }
+
+    // O triângulo é de fato uma "Face Frontal" se a direção do raio
+    // for oposta à normal exterior (estão de frente um para o outro).
+    bool is_front_face = dot(r.direction_, geom_n) < 0.0f;
+
+    // Culling Seguro: Descartes a face se for traseira e o culling estiver
+    // ativo
+    if (backface_ && !is_front_face)
+      return false;
+
+    // 7. Configurando as normais no Surfel
+    // A normal geométrica do Surfel precisa de apontar contra o raio (em
+    // direção à câmera) para que a proteção de Shadow Bias jogue o offset para
+    // o ar.
+    s.geom_n = is_front_face ? geom_n : (geom_n * -1.0f);
+
+    // Interpolação baricêntrica suave da normal de Shading
+    if (has_normals) {
+      auto n_ = &tmesh_->normals_idx_[id_ * 3];
       if (n_[0] >= 0 && n_[1] >= 0 && n_[2] >= 0) {
         const auto n1 = calculate_p3(tmesh_->normals_, n_[0]);
         const auto n2 = calculate_p3(tmesh_->normals_, n_[1]);
         const auto n3 = calculate_p3(tmesh_->normals_, n_[2]);
         s.n = normalize((1.0f - u - v) * n1 + u * n2 + v * n3);
       } else {
-        s.n = s.geom_n; // fallback: vértice sem normal definida
+        s.n = s.geom_n;
       }
     } else {
-      s.n = s.geom_n; // fallback: malha sem normais por vértice
+      s.n = s.geom_n;
     }
 
-    // Orienta normals para a câmera quando BFC está desligado (face traseira)
-    if (!backface_ && det > 0.0f) {
-      s.n = -1.0f * s.n;
-      s.geom_n = -1.0f * s.geom_n;
+    // Se estivermos a bater numa face traseira (Culling desativado),
+    // invertemos a normal de shading para ela captar luz do lado de dentro.
+    if (!is_front_face) {
+      s.n = s.n * -1.0f;
     }
+
+    // ========================================================================
 
     // 8. UV coordinates — interpoladas se disponíveis, baricêntricas como
     // fallback
     bool has_uvs = !tmesh_->uvcoords_.empty() && !tmesh_->uv_idxs_.empty();
     if (has_uvs) {
       auto uv_ = &tmesh_->uv_idxs_[id_ * 3];
-      // Guard: TinyObjLoader seta -1 quando a face não possui UV
       if (uv_[0] >= 0 && uv_[1] >= 0 && uv_[2] >= 0) {
         const auto uv1 = calculate_p2(tmesh_->uvcoords_, uv_[0]);
         const auto uv2 = calculate_p2(tmesh_->uvcoords_, uv_[1]);
