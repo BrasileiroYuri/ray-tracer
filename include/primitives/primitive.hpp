@@ -12,7 +12,10 @@ struct Surfel {
   std::shared_ptr<Material> mat_;
   float t_hit = INFINITY;
   point3 p; // Ponto de interseção no espaço 3D
-  vec3 n;   // Vetor normal da superfície no ponto p
+  vec3 n;   // Normal de shading (interpolada por vértice — suavizada)
+  vec3 geom_n; // Normal geométrica (constante por triângulo — usada para shadow
+               // bias)
+  point2 uv; // Coordenadas de textura interpoladas
 };
 
 struct Primitive {

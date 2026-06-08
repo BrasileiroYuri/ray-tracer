@@ -33,64 +33,97 @@ public:
       : id_{id}, tmesh_{mesh}, backface_{bfc} {}
 
   bool intersect(const Ray &r, Surfel &s) const override {
-    // 1. Mapeamento de índices e extração de dados brutos
+    // 1. Extração de vértices
     auto v_ = &tmesh_->vrts_idx_[id_ * 3];
-    auto n_ = &tmesh_->normals_idx_[id_ * 3];
-
-    const auto &v1 = calculate_p3(tmesh_->vertices_, v_[0]);
-    const auto &v2 = calculate_p3(tmesh_->vertices_, v_[1]);
-    const auto &v3 = calculate_p3(tmesh_->vertices_, v_[2]);
-
-    const auto &n1 = calculate_p3(tmesh_->normals_, n_[0]);
-    const auto &n2 = calculate_p3(tmesh_->normals_, n_[1]);
-    const auto &n3 = calculate_p3(tmesh_->normals_, n_[2]);
+    const auto v1 = calculate_p3(tmesh_->vertices_, v_[0]);
+    const auto v2 = calculate_p3(tmesh_->vertices_, v_[1]);
+    const auto v3 = calculate_p3(tmesh_->vertices_, v_[2]);
 
     // 2. Arestas do triângulo
     auto e1 = v2 - v1;
     auto e2 = v3 - v1;
 
-    // 3. Início do algoritmo Möller-Trumbore
+    // 3. Möller-Trumbore
     auto p = cross(r.direction_, e2);
-    float det = dot(p, e1); // Equivalente ao produto triplo escalar
+    float det =
+        dot(p, e1); // det = -dot(d, cross(e1,e2)) = -dot(d, face_normal)
 
-    // Aplicação do Backface Culling (Sistema Left-Handed: det < 0 é frontal)
+    // Backface Culling (Left-Handed: det < 0 é face frontal)
     if (backface_ && det >= 0.0f)
       return false;
 
-    // Verifica se o raio é paralelo ao triângulo (evita divisão por zero)
-    if (det == 0.0f)
+    // Raio paralelo ao triângulo — fabs é mais robusto que == 0
+    if (std::fabs(det) < 1e-8f)
       return false;
 
     float fct = 1.0f / det;
-
     auto tvec = r.origin_ - v1;
     auto q = cross(tvec, e1);
 
-    // 4. Cálculo das coordenadas baricêntricas (u, v) e distância t
+    // 4. Coordenadas baricêntricas e t
     float u = dot(p, tvec) * fct;
     float v = dot(q, r.direction_) * fct;
     s.t_hit = dot(q, e2) * fct;
 
-    // 5. Validação rigorosa dos limites de intersecção
-    // w = 1.0 - u - v, portanto u + v > 1.0 significa w < 0.0 (fora do
-    // triângulo)
-    // CORRETO: tolerância mínima nas bordas
+    // 5. Validação — tolerância nas bordas evita gaps entre triângulos
+    // adjacentes
     const float eps = 1e-5f;
     if (u < -eps || v < -eps || u + v > 1.0f + eps || s.t_hit < r.min_t_ ||
         s.t_hit > r.max_t_)
       return false;
-    // Interpolação baricêntrica das normais dos vértices
-    s.n = (1.0f - u - v) * n1 + u * n2 + v * n3;
 
-    // Normalização crucial para não quebrar a equação especular de Blinn-Phong
-    s.n = normalize(s.n);
+    // 6. Normal geométrica (constante no triângulo — confiável para shadow
+    // bias)
+    auto geom_n = normalize(cross(e1, e2));
+    // Left-hand: cross(e1,e2) aponta na mesma direção do raio para det<0 (face
+    // frontal) Para o bias precisamos da direção CONTRÁRIA ao raio (em direção
+    // à câmera)
+    s.geom_n = (det < 0.0f) ? geom_n * -1.0f : geom_n;
 
-    // Inversão da normal ao atingir a face traseira (quando o culling está
-    // desligado)
-    if (!backface_ && det > 0.0f) {
-      s.n = -1 * s.n;
+    // 7. Normal de shading: interpolada por vértice se disponível
+    bool has_normals =
+        !tmesh_->normals_.empty() && !tmesh_->normals_idx_.empty();
+    if (has_normals) {
+      auto n_ = &tmesh_->normals_idx_[id_ * 3];
+      // Guard: TinyObjLoader seta -1 quando a face não possui normal
+      if (n_[0] >= 0 && n_[1] >= 0 && n_[2] >= 0) {
+        const auto n1 = calculate_p3(tmesh_->normals_, n_[0]);
+        const auto n2 = calculate_p3(tmesh_->normals_, n_[1]);
+        const auto n3 = calculate_p3(tmesh_->normals_, n_[2]);
+        s.n = normalize((1.0f - u - v) * n1 + u * n2 + v * n3);
+      } else {
+        s.n = s.geom_n; // fallback: vértice sem normal definida
+      }
+    } else {
+      s.n = s.geom_n; // fallback: malha sem normais por vértice
     }
-    // O "Pulo do Gato": Adiciona um epsilon empurrando o ponto para fora
+
+    // Orienta normals para a câmera quando BFC está desligado (face traseira)
+    if (!backface_ && det > 0.0f) {
+      s.n = -1.0f * s.n;
+      s.geom_n = -1.0f * s.geom_n;
+    }
+
+    // 8. UV coordinates — interpoladas se disponíveis, baricêntricas como
+    // fallback
+    bool has_uvs = !tmesh_->uvcoords_.empty() && !tmesh_->uv_idxs_.empty();
+    if (has_uvs) {
+      auto uv_ = &tmesh_->uv_idxs_[id_ * 3];
+      // Guard: TinyObjLoader seta -1 quando a face não possui UV
+      if (uv_[0] >= 0 && uv_[1] >= 0 && uv_[2] >= 0) {
+        const auto uv1 = calculate_p2(tmesh_->uvcoords_, uv_[0]);
+        const auto uv2 = calculate_p2(tmesh_->uvcoords_, uv_[1]);
+        const auto uv3 = calculate_p2(tmesh_->uvcoords_, uv_[2]);
+        float w = 1.0f - u - v;
+        s.uv = {w * uv1.i_ + u * uv2.i_ + v * uv3.i_,
+                w * uv1.j_ + u * uv2.j_ + v * uv3.j_};
+      } else {
+        s.uv = {u, v};
+      }
+    } else {
+      s.uv = {u, v}; // fallback: baricêntricas brutas como UV
+    }
+
     s.p = r(s.t_hit);
     return true;
   }

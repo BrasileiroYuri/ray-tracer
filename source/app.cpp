@@ -153,7 +153,12 @@ void App::backGround(const ParamSet &ps) {
 }
 
 void App::film(const ParamSet &ps) {
+
   generalConfig.filename_ = ps.retrieve<std::string>("filename", "result");
+
+  auto gc = ps.retrieve<std::string>("gamma_corrected", "true");
+
+  cameraConfig.gamma_corrected = (gc == "true" ? true : false);
 
   cameraConfig.w_res = ps.retrieve<int>("w_res");
   cameraConfig.h_res = ps.retrieve<int>("h_res");

@@ -44,6 +44,7 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
                 {"falloff", convert<int>},
                 {"ntriangles", convert<int>},
                 {"type", convert<std::string>},
+                {"gamma_corrected", convert<std::string>},
                 {"name", convert<std::string>},
                 {"filename", convert<std::string>},
                 {"img_type", convert<std::string>},

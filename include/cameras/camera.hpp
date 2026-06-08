@@ -12,6 +12,7 @@
 #include <string>
 
 struct CameraConfig {
+  bool gamma_corrected;
   std::string type; /* Tipo da câmera */
   float l_, r_, b_, t_;
   point3 look_from, look_at, up;
@@ -24,7 +25,7 @@ class Camera {
 public:
   virtual ~Camera() = default;
 
-  Camera(CameraConfig cc) : film_(cc.w_res, cc.h_res) {
+  Camera(CameraConfig cc) : film_(cc.w_res, cc.h_res, cc.gamma_corrected) {
     getFrame(cc.look_from, cc.look_at, cc.up);
 
     float ratio = cc.aspec ? cc.aspec : (float)cc.w_res / cc.h_res;
