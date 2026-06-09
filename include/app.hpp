@@ -30,6 +30,7 @@ public:
   static void material(const ParamSet &);
   static void named_material(const ParamSet &);
   static void light_source(const ParamSet &);
+  static void aggregator(const ParamSet &);
 
 private:
   static void plane(const ParamSet &);
@@ -37,7 +38,7 @@ private:
   static void cube(const ParamSet &);
   static void pyramid(const ParamSet &); //
 
-  static void integratorConfig(const std::string &type);
+  static void integratorConfig(const std::string &);
   static std::unique_ptr<Integrator> integrator_;
 };
 

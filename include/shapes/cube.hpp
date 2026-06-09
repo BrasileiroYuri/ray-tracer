@@ -53,14 +53,17 @@ public:
     return true;
   }
   Pair limits(float min, float max, float orig, float dir) const {
-
     auto t1 = (min - orig) / dir;
     auto t2 = (max - orig) / dir;
-
     auto tmin = std::min(t1, t2);
     auto tmax = std::max(t1, t2);
-
     return {tmin, tmax};
+  }
+
+  // AABB is just the cube itself (already axis-aligned).
+  bool world_bound(Bounds3f &box) const override {
+    box = Bounds3f(p1_, p2_);
+    return true;
   }
 
 private:

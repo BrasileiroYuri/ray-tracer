@@ -1,44 +1,65 @@
+// Sphere ray-intersection implementation.
+// Uses the half-b quadratic formulation for numerical stability.
 #include "sphere.hpp"
 #include <cmath>
 
-// agora recebe a struct Surfel por referência
 bool Sphere::intersect(const Ray &r, Surfel &s) const {
-  vec3 d_hat = normalize(r.direction_);
-  vec3 oc = r.origin_ - center_;
+  // Translate so sphere is at origin: oc = origin - center
+  vec3 oc{r.origin_.i_ - center_.i_, r.origin_.j_ - center_.j_,
+          r.origin_.k_ - center_.k_};
 
-  float parallel_len = dot(oc, d_hat);
-  vec3 oc_perp = oc - parallel_len * d_hat;
+  float a = dot(r.direction_, r.direction_); // ≈1 (direction normalised)
+  float b_half = dot(oc, r.direction_);
+  float c_val = dot(oc, oc) - radius_ * radius_;
+  float disc = b_half * b_half - a * c_val;
 
-  float delta = (radius_ * radius_) - dot(oc_perp, oc_perp);
-  if (delta < 0)
+  if (disc < 0.0f)
     return false;
-  float sqrt_delta = std::sqrt(delta);
 
-  float t_values[2] = {-parallel_len - sqrt_delta, -parallel_len + sqrt_delta};
+  float sqrt_d = std::sqrt(disc);
+  float inv_a = 1.0f / a;
 
-  for (float t : t_values) {
+  // Helper: try a candidate t, validate range + partial-sphere limits.
+  auto try_t = [&](float t) -> bool {
     if (t < r.min_t_ || t > r.max_t_)
-      continue;
+      return false;
+    point3 hp = r(t);
+    vec3 lp{hp.i_ - center_.i_, hp.j_ - center_.j_, hp.k_ - center_.k_};
 
-    point3 p = r(t);
-    point3 p_local = p - center_;
+    // z-clipping (in local sphere space)
+    if (lp.k_ < z_min_ || lp.k_ > z_max_)
+      return false;
 
-    if (p_local.k_ < z_min_ || p_local.k_ > z_max_)
-      continue;
-
-    float phi = std::atan2(p_local.j_, p_local.i_);
-    if (phi < 0)
-      phi += 2.0f * (float)M_PI;
-
+    // phi-clipping
+    float phi = std::atan2(lp.j_, lp.i_);
+    if (phi < 0.0f)
+      phi += 2.0f * static_cast<float>(M_PI);
     if (phi > phi_max_)
-      continue;
+      return false;
 
-    s.t_hit = t; // preenche o membro da struct em vez de variável local
-    s.p = p;     // Armazena o ponto exato da interseção para cálculos de luz
-    s.n = p_local * (1.0f / radius_); // Calcula e armazena a normal (unitário)
+    // Accept hit — fill surfel
+    s.t_hit = t;
+    s.p = hp;
 
+    // Outward normal
+    vec3 outward = normalize(lp);
+
+    // Regra da mão esquerda: para consistência com os triângulos do projeto,
+    // a normal deve apontar contra o raio incidente.
+    bool front = dot(r.direction_, outward) < 0.0f;
+    s.geom_n = front ? outward : outward * -1.0f;
+    s.n = s.geom_n;
+
+    // Spherical UVs
+    float theta = std::acos(std::max(-1.0f, std::min(1.0f, lp.k_ / radius_)));
+    float dtheta = theta_max_ - theta_min_;
+    s.uv = {phi / (2.0f * static_cast<float>(M_PI)),
+            dtheta > 1e-6f ? (theta - theta_min_) / dtheta : 0.0f};
     return true;
-  }
+  };
 
-  return false;
+  float t0 = (-b_half - sqrt_d) * inv_a;
+  float t1 = (-b_half + sqrt_d) * inv_a;
+
+  return try_t(t0) || try_t(t1);
 }

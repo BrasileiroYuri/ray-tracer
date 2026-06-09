@@ -3,6 +3,7 @@
 #include "background.hpp"
 #include "blinnphong_integrator.hpp"
 #include "blinnphong_material.hpp"
+#include "bvhaccel.hpp"
 #include "cube.hpp"
 #include "direcional_light.hpp"
 #include "flat_material.hpp"
@@ -382,9 +383,28 @@ void App::pyramid(const ParamSet &ps) {
   sceneConfig.aggrPrim->addObject(std::move(geoPrim));
 }
 
+void App::aggregator(const ParamSet &ps) {
+  std::string type = ps.retrieve<std::string>("type", "list");
+
+  if (type == "bvh") {
+    int maxPrims = ps.retrieve<int>("max_prims_per_node", 1);
+    std::cout << ">>> Usando acelerador BVH (maxPrimsPerNode=" << maxPrims
+              << ").\n";
+    sceneConfig.aggrPrim = std::make_unique<BVHAccel>(maxPrims);
+  } else {
+    std::cout << ">>> Usando agregado List.\n";
+    sceneConfig.aggrPrim = std::make_unique<PrimList>();
+  }
+}
+
 void App::render() {
 
   integratorConfig(generalConfig.integratorType);
+
+  // Finalize acceleration structure (no-op for PrimList, builds BVH tree for
+  // BVHAccel).
+  sceneConfig.aggrPrim->build();
+
   ///  garante que as luzes cheguem ao integrador
   Scene sc(sceneConfig.arr, std::move(sceneConfig.aggrPrim),
            sceneConfig.lights);

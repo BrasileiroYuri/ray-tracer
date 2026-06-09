@@ -3,7 +3,7 @@
     <lookat look_from="0 0 30" look_at="0 0 0" up="0 1 0" />
     <camera type="orthographic" screen_window="-40 40 -20 20" />
     <integrator type="blinn_phong" depth="2" />
-
+<aggregator type="bvh" max_prims_per_node="1" />
 
     <film type="image" w_res="900" h_res="450" filename="teapot_hires_orto.png" img_type="png" gamma_corrected="true" />
    <world_begin/>

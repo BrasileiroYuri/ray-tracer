@@ -33,7 +33,6 @@ public:
       : id_{id}, tmesh_{mesh}, backface_{bfc} {}
 
   bool intersect(const Ray &r, Surfel &s) const override {
-    // 1. Extração de vértices
     auto v_ = &tmesh_->vrts_idx_[id_ * 3];
     const auto v1 = calculate_p3(tmesh_->vertices_, v_[0]);
     const auto v2 = calculate_p3(tmesh_->vertices_, v_[1]);
@@ -151,6 +150,26 @@ public:
     }
 
     s.p = r(s.t_hit);
+    return true;
+  }
+
+  // AABB enclosing all three vertices of this triangle.
+  // A tiny epsilon pad avoids degenerate flat boxes that would cause slab NaNs.
+  bool world_bound(Bounds3f &box) const override {
+    auto v_ = &tmesh_->vrts_idx_[id_ * 3];
+    const auto v1 = calculate_p3(tmesh_->vertices_, v_[0]);
+    const auto v2 = calculate_p3(tmesh_->vertices_, v_[1]);
+    const auto v3 = calculate_p3(tmesh_->vertices_, v_[2]);
+
+    box = Bounds3f(v1, v2).unite(v3);
+    // Pad to avoid zero-thickness slabs (can cause NaN in slab test)
+    const float eps = 1e-4f;
+    box.p_min.i_ -= eps;
+    box.p_min.j_ -= eps;
+    box.p_min.k_ -= eps;
+    box.p_max.i_ += eps;
+    box.p_max.j_ += eps;
+    box.p_max.k_ += eps;
     return true;
   }
 };

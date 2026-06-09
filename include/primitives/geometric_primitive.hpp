@@ -12,13 +12,16 @@ public:
       : shape_(std::move(shape)), material_(std::move(material)) {}
 
   bool intersect(const Ray &r, Surfel &s) const override {
-    // Agora passa a Surfel completa para que a Shape possa preencher a normal (n) e o ponto (p)
     if (shape_->intersect(r, s)) {
-      // Se houve colisão, atribuímos o material desta primitiva ao surfel
       s.mat_ = material_;
       return true;
     }
     return false;
+  }
+
+  // Delegates bounding-box query to the underlying shape.
+  bool world_bound(Bounds3f &box) const override {
+    return shape_->world_bound(box);
   }
 
   Material *getMaterial() const override { return material_.get(); }

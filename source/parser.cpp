@@ -28,6 +28,7 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
       {"named_material", App::named_material},
       {"material", App::material},
       {"integrator", App::integrator},
+      {"aggregator", App::aggregator},
       {"light_source", App::light_source},
   };
 
@@ -44,6 +45,8 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
                 {"falloff", convert<int>},
                 {"ntriangles", convert<int>},
                 {"type", convert<std::string>},
+                {"split_method", convert<std::string>},
+                {"max_prims_per_node", convert<int>},
                 {"gamma_corrected", convert<std::string>},
                 {"name", convert<std::string>},
                 {"filename", convert<std::string>},

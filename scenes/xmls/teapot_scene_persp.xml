@@ -3,7 +3,7 @@
     <lookat look_from="0 -90 30" look_at="0 0 0" up="0 1 0" />
     <camera type="perspective" fovy="25" />
     <integrator type="blinn_phong" depth="2" />
-
+<aggregator type="bvh" max_prims_per_node="1" />
     <film type="image" w_res="900" h_res="450" filename="teapot_hires_persp.png" img_type="png" gamma_corrected="true" />
    <world_begin/>
         <!-- The Background -->
