@@ -3,7 +3,6 @@
 
 #include "math.hpp"
 #include "shape.hpp"
-#include <algorithm>
 #include <limits>
 
 class Pyramid : public Shape {
@@ -95,7 +94,6 @@ private:
     return t > 0;
   }
 
-  // AABB enclosing the full pyramid footprint and height.
   bool world_bound(Bounds3f &box) const override {
     float w = width_ / 2.0f;
     box =

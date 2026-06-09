@@ -65,10 +65,6 @@ public:
         s.t_hit > r.max_t_)
       return false;
 
-    // ========================================================================
-    // 6. SOLUÇÃO DEFINITIVA: Winding Dinâmico e Culling Baseado em Normais
-    // ========================================================================
-
     // Calculamos a normal geométrica bruta
     auto geom_n = normalize(cross(e1, e2));
     bool has_normals =
@@ -128,8 +124,6 @@ public:
       s.n = s.n * -1.0f;
     }
 
-    // ========================================================================
-
     // 8. UV coordinates — interpoladas se disponíveis, baricêntricas como
     // fallback
     bool has_uvs = !tmesh_->uvcoords_.empty() && !tmesh_->uv_idxs_.empty();
@@ -153,8 +147,6 @@ public:
     return true;
   }
 
-  // AABB enclosing all three vertices of this triangle.
-  // A tiny epsilon pad avoids degenerate flat boxes that would cause slab NaNs.
   bool world_bound(Bounds3f &box) const override {
     auto v_ = &tmesh_->vrts_idx_[id_ * 3];
     const auto v1 = calculate_p3(tmesh_->vertices_, v_[0]);
@@ -162,7 +154,8 @@ public:
     const auto v3 = calculate_p3(tmesh_->vertices_, v_[2]);
 
     box = Bounds3f(v1, v2).unite(v3);
-    // Pad to avoid zero-thickness slabs (can cause NaN in slab test)
+
+    // evitar buraco
     const float eps = 1e-4f;
     box.p_min.i_ -= eps;
     box.p_min.j_ -= eps;

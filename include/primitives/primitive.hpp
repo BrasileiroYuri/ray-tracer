@@ -27,8 +27,6 @@ struct Primitive {
   // Surfel.t_hit armazenará a distância da interseção mais próxima
   virtual bool intersect(const Ray &r, Surfel &s) const = 0;
 
-  // Returns the world-space AABB of this primitive.
-  // Default: returns false (e.g. infinite planes have no finite bounding box).
   virtual bool world_bound(Bounds3f &box) const {
     (void)box;
     return false;

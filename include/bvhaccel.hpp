@@ -6,21 +6,9 @@
 #include "primitive.hpp"
 #include <algorithm>
 #include <cstdlib>
-#include <iostream>
 #include <memory>
 #include <vector>
 
-// ============================================================================
-// BVHNode
-// An internal (or leaf) node of the BVH tree.  Each node stores a precomputed
-// AABB and two child pointers.  Children may be either other BVHNodes or any
-// concrete Primitive (GeometricPrimitive, etc.).
-//
-// Leaf encoding (Shirley style):
-//   n == 1  →  left == right == the single primitive
-//   n == 2  →  left = prims[0], right = prims[1]  (both are leaf primitives)
-//   n > 2   →  left and right are BVHNode sub-trees
-// ============================================================================
 class BVHNode : public Primitive {
 public:
   Bounds3f bounds;
@@ -31,8 +19,6 @@ public:
     return true;
   }
 
-  // Traversal: reject quickly via AABB, then recurse into both children and
-  // return the closer of any two hits.
   bool intersect(const Ray &r, Surfel &s) const override {
     float t0, t1;
     if (!bounds.intersect_p(r, t0, t1))
@@ -60,14 +46,6 @@ public:
   Material *getMaterial() const override { return nullptr; }
 };
 
-// ============================================================================
-// buildBVHNode  (free function — called recursively during tree construction)
-//
-// Algorithm (Shirley Chapter 2):
-//   1. Randomly pick a split axis (X / Y / Z).
-//   2. Sort the [start, end) slice of prims by centroid along that axis.
-//   3. Recurse on each half until ≤ 2 primitives remain.
-// ============================================================================
 inline std::shared_ptr<Primitive>
 buildBVHNode(std::vector<std::shared_ptr<Primitive>> &prims, std::size_t start,
              std::size_t end) {
@@ -78,7 +56,6 @@ buildBVHNode(std::vector<std::shared_ptr<Primitive>> &prims, std::size_t start,
   auto node = std::make_shared<BVHNode>();
 
   if (n == 1) {
-    // Single primitive: duplicate pointer so traversal never needs null checks.
     node->left = node->right = prims[start];
 
   } else if (n == 2) {
@@ -86,7 +63,6 @@ buildBVHNode(std::vector<std::shared_ptr<Primitive>> &prims, std::size_t start,
     node->right = prims[start + 1];
 
   } else {
-    // Randomly choose a split axis.
     int axis = std::rand() % 3;
 
     std::sort(prims.begin() + static_cast<std::ptrdiff_t>(start),
@@ -112,7 +88,6 @@ buildBVHNode(std::vector<std::shared_ptr<Primitive>> &prims, std::size_t start,
     node->right = buildBVHNode(prims, mid, end);
   }
 
-  // Compute this node's AABB as the union of both children's AABBs.
   Bounds3f bl, br;
   bool vl = node->left && node->left->world_bound(bl);
   bool vr = node->right && node->right->world_bound(br);
@@ -126,19 +101,6 @@ buildBVHNode(std::vector<std::shared_ptr<Primitive>> &prims, std::size_t start,
   return node;
 }
 
-// ============================================================================
-// BVHAccel
-// Drop-in replacement for PrimList that uses a BVH to accelerate ray-object
-// intersection from O(n) to O(log n) per ray (on average).
-//
-// Usage:
-//   auto bvh = std::make_unique<BVHAccel>(maxPrimsPerNode);
-//   bvh->addObject(prim1);
-//   bvh->addObject(prim2);
-//   ...
-//   bvh->build();   // ← must be called before rendering
-//   // now use bvh->intersect(ray, surfel) as usual
-// ============================================================================
 class BVHAccel : public AggregatePrimitive {
 public:
   explicit BVHAccel(int maxPrimsPerNode = 1)
@@ -148,17 +110,12 @@ public:
     primitives_.push_back(std::move(p));
   }
 
-  // Build the acceleration tree.  Must be called once before intersect().
+  // Usado para construir a BVH. Tem que ser chamado antes de intersect.
   void build() override {
-    if (primitives_.empty()) {
-      std::cerr << "[BVHAccel] Warning: no primitives to build.\n";
+    if (primitives_.empty())
       return;
-    }
-    std::cout << "[BVHAccel] Building BVH over " << primitives_.size()
-              << " primitive(s) "
-              << "(maxPrimsPerNode=" << maxPrimsPerNode_ << ")...\n";
+
     root_ = buildBVHNode(primitives_, 0, primitives_.size());
-    std::cout << "[BVHAccel] Build complete.\n";
   }
 
   bool world_bound(Bounds3f &box) const override {

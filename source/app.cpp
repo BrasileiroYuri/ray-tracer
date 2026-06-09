@@ -401,8 +401,6 @@ void App::render() {
 
   integratorConfig(generalConfig.integratorType);
 
-  // Finalize acceleration structure (no-op for PrimList, builds BVH tree for
-  // BVHAccel).
   sceneConfig.aggrPrim->build();
 
   ///  garante que as luzes cheguem ao integrador
@@ -410,7 +408,6 @@ void App::render() {
            sceneConfig.lights);
   integrator_->render(sc, generalConfig.depth);
   integrator_->write_image(generalConfig.filename_, generalConfig.ppm_);
-  sceneConfig.aggrPrim = std::make_unique<PrimList>();
   sceneConfig.lights
       .clear(); /// evita que luzes de um render acumulem no próximo
 }

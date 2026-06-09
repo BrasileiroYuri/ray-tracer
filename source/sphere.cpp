@@ -1,10 +1,7 @@
-// Sphere ray-intersection implementation.
-// Uses the half-b quadratic formulation for numerical stability.
 #include "sphere.hpp"
 #include <cmath>
 
 bool Sphere::intersect(const Ray &r, Surfel &s) const {
-  // Translate so sphere is at origin: oc = origin - center
   vec3 oc{r.origin_.i_ - center_.i_, r.origin_.j_ - center_.j_,
           r.origin_.k_ - center_.k_};
 
@@ -19,7 +16,6 @@ bool Sphere::intersect(const Ray &r, Surfel &s) const {
   float sqrt_d = std::sqrt(disc);
   float inv_a = 1.0f / a;
 
-  // Helper: try a candidate t, validate range + partial-sphere limits.
   auto try_t = [&](float t) -> bool {
     if (t < r.min_t_ || t > r.max_t_)
       return false;
@@ -37,11 +33,9 @@ bool Sphere::intersect(const Ray &r, Surfel &s) const {
     if (phi > phi_max_)
       return false;
 
-    // Accept hit — fill surfel
     s.t_hit = t;
     s.p = hp;
 
-    // Outward normal
     vec3 outward = normalize(lp);
 
     // Regra da mão esquerda: para consistência com os triângulos do projeto,
@@ -50,7 +44,6 @@ bool Sphere::intersect(const Ray &r, Surfel &s) const {
     s.geom_n = front ? outward : outward * -1.0f;
     s.n = s.geom_n;
 
-    // Spherical UVs
     float theta = std::acos(std::max(-1.0f, std::min(1.0f, lp.k_ / radius_)));
     float dtheta = theta_max_ - theta_min_;
     s.uv = {phi / (2.0f * static_cast<float>(M_PI)),

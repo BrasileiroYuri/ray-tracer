@@ -13,7 +13,7 @@ class Cube : public Shape {
 public:
   Cube(const point3 &p1, const point3 &p2) : p1_{p1}, p2_{p2} {}
 
-  bool intersect(const Ray &r, Surfel &s) const {
+  bool intersect(const Ray &r, Surfel &s) const override {
 
     point3 min, max;
     min.i_ = std::min(p1_.i_, p2_.i_);
@@ -60,7 +60,6 @@ public:
     return {tmin, tmax};
   }
 
-  // AABB is just the cube itself (already axis-aligned).
   bool world_bound(Bounds3f &box) const override {
     box = Bounds3f(p1_, p2_);
     return true;
