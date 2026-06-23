@@ -30,6 +30,13 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
       {"integrator", App::integrator},
       {"aggregator", App::aggregator},
       {"light_source", App::light_source},
+      {"identity", App::identity},
+      {"world_begin", App::identity},
+      {"translate", App::translate},
+      {"scale", App::scale},
+      {"rotate", App::rotate},
+      {"save_coord_system", App::save_coord_system},
+      {"restore_coord_system", App::restore_coord_system},
   };
 
   conversor_ = {{"frame_aspect_ratio", convert<float>},
@@ -40,6 +47,7 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
                 {"w_res", convert<int>},
                 {"h_res", convert<int>},
                 {"fovy", convert<int>},
+                {"angle", convert<int>},
                 {"cutoff", convert<int>},
                 {"depth", convert<int>},
                 {"falloff", convert<int>},
@@ -68,6 +76,8 @@ Parser::Parser(const std::string &filename) : filename_(filename) {
                 {"mirror", convert<RGBColor>},
                 {"normal", convert<vec3>},
                 {"up", convert<vec3>},
+                {"value", convert<vec3>},
+                {"axis", convert<vec3>},
                 {"screen_window", convert<ScreenWindow>},
                 {"ambient", convert<RGBColor>},
                 {"diffuse", convert<RGBColor>},
@@ -106,12 +116,8 @@ void Parser::parse() const {
   for (auto it = root->FirstChildElement(); it; it = it->NextSiblingElement()) {
     std::string name = it->Name();
 
-    if (name == "world_begin") {
-      continue;
-    } else if (name == "world_end" || name == "render_again") {
+    if (name == "world_end")
       App::render();
-      continue;
-    }
 
     // Verifica se a tag (ex: camera, sphere, background) existe no dicionário
     if (elements_.find(name) == elements_.end()) {

@@ -49,6 +49,7 @@ GeneralConfig generalConfig;
 CameraConfig cameraConfig;
 SceneConfig sceneConfig;
 
+struct GraphicsState {};
 std::unordered_map<std::string, std::shared_ptr<Material>> materials;
 std::shared_ptr<Material> currMaterial = nullptr;
 

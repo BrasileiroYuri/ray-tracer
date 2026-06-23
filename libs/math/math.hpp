@@ -2,6 +2,7 @@
 #define MATH_HPP
 
 #include <array>
+#include <iterator>
 #include <sstream>
 #include <string>
 
@@ -81,4 +82,55 @@ inline std::istream &operator>>(std::istream &is, vec2 &v) {
     is.setstate(std::ios::failbit);
   return is;
 }
+
+struct Matrix4 {
+  double values[16]{}; //! Iniciando todos os valores com 0.
+
+  inline Matrix4 operator*(const Matrix4 &other);
+  inline Matrix4 transpose() const;
+  inline double &operator[](std::size_t idx) { return values[idx]; };
+};
+
+class Transform {
+public:
+  Transform(const Matrix4 &m, const Matrix4 &mInv) : m{m}, mInv{mInv} {}
+  Transform translate(const vec3 &v) const {
+    Matrix4 mn{
+        1, 0, 0, v.i_, //
+        0, 1, 0, v.j_, //
+        0, 0, 1, v.k_, //
+        0, 0, 0, 1,    //
+    };
+
+    Matrix4 mi{
+        1, 0, 0, -v.i_, //
+        0, 1, 0, -v.j_, //
+        0, 0, 1, -v.k_, //
+        0, 0, 0, 1,     //
+    };
+
+    return Transform(mn, mi);
+  }
+
+  Transform scale(const vec3 &v) const {
+    Matrix4 mn{
+        v.i_, 0,    0,    0, //
+        0,    v.j_, 0,    0, //
+        0,    0,    v.k_, 0, //
+        0,    0,    0,    1, //
+    };
+
+    Matrix4 mi{
+        1 / v.i_, 0,        0,        0, //
+        0,        1 / v.j_, 0,        0, //
+        0,        0,        1 / v.k_, 0, //
+        0,        0,        0,        1, //
+    };
+
+    return Transform(mn, mi);
+  }
+
+private:
+  Matrix4 m, mInv;
+};
 #endif // !MATH_HPP

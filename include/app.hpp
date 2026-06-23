@@ -31,6 +31,12 @@ public:
   static void named_material(const ParamSet &);
   static void light_source(const ParamSet &);
   static void aggregator(const ParamSet &);
+  static void identity(const ParamSet &);
+  static void translate(const ParamSet &);
+  static void scale(const ParamSet &);
+  static void rotate(const ParamSet &);
+  static void save_coord_system(const ParamSet &);
+  static void restore_coord_system(const ParamSet &);
 
 private:
   static void plane(const ParamSet &);
